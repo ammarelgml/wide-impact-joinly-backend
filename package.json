@@ -1,0 +1,57 @@
+{
+  "name": "joinly-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Joinly REST API: teachers create classrooms, students join by QR code or 6-digit code.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@10.18.0",
+  "scripts": {
+    "dev": "tsx watch --env-file-if-exists=.env src/server.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/src/server.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "db:migrate": "node-pg-migrate up --migrations-dir migrations --migration-file-language sql --database-url-var DATABASE_URL",
+    "db:migrate:down": "node-pg-migrate down --migrations-dir migrations --migration-file-language sql --database-url-var DATABASE_URL",
+    "db:migrate:create": "node-pg-migrate create --migrations-dir migrations --migration-file-language sql",
+    "db:seed": "tsx --env-file-if-exists=.env scripts/seed.ts",
+    "db:seed:prod": "node dist/scripts/seed.js",
+    "openapi": "tsx src/http/openapi.cli.ts > openapi.json",
+    "docs:api": "tsx scripts/generate-api-docs.ts && prettier --write docs/api.md"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "google-auth-library": "^10.0.0",
+    "helmet": "^8.1.0",
+    "jose": "^6.1.0",
+    "kysely": "^0.28.0",
+    "node-pg-migrate": "^8.0.0",
+    "pg": "^8.16.0",
+    "pino": "^9.9.0",
+    "pino-http": "^10.5.0",
+    "swagger-ui-express": "^5.0.1",
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "@types/express": "^5.0.3",
+    "@types/node": "^22.18.0",
+    "@types/pg": "^8.15.0",
+    "@types/supertest": "^6.0.3",
+    "@types/swagger-ui-express": "^4.1.8",
+    "eslint": "^9.39.0",
+    "pino-pretty": "^13.1.0",
+    "prettier": "^3.6.0",
+    "supertest": "^7.1.0",
+    "tsx": "^4.20.0",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.73.0",
+    "vitest": "^3.2.0"
+  }
+}

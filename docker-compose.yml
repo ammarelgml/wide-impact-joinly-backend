@@ -1,0 +1,32 @@
+# Local stack: Postgres + API with migrations and demo seed.
+#   docker compose up --build   ->  http://localhost:3000/docs
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: joinly
+      POSTGRES_PASSWORD: joinly
+      POSTGRES_DB: joinly
+    ports: ['5432:5432']
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U joinly']
+      interval: 2s
+      retries: 20
+
+  api:
+    build: .
+    depends_on:
+      db: { condition: service_healthy }
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgres://joinly:joinly@db:5432/joinly
+      JWT_ACCESS_SECRET: local-compose-secret-change-me-0123456789abcdef
+      GOOGLE_CLIENT_IDS: ${GOOGLE_CLIENT_IDS:-placeholder.apps.googleusercontent.com}
+      DEMO_LOGIN_ENABLED: 'true'
+      SEED_CONFIRM: 'yes'
+    command: sh -c "pnpm db:migrate && pnpm db:seed:prod && node dist/src/server.js"
+    ports: ['3000:3000']
+
+volumes:
+  pgdata:

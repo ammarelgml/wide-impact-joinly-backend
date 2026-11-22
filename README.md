@@ -1,0 +1,232 @@
+# Joinly backend
+
+REST API for **Joinly**, a mobile app where teachers sign in with Google, create classrooms, and
+onboard students with a **QR code** or a **6-digit joining code**. This repository is the backend;
+the Expo app lives in [wide-impact-joinly-mobile](https://github.com/ammarelgml/wide-impact-joinly-mobile).
+
+[![CI](https://github.com/ammarelgml/wide-impact-joinly-backend/actions/workflows/ci.yml/badge.svg)](https://github.com/ammarelgml/wide-impact-joinly-backend/actions/workflows/ci.yml)
+
+|                       |                                                                                              |
+| --------------------- | -------------------------------------------------------------------------------------------- |
+| Hosted API            | `https://<railway-url>` (filled in at deploy)                                                |
+| Interactive API docs  | `<hosted API>/docs` (Swagger UI), raw OpenAPI 3.1 at `/openapi.json`                         |
+| API reference         | [docs/api.md](docs/api.md)                                                                   |
+| Development approach  | [docs/approach.md](docs/approach.md), decision log in [docs/decisions.md](docs/decisions.md) |
+| AI usage disclosure   | [docs/ai-usage.md](docs/ai-usage.md)                                                         |
+| Manual test checklist | [docs/testing-checklist.md](docs/testing-checklist.md)                                       |
+
+## Overview
+
+- **Teachers** sign in with Google, create, edit and delete classrooms, see the roster, remove
+  students, show the classroom's QR code and 6-digit code, regenerate the code, and open or close joining.
+- **Students** sign in with Google, join by scanning the QR code or typing the code (with a preview
+  of the class before confirming), see their classrooms, and leave one.
+- A join code is 6 random digits, one live code per classroom, valid for 24 hours. Regenerating
+  revokes the old code and its QR immediately. The QR encodes `joinly://join?code=482913`, so a
+  scanned QR and a typed code go through the same API call.
+
+## Technologies
+
+| Concern                   | Choice                                                                                         |
+| ------------------------- | ---------------------------------------------------------------------------------------------- |
+| Runtime, framework        | Node.js 22, Express 5, TypeScript (strict)                                                     |
+| Database                  | PostgreSQL, accessed with [Kysely](https://kysely.dev) (typed SQL builder, no ORM)             |
+| Migrations                | [node-pg-migrate](https://salsita.github.io/node-pg-migrate/) with plain SQL files             |
+| Validation, API contract  | [zod](https://zod.dev) 4; the same schemas validate requests and generate the OpenAPI document |
+| Auth                      | `google-auth-library` (Google ID token verification), `jose` (JWT access tokens)               |
+| Logging, security headers | pino (+ pino-http, with redaction), helmet                                                     |
+| API docs                  | OpenAPI 3.1 generated at runtime, Swagger UI at `/docs`                                        |
+| Tests                     | Vitest + supertest against a real PostgreSQL                                                   |
+| Delivery                  | Docker, docker-compose, GitHub Actions CI, Railway                                             |
+
+## Project structure
+
+```
+migrations/                 Plain SQL migrations (schema, constraints, indexes)
+scripts/
+  seed.ts                   Demo data for reviewers (idempotent)
+  generate-api-docs.ts      Renders docs/api.md from the endpoint definitions
+src/
+  server.ts                 Process entry: config, wiring, graceful shutdown
+  app.ts                    Composition root: builds services and the Express app
+  config/                   Environment parsing and validation (fails fast at boot)
+  db/                       Kysely connection and table types
+  http/                     Endpoint type, route mounting, problem details, OpenAPI, middleware
+  lib/                      Clock, AppError, rate limiter, pagination cursor, logger
+  modules/
+    auth/                   Google sign-in, demo sign-in, access/refresh tokens
+    users/                  User repository and schemas
+    classrooms/             Teacher side: classrooms, join codes, roster
+    enrollments/            Student side: preview, join, list, leave
+      endpoints.ts          The module's endpoints declared as data (method, path, role, schemas, errors)
+      schemas.ts            zod request/response schemas
+      *.controller.ts       HTTP layer: maps validated input to a service call
+      *.service.ts          Business rules
+      *.repository.ts       SQL, and only SQL
+test/                       Integration and unit tests
+```
+
+Requests flow one way: **route → controller → service → repository → PostgreSQL**. Each
+endpoint is declared once in `modules/*/endpoints.ts`; `mount()` derives its authentication,
+role check and validation from that declaration, and the OpenAPI document and
+[docs/api.md](docs/api.md) are generated from the same declarations.
+
+## Setup
+
+**Requirements:** Node.js 22+, pnpm 10 (`corepack enable`), PostgreSQL 14+ (or Docker).
+
+### Option A: Docker (one command)
+
+```bash
+docker compose up --build
+```
+
+This starts PostgreSQL, runs the migrations, seeds the demo data, and serves the API on
+http://localhost:3000 (docs at http://localhost:3000/docs) with demo sign-in enabled.
+
+### Option B: local Node + PostgreSQL
+
+```bash
+pnpm install
+cp .env.example .env          # then fill in JWT_ACCESS_SECRET and GOOGLE_CLIENT_IDS
+
+# Create the databases (any PostgreSQL 14+):
+createuser -s joinly -P       # password: joinly (or change DATABASE_URL)
+createdb -O joinly joinly
+createdb -O joinly joinly_test
+
+pnpm db:migrate               # apply migrations/
+pnpm db:seed                  # demo accounts and classrooms
+pnpm dev                      # http://localhost:3000, reloads on change
+```
+
+### Database configuration
+
+- `DATABASE_URL` points at the database; add `?sslmode=require` for managed providers.
+- Schema lives in [`migrations/`](migrations) as plain SQL. `pnpm db:migrate` applies pending
+  migrations, `pnpm db:migrate:down` rolls back the last one, `pnpm db:migrate:create <name>` adds one.
+- Five tables: `users`, `classrooms`, `join_codes` (full code history), `enrollments`,
+  `refresh_tokens`. The database itself enforces the rules that matter:
+  - only teachers own classrooms and only students enroll (role-typed composite foreign keys),
+  - one enrollment per student per classroom (composite primary key, which makes joins idempotent),
+  - one live code per classroom, and no two live codes share a number (partial unique indexes),
+  - name and description lengths, 6-digit code format (check constraints).
+
+### Environment variables
+
+See [`.env.example`](.env.example). The server validates them at boot and lists every problem.
+
+| Variable                   | Required | Default       | Purpose                                                                    |
+| -------------------------- | -------- | ------------- | -------------------------------------------------------------------------- |
+| `DATABASE_URL`             | yes      |               | PostgreSQL connection string                                               |
+| `JWT_ACCESS_SECRET`        | yes      |               | HS256 key for access tokens, 32+ characters (`openssl rand -base64 48`)    |
+| `GOOGLE_CLIENT_IDS`        | yes      |               | Google OAuth Web client ID (the ID token audience); comma-separate several |
+| `PORT`                     | no       | `3000`        | HTTP port                                                                  |
+| `NODE_ENV`                 | no       | `development` | `development`, `test` or `production`                                      |
+| `LOG_LEVEL`                | no       | `info`        | pino level                                                                 |
+| `ACCESS_TOKEN_TTL_SECONDS` | no       | `900`         | Access token lifetime (15 min)                                             |
+| `REFRESH_TOKEN_TTL_DAYS`   | no       | `30`          | Refresh token lifetime                                                     |
+| `JOIN_CODE_TTL_HOURS`      | no       | `24`          | Join code lifetime                                                         |
+| `DEMO_LOGIN_ENABLED`       | no       | `false`       | Enables `POST /v1/auth/demo` for reviewers                                 |
+| `TRUST_PROXY`              | no       | `0`           | Reverse proxies in front of the API (Railway: `1`), for correct client IPs |
+| `TEST_DATABASE_URL`        | tests    |               | Database the integration tests migrate and truncate                        |
+| `SEED_CONFIRM`             | no       |               | Must be `yes` to seed when `NODE_ENV=production`                           |
+
+## Running the tests
+
+```bash
+pnpm test         # 49 tests: integration tests against TEST_DATABASE_URL, plus unit tests
+pnpm lint && pnpm typecheck
+```
+
+The integration tests rebuild the test database from the real migrations, then exercise the API
+over HTTP with a fake Google verifier and a controllable clock (to test 24-hour code expiry and
+token expiry without waiting). They cover every row of the security table below, including
+cross-teacher access, wrong-role access, refresh token reuse, brute-force limits, and 10 concurrent
+joins producing exactly one enrollment. CI runs lint, typecheck, tests, build, a check that
+`docs/api.md` is current, and a secret scan on every push.
+
+## Test accounts
+
+Reviewers have two ways in:
+
+1. **Your own Google account.** Sign in, choose Teacher or Student once, and use the app normally.
+   Use two Google accounts (one per role) on two phones to test the full flow.
+2. **Demo accounts**, no Google needed. With `DEMO_LOGIN_ENABLED=true` (on for the hosted review
+   deployment), the app's sign-in screen offers _Demo teacher_ and _Demo student_:
+
+| Account      | Name             | Seeded data                                                                             |
+| ------------ | ---------------- | --------------------------------------------------------------------------------------- |
+| Demo teacher | Ms. Amira Hassan | "Grade 8 Science" (joining open, 3 students) and "Grade 9 Mathematics" (joining closed) |
+| Demo student | Omar Khaled      | Enrolled in "Grade 8 Science"                                                           |
+
+A third seeded classroom, **"Arabic Literature"**, belongs to another teacher and has the fixed
+join code **`246810`** (valid 30 days), so the demo student can test joining without a second device.
+
+API-only equivalent:
+
+```bash
+curl -X POST $API/v1/auth/demo -H 'Content-Type: application/json' -d '{"account":"student"}'
+```
+
+## Testing QR code and numeric code onboarding
+
+**Numeric code, one device**
+
+1. Sign in as _Demo student_ (or any student account).
+2. Tap **Enter code**, type `246 810`. The preview shows "Arabic Literature" by Mr. Youssef Nabil.
+3. Tap **Join**. The class appears in My classrooms. Joining again shows "You're already in this class".
+
+**QR code, two devices**
+
+1. Phone A: sign in as a teacher, open a classroom, tap **Show QR**.
+2. Phone B: sign in as a student, tap **Scan QR** and point it at phone A (or scan with the phone's
+   own camera app, which opens `joinly://join?code=…` in Joinly).
+3. Confirm on the preview. Phone A's roster updates within a few seconds.
+
+**QR code, one device**: scan this QR (code `246810`) from a screen or printout with the student app:
+
+![Join QR for code 246810](docs/assets/demo-join-qr.png)
+
+**Edge cases worth trying**
+
+- Teacher taps **Regenerate**: the old code and its QR stop working at once (`JOIN_CODE_INVALID`).
+- Teacher turns **Joining open** off: valid codes return "Joining is closed" (`JOINING_CLOSED`).
+- Five wrong codes within 15 minutes: the sixth attempt is blocked with a countdown (`RATE_LIMITED`).
+- A code older than 24 hours: "This code has expired" (`JOIN_CODE_EXPIRED`).
+
+## Security
+
+| Threat                                       | Control                                                                                              | Test                                                        |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Forged or replayed Google token              | Server-side verification of signature, audience, issuer, expiry and verified email                   | Forged token is rejected                                    |
+| Stolen refresh token                         | Opaque tokens, SHA-256 hashed at rest, rotated on every use; reuse revokes the whole family          | Reusing a rotated token revokes the family                  |
+| Teacher reads another teacher's class        | Ownership is part of every classroom query; 404, not 403                                             | Teacher B gets 404 on all 7 of teacher A's classroom routes |
+| Student calls teacher routes, or the reverse | Role check per endpoint, plus role-typed foreign keys in the database                                | Wrong-role calls return 403; direct wrong-role inserts fail |
+| Guessing join codes                          | 5 failed lookups per student per 15 min, 60 join requests per IP per min, 24-hour expiry, regenerate | 6th bad guess returns 429 with Retry-After                  |
+| Duplicate or racing joins                    | Composite primary key and `INSERT … ON CONFLICT DO NOTHING`                                          | 10 parallel joins create exactly 1 row                      |
+| Malformed or oversized input                 | Strict schemas (unknown fields rejected), 10 kB body limit, parameterised SQL                        | Invalid bodies return 400 with field errors                 |
+| Secrets or tokens in logs                    | pino redaction of auth headers, tokens and codes                                                     | Redaction unit test                                         |
+| Secrets in the repo                          | Only `.env.example` is committed; config validated at boot                                           | gitleaks in CI                                              |
+| Demo sign-in abused                          | Route not mounted unless the flag is set; IP rate-limited; signs in only as seeded users             | Route returns 404 with the flag off                         |
+
+## Deployment (Railway)
+
+`railway.json` builds the Dockerfile, runs `pnpm db:migrate` as a pre-deploy step, and health-checks
+`/readyz`. Steps: create a project from this repository, add a PostgreSQL service, set
+`DATABASE_URL` (reference the Postgres service), `JWT_ACCESS_SECRET`, `GOOGLE_CLIENT_IDS`,
+`TRUST_PROXY=1` and, for the review deployment, `DEMO_LOGIN_ENABLED=true`. Seed once with
+`SEED_CONFIRM=yes pnpm db:seed:prod` from the Railway shell.
+
+## Known limitations
+
+- **Rate-limit counters are in memory**, which is correct for the single API instance deployed. More
+  instances would need a shared store (Redis or a Postgres table); the limiter is behind an interface,
+  so that is a one-file change.
+- **Refresh rotation has no grace window.** If the network drops the response to a refresh, the app's
+  retry presents a rotated token and the session is revoked, so the user signs in again. Strict by
+  choice; a few-seconds grace window is the usual refinement.
+- **One role per account**, chosen at first sign-in and not changeable in the app (an admin task).
+- **Out of scope:** anything inside a classroom beyond the roster (posts, assignments, grades),
+  co-teachers, push notifications, account deletion, and a web client.
+- **The roster refresh is polling** (every few seconds on the invite screen), not WebSockets or SSE.
