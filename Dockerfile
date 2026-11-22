@@ -19,5 +19,5 @@ COPY --from=build /app/dist ./dist
 COPY migrations ./migrations
 USER node
 EXPOSE 3000
-# Migrations run as a separate pre-deploy step (see railway.json / docker-compose.yml).
-CMD ["node", "dist/src/server.js"]
+# Release step (migrations, optional demo seed), then the server. Plain node, no pnpm at runtime.
+CMD ["sh", "-c", "node dist/scripts/release.js && exec node dist/src/server.js"]

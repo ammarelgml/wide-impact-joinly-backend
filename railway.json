@@ -5,7 +5,6 @@
     "dockerfilePath": "Dockerfile"
   },
   "deploy": {
-    "preDeployCommand": ["pnpm release"],
     "healthcheckPath": "/readyz",
     "healthcheckTimeout": 30,
     "restartPolicyType": "ON_FAILURE",

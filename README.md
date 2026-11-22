@@ -130,7 +130,7 @@ See [`.env.example`](.env.example). The server validates them at boot and lists 
 | `DEMO_LOGIN_ENABLED`       | no       | `false`       | Enables `POST /v1/auth/demo` for reviewers                                 |
 | `TRUST_PROXY`              | no       | `0`           | Reverse proxies in front of the API (Railway: `1`), for correct client IPs |
 | `TEST_DATABASE_URL`        | tests    |               | Database the integration tests migrate and truncate                        |
-| `SEED_DEMO_DATA`           | no       |               | `true` makes the release step (re)seed demo data on each deploy            |
+| `SEED_DEMO_DATA`           | no       |               | `true` makes the release step (re)seed demo data on each start             |
 | `SEED_CONFIRM`             | no       |               | Must be `yes` to run `db:seed:prod` by hand when `NODE_ENV=production`     |
 
 ## Running the tests
@@ -213,8 +213,9 @@ curl -X POST $API/v1/auth/demo -H 'Content-Type: application/json' -d '{"account
 
 ## Deployment (Railway)
 
-`railway.json` builds the Dockerfile, runs `pnpm release` before each deploy (migrations, then the
-demo seed if `SEED_DEMO_DATA=true`), and health-checks `/readyz`.
+`railway.json` builds the Dockerfile and health-checks `/readyz`. The container's start command runs
+the release step first (`dist/scripts/release.js`: migrations, then the demo seed if
+`SEED_DEMO_DATA=true`) and then starts the server, so every deploy migrates before serving traffic.
 
 1. New project, deploy from this GitHub repository. Add a PostgreSQL database to the project.
 2. Set the service variables: `DATABASE_URL=${{Postgres.DATABASE_URL}}`, `JWT_ACCESS_SECRET` (48 random

@@ -24,7 +24,7 @@
     "db:seed:prod": "node dist/scripts/seed.js",
     "openapi": "tsx src/http/openapi.cli.ts > openapi.json",
     "docs:api": "tsx scripts/generate-api-docs.ts && prettier --write docs/api.md",
-    "release": "pnpm db:migrate && node dist/scripts/seed.js --if-enabled"
+    "release": "node dist/scripts/release.js"
   },
   "dependencies": {
     "express": "^5.1.0",

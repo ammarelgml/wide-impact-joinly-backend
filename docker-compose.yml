@@ -24,8 +24,7 @@ services:
       JWT_ACCESS_SECRET: local-compose-secret-change-me-0123456789abcdef
       GOOGLE_WEB_CLIENT_ID: ${GOOGLE_WEB_CLIENT_ID:-509206991044-e4h7gjbmhs98f12th7gfngjo2j3sib2o.apps.googleusercontent.com}
       DEMO_LOGIN_ENABLED: 'true'
-      SEED_CONFIRM: 'yes'
-    command: sh -c "pnpm db:migrate && pnpm db:seed:prod && node dist/src/server.js"
+      SEED_DEMO_DATA: 'true'
     ports: ['3000:3000']
 
 volumes:
