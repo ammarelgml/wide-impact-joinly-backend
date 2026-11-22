@@ -218,7 +218,7 @@ demo seed if `SEED_DEMO_DATA=true`), and health-checks `/readyz`.
 
 1. New project, deploy from this GitHub repository. Add a PostgreSQL database to the project.
 2. Set the service variables: `DATABASE_URL=${{Postgres.DATABASE_URL}}`, `JWT_ACCESS_SECRET` (48 random
-   bytes), `GOOGLE_WEB_CLIENT_ID`, `NODE_ENV=production`, `TRUST_PROXY=1`, `SUPPORT_EMAIL`, and for the
+   bytes), `GOOGLE_WEB_CLIENT_ID`, `NODE_ENV=production`, `PORT=3000`, `TRUST_PROXY=1`, `SUPPORT_EMAIL`, and for the
    review deployment `DEMO_LOGIN_ENABLED=true` and `SEED_DEMO_DATA=true`.
 3. Generate a public domain for the service (port 3000).
 
