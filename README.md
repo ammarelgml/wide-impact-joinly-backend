@@ -8,7 +8,7 @@ the Expo app lives in [wide-impact-joinly-mobile](https://github.com/ammarelgml/
 
 |                       |                                                                                              |
 | --------------------- | -------------------------------------------------------------------------------------------- |
-| Hosted API            | `https://<railway-url>` (filled in at deploy)                                                |
+| Hosted API            | https://wide-impact-joinly-backend-production.up.railway.app                                 |
 | Interactive API docs  | `<hosted API>/docs` (Swagger UI), raw OpenAPI 3.1 at `/openapi.json`                         |
 | API reference         | [docs/api.md](docs/api.md)                                                                   |
 | Development approach  | [docs/approach.md](docs/approach.md), decision log in [docs/decisions.md](docs/decisions.md) |
