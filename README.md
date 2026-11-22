@@ -120,7 +120,7 @@ See [`.env.example`](.env.example). The server validates them at boot and lists 
 | -------------------------- | -------- | ------------- | -------------------------------------------------------------------------- |
 | `DATABASE_URL`             | yes      |               | PostgreSQL connection string                                               |
 | `JWT_ACCESS_SECRET`        | yes      |               | HS256 key for access tokens, 32+ characters (`openssl rand -base64 48`)    |
-| `GOOGLE_WEB_CLIENT_ID`        | yes      |               | Google OAuth Web client ID (the ID token audience); comma-separate several |
+| `GOOGLE_WEB_CLIENT_ID`     | yes      |               | Google OAuth Web client ID (the ID token audience); comma-separate several |
 | `PORT`                     | no       | `3000`        | HTTP port                                                                  |
 | `NODE_ENV`                 | no       | `development` | `development`, `test` or `production`                                      |
 | `LOG_LEVEL`                | no       | `info`        | pino level                                                                 |
@@ -130,7 +130,8 @@ See [`.env.example`](.env.example). The server validates them at boot and lists 
 | `DEMO_LOGIN_ENABLED`       | no       | `false`       | Enables `POST /v1/auth/demo` for reviewers                                 |
 | `TRUST_PROXY`              | no       | `0`           | Reverse proxies in front of the API (Railway: `1`), for correct client IPs |
 | `TEST_DATABASE_URL`        | tests    |               | Database the integration tests migrate and truncate                        |
-| `SEED_CONFIRM`             | no       |               | Must be `yes` to seed when `NODE_ENV=production`                           |
+| `SEED_DEMO_DATA`           | no       |               | `true` makes the release step (re)seed demo data on each deploy            |
+| `SEED_CONFIRM`             | no       |               | Must be `yes` to run `db:seed:prod` by hand when `NODE_ENV=production`     |
 
 ## Running the tests
 
@@ -212,11 +213,14 @@ curl -X POST $API/v1/auth/demo -H 'Content-Type: application/json' -d '{"account
 
 ## Deployment (Railway)
 
-`railway.json` builds the Dockerfile, runs `pnpm db:migrate` as a pre-deploy step, and health-checks
-`/readyz`. Steps: create a project from this repository, add a PostgreSQL service, set
-`DATABASE_URL` (reference the Postgres service), `JWT_ACCESS_SECRET`, `GOOGLE_WEB_CLIENT_ID`,
-`TRUST_PROXY=1` and, for the review deployment, `DEMO_LOGIN_ENABLED=true`. Seed once with
-`SEED_CONFIRM=yes pnpm db:seed:prod` from the Railway shell.
+`railway.json` builds the Dockerfile, runs `pnpm release` before each deploy (migrations, then the
+demo seed if `SEED_DEMO_DATA=true`), and health-checks `/readyz`.
+
+1. New project, deploy from this GitHub repository. Add a PostgreSQL database to the project.
+2. Set the service variables: `DATABASE_URL=${{Postgres.DATABASE_URL}}`, `JWT_ACCESS_SECRET` (48 random
+   bytes), `GOOGLE_WEB_CLIENT_ID`, `NODE_ENV=production`, `TRUST_PROXY=1`, `SUPPORT_EMAIL`, and for the
+   review deployment `DEMO_LOGIN_ENABLED=true` and `SEED_DEMO_DATA=true`.
+3. Generate a public domain for the service (port 3000).
 
 ## Known limitations
 

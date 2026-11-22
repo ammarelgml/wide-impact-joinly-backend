@@ -19,8 +19,15 @@ import type { UserRole } from '../src/db/schema.js';
 
 export const DEMO_JOIN_CODE = '246810';
 
+// `--if-enabled` is the release-step mode: seed only when the deployment opts in.
+if (process.argv.includes('--if-enabled') && process.env.SEED_DEMO_DATA !== 'true') {
+  console.log('SEED_DEMO_DATA is not true; skipping demo seed.'); // eslint-disable-line no-console
+  process.exit(0);
+}
+
 const config = loadConfig();
-if (config.env === 'production' && process.env.SEED_CONFIRM !== 'yes') {
+const optedIn = process.env.SEED_CONFIRM === 'yes' || process.env.SEED_DEMO_DATA === 'true';
+if (config.env === 'production' && !optedIn) {
   throw new Error(
     'Refusing to seed a production database. Set SEED_CONFIRM=yes for a review deployment.',
   );
