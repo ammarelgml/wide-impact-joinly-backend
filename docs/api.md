@@ -95,7 +95,7 @@ Sign in with a Google ID token. Verifies the Google ID token server-side. Return
 
 ```json
 {
-  "idToken": "f3Kq9...",
+  "idToken": "<google-id-token>",
   "role": "teacher"
 }
 ```
@@ -104,9 +104,9 @@ Sign in with a Google ID token. Verifies the Google ID token server-side. Return
 
 ```json
 {
-  "accessToken": "eyJhbGciOiJIUzI1NiJ9...",
+  "accessToken": "<accessToken>",
   "accessTokenExpiresAt": "2026-11-22T19:30:00.000Z",
-  "refreshToken": "f3Kq9...",
+  "refreshToken": "<refreshToken>",
   "user": {
     "id": "3f1c2b9e-6a1d-4c5e-9b7a-2d4e8f0a1b2c",
     "email": "amira.hassan@example.com",
@@ -143,9 +143,9 @@ Sign in as a seeded demo account (review builds only). Mounted only when DEMO_LO
 
 ```json
 {
-  "accessToken": "eyJhbGciOiJIUzI1NiJ9...",
+  "accessToken": "<accessToken>",
   "accessTokenExpiresAt": "2026-11-22T19:30:00.000Z",
-  "refreshToken": "f3Kq9...",
+  "refreshToken": "<refreshToken>",
   "user": {
     "id": "3f1c2b9e-6a1d-4c5e-9b7a-2d4e8f0a1b2c",
     "email": "amira.hassan@example.com",
@@ -174,7 +174,7 @@ Rotate a refresh token. Revokes the presented refresh token and returns a new pa
 
 ```json
 {
-  "refreshToken": "f3Kq9..."
+  "refreshToken": "<refreshToken>"
 }
 ```
 
@@ -182,9 +182,9 @@ Rotate a refresh token. Revokes the presented refresh token and returns a new pa
 
 ```json
 {
-  "accessToken": "eyJhbGciOiJIUzI1NiJ9...",
+  "accessToken": "<accessToken>",
   "accessTokenExpiresAt": "2026-11-22T19:30:00.000Z",
-  "refreshToken": "f3Kq9..."
+  "refreshToken": "<refreshToken>"
 }
 ```
 
@@ -204,7 +204,7 @@ Sign out this device. Revokes the refresh token family. Idempotent.
 
 ```json
 {
-  "refreshToken": "f3Kq9..."
+  "refreshToken": "<refreshToken>"
 }
 ```
 

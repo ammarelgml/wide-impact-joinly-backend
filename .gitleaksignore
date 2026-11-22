@@ -1,0 +1,4 @@
+# False positives: example placeholder tokens in docs/api.md of the first commit (since replaced).
+e5471d1d2a524d861f049594dedbf2f5efc25bb8:docs/api.md:generic-api-key:107
+e5471d1d2a524d861f049594dedbf2f5efc25bb8:docs/api.md:generic-api-key:146
+e5471d1d2a524d861f049594dedbf2f5efc25bb8:docs/api.md:generic-api-key:185

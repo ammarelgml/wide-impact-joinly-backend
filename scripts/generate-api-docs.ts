@@ -61,7 +61,7 @@ function sample(p: Json, key = '', parent = ''): unknown {
       if (p.format === 'date-time') return '2026-11-23T08:00:00.000Z';
       if (p.format === 'email') return 'amira.hassan@example.com';
       if (p.format === 'uri') return 'https://lh3.googleusercontent.com/a/photo';
-      if (/token/i.test(key)) return key === 'accessToken' ? 'eyJhbGciOiJIUzI1NiJ9...' : 'f3Kq9...';
+      if (/token/i.test(key)) return key === 'idToken' ? '<google-id-token>' : `<${key}>`;
       if (key === 'nextCursor') return 'eyJ0IjoiMjAyNi0xMS0yM1Q...';
       if (key === 'name') return parent === 'person' ? 'Amira Hassan' : 'Grade 8 Science';
       if (key === 'description') return 'Room 204, Sun/Tue/Thu';
