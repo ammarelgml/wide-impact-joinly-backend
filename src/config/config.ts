@@ -26,6 +26,7 @@ const EnvSchema = z.object({
     .default(24),
   DEMO_LOGIN_ENABLED: bool.default(false),
   TRUST_PROXY: z.coerce.number().int().min(0).default(0),
+  SUPPORT_EMAIL: z.email().optional(),
 });
 
 export interface Config {
@@ -42,6 +43,8 @@ export interface Config {
   };
   joinCodeTtlHours: number;
   trustProxy: number;
+  /** Shown on the public privacy page. */
+  supportEmail: string | undefined;
   /** Check every response against its contract schema. On outside production. */
   validateResponses: boolean;
 }
@@ -68,6 +71,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     },
     joinCodeTtlHours: e.JOIN_CODE_TTL_HOURS,
     trustProxy: e.TRUST_PROXY,
+    supportEmail: e.SUPPORT_EMAIL,
     validateResponses: e.NODE_ENV !== 'production',
   };
 }

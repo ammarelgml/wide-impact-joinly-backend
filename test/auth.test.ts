@@ -211,3 +211,17 @@ describe('HTTP hardening', () => {
     expect(res.headers['x-powered-by']).toBeUndefined();
   });
 });
+
+describe('public pages', () => {
+  it('serves the homepage and privacy policy Google requires', async () => {
+    const { http } = makeApp();
+    const home = await http.get('/');
+    expect(home.status).toBe(200);
+    expect(home.headers['content-type']).toMatch(/text\/html/);
+    expect(home.text).toContain('href="/privacy"');
+    const privacy = await http.get('/privacy');
+    expect(privacy.status).toBe(200);
+    expect(privacy.text).toMatch(/name.*email.*photo/s);
+    expect(privacy.text).toContain('support@example.com');
+  });
+});

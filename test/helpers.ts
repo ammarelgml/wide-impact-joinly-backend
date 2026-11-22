@@ -58,6 +58,7 @@ export function testConfig(overrides: Partial<Config['auth']> = {}): Config {
     },
     joinCodeTtlHours: 24,
     trustProxy: 0,
+    supportEmail: 'support@example.com',
     validateResponses: true,
   };
 }

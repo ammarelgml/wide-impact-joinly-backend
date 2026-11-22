@@ -8,6 +8,7 @@ import type { Config } from './config/config.js';
 import type { Database } from './db/database.js';
 import { errorHandler, notFoundHandler } from './http/middleware/error-handler.js';
 import { buildOpenApiDocument } from './http/openapi.js';
+import { pagesRouter } from './http/pages.js';
 import type { RouteDeps } from './http/route.js';
 import type { Clock } from './lib/clock.js';
 import type { Logger } from './lib/logger.js';
@@ -95,6 +96,7 @@ export function createApp(deps: AppDeps): Express {
   app.use(helmet());
   app.use(express.json({ limit: '10kb' }));
 
+  app.use(pagesRouter({ supportEmail: config.supportEmail }));
   app.get('/healthz', (_req, res) => res.json({ status: 'ok' }));
   app.get('/readyz', async (_req, res) => {
     await sql`select 1`.execute(db);

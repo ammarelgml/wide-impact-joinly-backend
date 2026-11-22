@@ -1,6 +1,6 @@
 # Manual test checklist (API)
 
-Automated: `pnpm test` (49 tests). This list is the manual pass against a deployed API, using
+Automated: `pnpm test` (50 tests). This list is the manual pass against a deployed API, using
 Swagger UI at `/docs` (click **Authorize** and paste an access token) or curl.
 
 | #   | Step                                                                                              | Expected                                             |

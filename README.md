@@ -135,7 +135,7 @@ See [`.env.example`](.env.example). The server validates them at boot and lists 
 ## Running the tests
 
 ```bash
-pnpm test         # 49 tests: integration tests against TEST_DATABASE_URL, plus unit tests
+pnpm test         # 50 tests: integration tests against TEST_DATABASE_URL, plus unit tests
 pnpm lint && pnpm typecheck
 ```
 
