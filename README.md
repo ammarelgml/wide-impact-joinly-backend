@@ -88,7 +88,7 @@ http://localhost:3000 (docs at http://localhost:3000/docs) with demo sign-in ena
 
 ```bash
 pnpm install
-cp .env.example .env          # then fill in JWT_ACCESS_SECRET and GOOGLE_CLIENT_IDS
+cp .env.example .env          # then fill in JWT_ACCESS_SECRET and GOOGLE_WEB_CLIENT_ID
 
 # Create the databases (any PostgreSQL 14+):
 createuser -s joinly -P       # password: joinly (or change DATABASE_URL)
@@ -120,7 +120,7 @@ See [`.env.example`](.env.example). The server validates them at boot and lists 
 | -------------------------- | -------- | ------------- | -------------------------------------------------------------------------- |
 | `DATABASE_URL`             | yes      |               | PostgreSQL connection string                                               |
 | `JWT_ACCESS_SECRET`        | yes      |               | HS256 key for access tokens, 32+ characters (`openssl rand -base64 48`)    |
-| `GOOGLE_CLIENT_IDS`        | yes      |               | Google OAuth Web client ID (the ID token audience); comma-separate several |
+| `GOOGLE_WEB_CLIENT_ID`        | yes      |               | Google OAuth Web client ID (the ID token audience); comma-separate several |
 | `PORT`                     | no       | `3000`        | HTTP port                                                                  |
 | `NODE_ENV`                 | no       | `development` | `development`, `test` or `production`                                      |
 | `LOG_LEVEL`                | no       | `info`        | pino level                                                                 |
@@ -214,7 +214,7 @@ curl -X POST $API/v1/auth/demo -H 'Content-Type: application/json' -d '{"account
 
 `railway.json` builds the Dockerfile, runs `pnpm db:migrate` as a pre-deploy step, and health-checks
 `/readyz`. Steps: create a project from this repository, add a PostgreSQL service, set
-`DATABASE_URL` (reference the Postgres service), `JWT_ACCESS_SECRET`, `GOOGLE_CLIENT_IDS`,
+`DATABASE_URL` (reference the Postgres service), `JWT_ACCESS_SECRET`, `GOOGLE_WEB_CLIENT_ID`,
 `TRUST_PROXY=1` and, for the review deployment, `DEMO_LOGIN_ENABLED=true`. Seed once with
 `SEED_CONFIRM=yes pnpm db:seed:prod` from the Railway shell.
 

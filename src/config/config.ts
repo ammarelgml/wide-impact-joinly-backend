@@ -10,7 +10,7 @@ const EnvSchema = z.object({
   JWT_ACCESS_SECRET: z.string().min(32, 'JWT_ACCESS_SECRET must be at least 32 characters'),
   ACCESS_TOKEN_TTL_SECONDS: z.coerce.number().int().min(60).max(3600).default(900),
   REFRESH_TOKEN_TTL_DAYS: z.coerce.number().int().min(1).max(90).default(30),
-  GOOGLE_CLIENT_IDS: z
+  GOOGLE_WEB_CLIENT_ID: z
     .string()
     .min(1)
     .transform((v) =>
@@ -66,7 +66,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
       accessTokenSecret: e.JWT_ACCESS_SECRET,
       accessTokenTtlSeconds: e.ACCESS_TOKEN_TTL_SECONDS,
       refreshTokenTtlDays: e.REFRESH_TOKEN_TTL_DAYS,
-      googleClientIds: e.GOOGLE_CLIENT_IDS,
+      googleClientIds: e.GOOGLE_WEB_CLIENT_ID,
       demoLoginEnabled: e.DEMO_LOGIN_ENABLED,
     },
     joinCodeTtlHours: e.JOIN_CODE_TTL_HOURS,
