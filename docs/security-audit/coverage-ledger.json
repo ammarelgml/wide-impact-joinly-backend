@@ -1,0 +1,3165 @@
+[
+  {
+    "coverage_id": "Dockerfile%23build%20and%20release%20pipeline::.github%2Fworkflows%2Fci.yml%23CI%20and%20container%20build::profile%2Fquick%2Fall-in-scope-subsystems::SUPPLY-CHAIN-AND-RELEASE.md%23Automation%20identity%20overreach",
+    "canonical_refs": {
+      "surface": "Dockerfile#build and release pipeline",
+      "boundary": ".github/workflows/ci.yml#CI and container build",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "SUPPLY-CHAIN-AND-RELEASE.md#Automation identity overreach"
+    },
+    "surface": "Dockerfile#build and release pipeline",
+    "boundary": ".github/workflows/ci.yml#CI and container build",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Automation identity overreach",
+    "starting_paths": [
+      "Dockerfile",
+      "railway.json",
+      ".github/workflows/ci.yml",
+      "package.json",
+      "pnpm-lock.yaml",
+      ".dockerignore"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "SUPPLY-CHAIN-AND-RELEASE.md#Automation identity overreach",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Core discipline",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Universal moves",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h4-platform",
+    "reviewed_paths": [".github/workflows/ci.yml", "Dockerfile", "railway.json"],
+    "local_checks": [
+      {
+        "agent_id": "h4-platform",
+        "reviewed_paths": [".github/workflows/ci.yml"],
+        "invariant": "The CI GITHUB_TOKEN and other automation credentials cannot do a privileged action that untrusted input can reach",
+        "method": "source",
+        "result": "ci.yml triggers only on push to main and pull_request (no pull_request_target, workflow_run, issue_comment or workflow_dispatch). There is no top-level or job-level permissions block, so the token gets the repository default. However, no step uses secrets, publishes, pushes, deploys, comments or calls the GitHub API. Fork pull_request runs get a read-only token and no secrets, and same-repo PR branches already need write access. No privileged action is reachable, so this is hardening only (see hardening notes).",
+        "artifact": null
+      },
+      {
+        "agent_id": "h4-platform",
+        "reviewed_paths": ["railway.json", "Dockerfile"],
+        "invariant": "Deployment authority is not given to CI",
+        "method": "source",
+        "result": "railway.json only sets the builder and the healthcheck. CI does not deploy (Railway builds from its own repository integration, outside source), so no CI identity holds deployment authority.",
+        "artifact": null
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "ci.yml has no permissions block. Add top-level 'permissions: contents: read' so push-to-main runs do not inherit a possibly write-scoped default GITHUB_TOKEN.",
+      "ci.yml secrets-scan: actions/checkout persists GITHUB_TOKEN in .git/config, and the whole checkout is bind-mounted into ghcr.io/gitleaks/gitleaks:v8.28.0 (tag, not digest). Set persist-credentials: false and pin the image by digest.",
+      "Pin actions (checkout@v5, setup-node@v5, pnpm/action-setup@v4) to commit SHAs, pin node:22-alpine and postgres:17-alpine by digest, and add the corepack +sha512 hash to packageManager.",
+      "src/db/database.ts:13 and pg-connection-string treat sslmode=require as TLS without certificate verification (rejectUnauthorized:false). Prefer sslmode=verify-full with the provider CA for managed Postgres reached over a public network.",
+      "src/app.ts:92-96 mounts /docs and /openapi.json before helmet, so Swagger UI is served without CSP, X-Frame-Options or HSTS (Swagger's Authorize dialog holds a pasted bearer token). Apply helmet with a Swagger-compatible CSP instead of skipping it.",
+      "scripts/release.ts:31 seeds on SEED_DEMO_DATA=true even when NODE_ENV=production, bypassing the SEED_CONFIRM guard in scripts/seed.ts:122. The seed revokes any live join code equal to 246810 (seed.ts:73-78), regardless of owner.",
+      "The per-IP auth limit (30/min, which also covers refresh) and join limit (60/min) are shared by every user behind one NAT (a school network). A class signing in together, or one student on the same network, can trigger 429s for everyone there. Consider per-account keys for refresh, or higher NAT-tolerant limits.",
+      "pg.Pool has no connectionTimeoutMillis or statement_timeout, so a stalled DB queues requests (including unauthenticated /readyz) without bound. Set timeouts.",
+      "Client-supplied X-Request-Id (regex-validated) is echoed and used as the log correlation id, so clients can collide ids in logs. Consider prefixing or always generating a server id and logging the client one separately.",
+      "docker-compose.yml contains a literal JWT_ACCESS_SECRET and DEMO_LOGIN_ENABLED=true with NODE_ENV=production. It is local only, but do not reuse it as a deployment template."
+    ]
+  },
+  {
+    "coverage_id": "Dockerfile%23build%20and%20release%20pipeline::.github%2Fworkflows%2Fci.yml%23CI%20and%20container%20build::profile%2Fquick%2Fall-in-scope-subsystems::SUPPLY-CHAIN-AND-RELEASE.md%23Build-context%20inclusion",
+    "canonical_refs": {
+      "surface": "Dockerfile#build and release pipeline",
+      "boundary": ".github/workflows/ci.yml#CI and container build",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "SUPPLY-CHAIN-AND-RELEASE.md#Build-context inclusion"
+    },
+    "surface": "Dockerfile#build and release pipeline",
+    "boundary": ".github/workflows/ci.yml#CI and container build",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Build-context inclusion",
+    "starting_paths": [
+      "Dockerfile",
+      "railway.json",
+      ".github/workflows/ci.yml",
+      "package.json",
+      "pnpm-lock.yaml",
+      ".dockerignore"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "SUPPLY-CHAIN-AND-RELEASE.md#Build-context inclusion",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Core discipline",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Universal moves",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h4-platform",
+    "reviewed_paths": [
+      ".dockerignore",
+      ".gitignore",
+      "Dockerfile",
+      "migrations/1763838000000_initial-schema.sql",
+      "scripts/release.ts",
+      "scripts/seed.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h4-platform",
+        "reviewed_paths": ["Dockerfile", ".dockerignore", ".gitignore"],
+        "invariant": "The runtime image contains only intended release inputs, with no secrets or local config",
+        "method": "source",
+        "result": "The Dockerfile copies only package.json, pnpm-lock.yaml, tsconfig*.json, src, scripts and migrations into the build stage. Runtime gets package.json, the lockfile, prod node_modules, the freshly built /app/dist and migrations. .dockerignore excludes .env, .git, node_modules, dist, test, docs and coverage. A local .env (untracked, gitignored) exists in the working tree but is never COPY'd and is ignored by the build context. No ARG or secret mount exists, so nothing reaches the image from build args.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h4-platform",
+        "reviewed_paths": [
+          "scripts/seed.ts",
+          "scripts/release.ts",
+          "migrations/1763838000000_initial-schema.sql"
+        ],
+        "invariant": "Scripts shipped in the image carry no credentials",
+        "method": "source",
+        "result": "dist/scripts/seed.js ships in the image. It holds only demo identities (google_sub values 'demo:*' and 'seed:*', which a Google sub cannot match) and the public demo join code 246810. It holds no secret. Migrations contain schema only.",
+        "artifact": null
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "ci.yml has no permissions block. Add top-level 'permissions: contents: read' so push-to-main runs do not inherit a possibly write-scoped default GITHUB_TOKEN.",
+      "ci.yml secrets-scan: actions/checkout persists GITHUB_TOKEN in .git/config, and the whole checkout is bind-mounted into ghcr.io/gitleaks/gitleaks:v8.28.0 (tag, not digest). Set persist-credentials: false and pin the image by digest.",
+      "Pin actions (checkout@v5, setup-node@v5, pnpm/action-setup@v4) to commit SHAs, pin node:22-alpine and postgres:17-alpine by digest, and add the corepack +sha512 hash to packageManager.",
+      "src/db/database.ts:13 and pg-connection-string treat sslmode=require as TLS without certificate verification (rejectUnauthorized:false). Prefer sslmode=verify-full with the provider CA for managed Postgres reached over a public network.",
+      "src/app.ts:92-96 mounts /docs and /openapi.json before helmet, so Swagger UI is served without CSP, X-Frame-Options or HSTS (Swagger's Authorize dialog holds a pasted bearer token). Apply helmet with a Swagger-compatible CSP instead of skipping it.",
+      "scripts/release.ts:31 seeds on SEED_DEMO_DATA=true even when NODE_ENV=production, bypassing the SEED_CONFIRM guard in scripts/seed.ts:122. The seed revokes any live join code equal to 246810 (seed.ts:73-78), regardless of owner.",
+      "The per-IP auth limit (30/min, which also covers refresh) and join limit (60/min) are shared by every user behind one NAT (a school network). A class signing in together, or one student on the same network, can trigger 429s for everyone there. Consider per-account keys for refresh, or higher NAT-tolerant limits.",
+      "pg.Pool has no connectionTimeoutMillis or statement_timeout, so a stalled DB queues requests (including unauthenticated /readyz) without bound. Set timeouts.",
+      "Client-supplied X-Request-Id (regex-validated) is echoed and used as the log correlation id, so clients can collide ids in logs. Consider prefixing or always generating a server id and logging the client one separately.",
+      "docker-compose.yml contains a literal JWT_ACCESS_SECRET and DEMO_LOGIN_ENABLED=true with NODE_ENV=production. It is local only, but do not reuse it as a deployment template."
+    ]
+  },
+  {
+    "coverage_id": "Dockerfile%23build%20and%20release%20pipeline::.github%2Fworkflows%2Fci.yml%23CI%20and%20container%20build::profile%2Fquick%2Fall-in-scope-subsystems::SUPPLY-CHAIN-AND-RELEASE.md%23Dependency%20source%20and%20namespace%20confusion",
+    "canonical_refs": {
+      "surface": "Dockerfile#build and release pipeline",
+      "boundary": ".github/workflows/ci.yml#CI and container build",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "SUPPLY-CHAIN-AND-RELEASE.md#Dependency source and namespace confusion"
+    },
+    "surface": "Dockerfile#build and release pipeline",
+    "boundary": ".github/workflows/ci.yml#CI and container build",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Dependency source and namespace confusion",
+    "starting_paths": [
+      "Dockerfile",
+      "railway.json",
+      ".github/workflows/ci.yml",
+      "package.json",
+      "pnpm-lock.yaml",
+      ".dockerignore"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "SUPPLY-CHAIN-AND-RELEASE.md#Dependency source and namespace confusion",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Core discipline",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Universal moves",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h4-platform",
+    "reviewed_paths": ["package.json", "pnpm-lock.yaml"],
+    "local_checks": [
+      {
+        "agent_id": "h4-platform",
+        "reviewed_paths": ["package.json", "pnpm-lock.yaml"],
+        "invariant": "Dependency resolution cannot pick an unintended registry, namespace or source",
+        "method": "source",
+        "result": "There is no .npmrc and no pnpm-workspace.yaml, so the default public npm registry is used. The package is private and unscoped, and there are no private or scoped internal packages that a public name could shadow. pnpm-lock.yaml (lockfileVersion 9.0) has 398 sha512 integrity entries and no tarball, git, github: or URL resolutions. Both the Dockerfile and CI use pnpm install --frozen-lockfile, so installs fail on drift. pnpm 10 (packageManager pnpm@10.18.0) does not run dependency lifecycle scripts by default.",
+        "artifact": null
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "ci.yml has no permissions block. Add top-level 'permissions: contents: read' so push-to-main runs do not inherit a possibly write-scoped default GITHUB_TOKEN.",
+      "ci.yml secrets-scan: actions/checkout persists GITHUB_TOKEN in .git/config, and the whole checkout is bind-mounted into ghcr.io/gitleaks/gitleaks:v8.28.0 (tag, not digest). Set persist-credentials: false and pin the image by digest.",
+      "Pin actions (checkout@v5, setup-node@v5, pnpm/action-setup@v4) to commit SHAs, pin node:22-alpine and postgres:17-alpine by digest, and add the corepack +sha512 hash to packageManager.",
+      "src/db/database.ts:13 and pg-connection-string treat sslmode=require as TLS without certificate verification (rejectUnauthorized:false). Prefer sslmode=verify-full with the provider CA for managed Postgres reached over a public network.",
+      "src/app.ts:92-96 mounts /docs and /openapi.json before helmet, so Swagger UI is served without CSP, X-Frame-Options or HSTS (Swagger's Authorize dialog holds a pasted bearer token). Apply helmet with a Swagger-compatible CSP instead of skipping it.",
+      "scripts/release.ts:31 seeds on SEED_DEMO_DATA=true even when NODE_ENV=production, bypassing the SEED_CONFIRM guard in scripts/seed.ts:122. The seed revokes any live join code equal to 246810 (seed.ts:73-78), regardless of owner.",
+      "The per-IP auth limit (30/min, which also covers refresh) and join limit (60/min) are shared by every user behind one NAT (a school network). A class signing in together, or one student on the same network, can trigger 429s for everyone there. Consider per-account keys for refresh, or higher NAT-tolerant limits.",
+      "pg.Pool has no connectionTimeoutMillis or statement_timeout, so a stalled DB queues requests (including unauthenticated /readyz) without bound. Set timeouts.",
+      "Client-supplied X-Request-Id (regex-validated) is echoed and used as the log correlation id, so clients can collide ids in logs. Consider prefixing or always generating a server id and logging the client one separately.",
+      "docker-compose.yml contains a literal JWT_ACCESS_SECRET and DEMO_LOGIN_ENABLED=true with NODE_ENV=production. It is local only, but do not reuse it as a deployment template."
+    ]
+  },
+  {
+    "coverage_id": "Dockerfile%23build%20and%20release%20pipeline::.github%2Fworkflows%2Fci.yml%23CI%20and%20container%20build::profile%2Fquick%2Fall-in-scope-subsystems::SUPPLY-CHAIN-AND-RELEASE.md%23Mutable%20and%20unbound%20build%20inputs",
+    "canonical_refs": {
+      "surface": "Dockerfile#build and release pipeline",
+      "boundary": ".github/workflows/ci.yml#CI and container build",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "SUPPLY-CHAIN-AND-RELEASE.md#Mutable and unbound build inputs"
+    },
+    "surface": "Dockerfile#build and release pipeline",
+    "boundary": ".github/workflows/ci.yml#CI and container build",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Mutable and unbound build inputs",
+    "starting_paths": [
+      "Dockerfile",
+      "railway.json",
+      ".github/workflows/ci.yml",
+      "package.json",
+      "pnpm-lock.yaml",
+      ".dockerignore"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "SUPPLY-CHAIN-AND-RELEASE.md#Mutable and unbound build inputs",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Core discipline",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Universal moves",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h4-platform",
+    "reviewed_paths": [".github/workflows/ci.yml", "Dockerfile", "package.json"],
+    "local_checks": [
+      {
+        "agent_id": "h4-platform",
+        "reviewed_paths": ["Dockerfile", ".github/workflows/ci.yml", "package.json"],
+        "invariant": "A lower-trust writer cannot change mutable build inputs that reach trusted build output",
+        "method": "source",
+        "result": "The mutable inputs are: node:22-alpine (Docker official image, by tag), corepack fetching pnpm@10.18.0 without a +sha512 hash (corepack checks npm registry signatures), the actions checkout@v5, setup-node@v5 and pnpm/action-setup@v4 by major tag, and ghcr.io/gitleaks/gitleaks:v8.28.0 by tag. Every writer is an upstream publisher (Docker Library, GitHub, pnpm, gitleaks maintainers), not a lower-trust actor in this system. No submodules, remote includes or downloaded build tools exist. No lower-trust writer was found, so this is hardening only (digest and SHA pinning).",
+        "artifact": null
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "ci.yml has no permissions block. Add top-level 'permissions: contents: read' so push-to-main runs do not inherit a possibly write-scoped default GITHUB_TOKEN.",
+      "ci.yml secrets-scan: actions/checkout persists GITHUB_TOKEN in .git/config, and the whole checkout is bind-mounted into ghcr.io/gitleaks/gitleaks:v8.28.0 (tag, not digest). Set persist-credentials: false and pin the image by digest.",
+      "Pin actions (checkout@v5, setup-node@v5, pnpm/action-setup@v4) to commit SHAs, pin node:22-alpine and postgres:17-alpine by digest, and add the corepack +sha512 hash to packageManager.",
+      "src/db/database.ts:13 and pg-connection-string treat sslmode=require as TLS without certificate verification (rejectUnauthorized:false). Prefer sslmode=verify-full with the provider CA for managed Postgres reached over a public network.",
+      "src/app.ts:92-96 mounts /docs and /openapi.json before helmet, so Swagger UI is served without CSP, X-Frame-Options or HSTS (Swagger's Authorize dialog holds a pasted bearer token). Apply helmet with a Swagger-compatible CSP instead of skipping it.",
+      "scripts/release.ts:31 seeds on SEED_DEMO_DATA=true even when NODE_ENV=production, bypassing the SEED_CONFIRM guard in scripts/seed.ts:122. The seed revokes any live join code equal to 246810 (seed.ts:73-78), regardless of owner.",
+      "The per-IP auth limit (30/min, which also covers refresh) and join limit (60/min) are shared by every user behind one NAT (a school network). A class signing in together, or one student on the same network, can trigger 429s for everyone there. Consider per-account keys for refresh, or higher NAT-tolerant limits.",
+      "pg.Pool has no connectionTimeoutMillis or statement_timeout, so a stalled DB queues requests (including unauthenticated /readyz) without bound. Set timeouts.",
+      "Client-supplied X-Request-Id (regex-validated) is echoed and used as the log correlation id, so clients can collide ids in logs. Consider prefixing or always generating a server id and logging the client one separately.",
+      "docker-compose.yml contains a literal JWT_ACCESS_SECRET and DEMO_LOGIN_ENABLED=true with NODE_ENV=production. It is local only, but do not reuse it as a deployment template."
+    ]
+  },
+  {
+    "coverage_id": "Dockerfile%23build%20and%20release%20pipeline::.github%2Fworkflows%2Fci.yml%23CI%20and%20container%20build::profile%2Fquick%2Fall-in-scope-subsystems::SUPPLY-CHAIN-AND-RELEASE.md%23Untrusted%20code%20in%20a%20privileged%20workflow",
+    "canonical_refs": {
+      "surface": "Dockerfile#build and release pipeline",
+      "boundary": ".github/workflows/ci.yml#CI and container build",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "SUPPLY-CHAIN-AND-RELEASE.md#Untrusted code in a privileged workflow"
+    },
+    "surface": "Dockerfile#build and release pipeline",
+    "boundary": ".github/workflows/ci.yml#CI and container build",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Untrusted code in a privileged workflow",
+    "starting_paths": [
+      "Dockerfile",
+      "railway.json",
+      ".github/workflows/ci.yml",
+      "package.json",
+      "pnpm-lock.yaml",
+      ".dockerignore"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "SUPPLY-CHAIN-AND-RELEASE.md#Untrusted code in a privileged workflow",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Core discipline",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Universal moves",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h4-platform",
+    "reviewed_paths": [".github/workflows/ci.yml"],
+    "local_checks": [
+      {
+        "agent_id": "h4-platform",
+        "reviewed_paths": [".github/workflows/ci.yml"],
+        "invariant": "Contributor-controlled code does not run with protected secrets, write tokens or deploy authority",
+        "method": "source",
+        "result": "PR code runs only under the pull_request event: fork PRs get a read-only token and no secrets. No pull_request_target, workflow_run or comment trigger checks out PR code in a privileged context. The setup-node pnpm cache is scoped by GitHub so PR caches are not restored on main (a GitHub-hosted default). The secrets-scan job mounts $PWD, including .git/config with the token that checkout persists, into the gitleaks container. That container is a pinned-by-tag upstream image, not contributor code.",
+        "artifact": null
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "ci.yml has no permissions block. Add top-level 'permissions: contents: read' so push-to-main runs do not inherit a possibly write-scoped default GITHUB_TOKEN.",
+      "ci.yml secrets-scan: actions/checkout persists GITHUB_TOKEN in .git/config, and the whole checkout is bind-mounted into ghcr.io/gitleaks/gitleaks:v8.28.0 (tag, not digest). Set persist-credentials: false and pin the image by digest.",
+      "Pin actions (checkout@v5, setup-node@v5, pnpm/action-setup@v4) to commit SHAs, pin node:22-alpine and postgres:17-alpine by digest, and add the corepack +sha512 hash to packageManager.",
+      "src/db/database.ts:13 and pg-connection-string treat sslmode=require as TLS without certificate verification (rejectUnauthorized:false). Prefer sslmode=verify-full with the provider CA for managed Postgres reached over a public network.",
+      "src/app.ts:92-96 mounts /docs and /openapi.json before helmet, so Swagger UI is served without CSP, X-Frame-Options or HSTS (Swagger's Authorize dialog holds a pasted bearer token). Apply helmet with a Swagger-compatible CSP instead of skipping it.",
+      "scripts/release.ts:31 seeds on SEED_DEMO_DATA=true even when NODE_ENV=production, bypassing the SEED_CONFIRM guard in scripts/seed.ts:122. The seed revokes any live join code equal to 246810 (seed.ts:73-78), regardless of owner.",
+      "The per-IP auth limit (30/min, which also covers refresh) and join limit (60/min) are shared by every user behind one NAT (a school network). A class signing in together, or one student on the same network, can trigger 429s for everyone there. Consider per-account keys for refresh, or higher NAT-tolerant limits.",
+      "pg.Pool has no connectionTimeoutMillis or statement_timeout, so a stalled DB queues requests (including unauthenticated /readyz) without bound. Set timeouts.",
+      "Client-supplied X-Request-Id (regex-validated) is echoed and used as the log correlation id, so clients can collide ids in logs. Consider prefixing or always generating a server id and logging the client one separately.",
+      "docker-compose.yml contains a literal JWT_ACCESS_SECRET and DEMO_LOGIN_ENABLED=true with NODE_ENV=production. It is local only, but do not reuse it as a deployment template."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fapp.ts%23createApp::src%2Fapp.ts%23middleware%20chain%20and%20process%20configuration::profile%2Fquick%2Fall-in-scope-subsystems::ATTACK-CLASSES.md%23Cryptography%20and%20secrets",
+    "canonical_refs": {
+      "surface": "src/app.ts#createApp",
+      "boundary": "src/app.ts#middleware chain and process configuration",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "ATTACK-CLASSES.md#Cryptography and secrets"
+    },
+    "surface": "src/app.ts#createApp",
+    "boundary": "src/app.ts#middleware chain and process configuration",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Cryptography and secrets",
+    "starting_paths": [
+      "src/app.ts",
+      "src/server.ts",
+      "src/http",
+      "src/lib",
+      "src/config",
+      "src/db",
+      "scripts"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Cryptography and secrets",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h4-platform",
+    "reviewed_paths": [
+      ".env.example",
+      "docker-compose.yml",
+      "scripts/release.ts",
+      "src/app.ts",
+      "src/config/config.ts",
+      "src/db/database.ts",
+      "src/http/middleware/error-handler.ts",
+      "src/lib/logger.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h4-platform",
+        "reviewed_paths": [
+          "src/config/config.ts",
+          "src/lib/logger.ts",
+          "src/http/middleware/error-handler.ts"
+        ],
+        "invariant": "Secrets are not hardcoded, defaulted, logged or returned to clients",
+        "method": "source",
+        "result": "JWT_ACCESS_SECRET has no default and must be at least 32 characters, or boot fails. DATABASE_URL is required. The error handler returns a generic 'Something went wrong' for non-AppError errors and logs the err server-side only. The access-log serializer drops headers and bodies. The redaction paths cover authorization, cookie, idToken, accessToken, refreshToken, code and token.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h4-platform",
+        "reviewed_paths": ["src/app.ts", "src/db/database.ts"],
+        "invariant": "Security-critical randomness and transport crypto are sound",
+        "method": "source",
+        "result": "Request ids use crypto.randomUUID, and the join code (src/modules/classrooms/join-code.ts) and refresh tokens use crypto.randomInt and randomBytes. Postgres TLS uses rejectUnauthorized:false when sslmode=require is in the URL, and pg-connection-string 2.14.1 sets the same for 'require'. This matches libpq 'require' semantics: encryption without server authentication. It is hardening only because no network-positioned actor between Railway and the DB is source-visible.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h4-platform",
+        "reviewed_paths": ["docker-compose.yml", ".env.example", "scripts/release.ts"],
+        "invariant": "No hardcoded secret reaches a production path",
+        "method": "source",
+        "result": "The only literal secret is docker-compose.yml JWT_ACCESS_SECRET 'local-compose-secret-change-me-\u2026', used only by the local compose stack. Railway builds the Dockerfile and config has no fallback to it. release.ts logs only the public demo join code.",
+        "artifact": null
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "ci.yml has no permissions block. Add top-level 'permissions: contents: read' so push-to-main runs do not inherit a possibly write-scoped default GITHUB_TOKEN.",
+      "ci.yml secrets-scan: actions/checkout persists GITHUB_TOKEN in .git/config, and the whole checkout is bind-mounted into ghcr.io/gitleaks/gitleaks:v8.28.0 (tag, not digest). Set persist-credentials: false and pin the image by digest.",
+      "Pin actions (checkout@v5, setup-node@v5, pnpm/action-setup@v4) to commit SHAs, pin node:22-alpine and postgres:17-alpine by digest, and add the corepack +sha512 hash to packageManager.",
+      "src/db/database.ts:13 and pg-connection-string treat sslmode=require as TLS without certificate verification (rejectUnauthorized:false). Prefer sslmode=verify-full with the provider CA for managed Postgres reached over a public network.",
+      "src/app.ts:92-96 mounts /docs and /openapi.json before helmet, so Swagger UI is served without CSP, X-Frame-Options or HSTS (Swagger's Authorize dialog holds a pasted bearer token). Apply helmet with a Swagger-compatible CSP instead of skipping it.",
+      "scripts/release.ts:31 seeds on SEED_DEMO_DATA=true even when NODE_ENV=production, bypassing the SEED_CONFIRM guard in scripts/seed.ts:122. The seed revokes any live join code equal to 246810 (seed.ts:73-78), regardless of owner.",
+      "The per-IP auth limit (30/min, which also covers refresh) and join limit (60/min) are shared by every user behind one NAT (a school network). A class signing in together, or one student on the same network, can trigger 429s for everyone there. Consider per-account keys for refresh, or higher NAT-tolerant limits.",
+      "pg.Pool has no connectionTimeoutMillis or statement_timeout, so a stalled DB queues requests (including unauthenticated /readyz) without bound. Set timeouts.",
+      "Client-supplied X-Request-Id (regex-validated) is echoed and used as the log correlation id, so clients can collide ids in logs. Consider prefixing or always generating a server id and logging the client one separately.",
+      "docker-compose.yml contains a literal JWT_ACCESS_SECRET and DEMO_LOGIN_ENABLED=true with NODE_ENV=production. It is local only, but do not reuse it as a deployment template."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fapp.ts%23createApp::src%2Fapp.ts%23middleware%20chain%20and%20process%20configuration::profile%2Fquick%2Fall-in-scope-subsystems::ATTACK-CLASSES.md%23Injection",
+    "canonical_refs": {
+      "surface": "src/app.ts#createApp",
+      "boundary": "src/app.ts#middleware chain and process configuration",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "ATTACK-CLASSES.md#Injection"
+    },
+    "surface": "src/app.ts#createApp",
+    "boundary": "src/app.ts#middleware chain and process configuration",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Injection",
+    "starting_paths": [
+      "src/app.ts",
+      "src/server.ts",
+      "src/http",
+      "src/lib",
+      "src/config",
+      "src/db",
+      "scripts"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Injection",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h4-platform",
+    "reviewed_paths": [
+      "scripts/release.ts",
+      "scripts/seed.ts",
+      "src/app.ts",
+      "src/db/database.ts",
+      "src/http/middleware/error-handler.ts",
+      "src/http/pages.ts",
+      "src/http/route.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h4-platform",
+        "reviewed_paths": [
+          "src/db/database.ts",
+          "src/app.ts",
+          "scripts/seed.ts",
+          "scripts/release.ts",
+          "src/http/route.ts"
+        ],
+        "invariant": "Untrusted input does not reach SQL, HTML, shell, log or redirect sinks unsanitized",
+        "method": "source",
+        "result": "All SQL goes through Kysely builders or parameterized sql`` templates (join-code.repository.ts:47 interpolates a Date as a bound parameter, and app.ts:102 is constant). There is no sql.raw, sql.lit or dynamic identifier, and order-by columns are constants. X-Request-Id is accepted only if it matches /^[\\w-]{8,64}$/ before it is echoed to the header and logs, which blocks header and log injection. pino emits JSON, so url is escaped. There is no child_process, eval or redirect.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h4-platform",
+        "reviewed_paths": ["src/http/pages.ts", "src/http/middleware/error-handler.ts"],
+        "invariant": "Static pages and error bodies cannot reflect HTML",
+        "method": "source",
+        "result": "pages.ts interpolates only SUPPORT_EMAIL (operator config, validated by z.email and escapeHtml'd). Error responses are application/problem+json, and instance=req.originalUrl is JSON-encoded, not HTML.",
+        "artifact": null
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "ci.yml has no permissions block. Add top-level 'permissions: contents: read' so push-to-main runs do not inherit a possibly write-scoped default GITHUB_TOKEN.",
+      "ci.yml secrets-scan: actions/checkout persists GITHUB_TOKEN in .git/config, and the whole checkout is bind-mounted into ghcr.io/gitleaks/gitleaks:v8.28.0 (tag, not digest). Set persist-credentials: false and pin the image by digest.",
+      "Pin actions (checkout@v5, setup-node@v5, pnpm/action-setup@v4) to commit SHAs, pin node:22-alpine and postgres:17-alpine by digest, and add the corepack +sha512 hash to packageManager.",
+      "src/db/database.ts:13 and pg-connection-string treat sslmode=require as TLS without certificate verification (rejectUnauthorized:false). Prefer sslmode=verify-full with the provider CA for managed Postgres reached over a public network.",
+      "src/app.ts:92-96 mounts /docs and /openapi.json before helmet, so Swagger UI is served without CSP, X-Frame-Options or HSTS (Swagger's Authorize dialog holds a pasted bearer token). Apply helmet with a Swagger-compatible CSP instead of skipping it.",
+      "scripts/release.ts:31 seeds on SEED_DEMO_DATA=true even when NODE_ENV=production, bypassing the SEED_CONFIRM guard in scripts/seed.ts:122. The seed revokes any live join code equal to 246810 (seed.ts:73-78), regardless of owner.",
+      "The per-IP auth limit (30/min, which also covers refresh) and join limit (60/min) are shared by every user behind one NAT (a school network). A class signing in together, or one student on the same network, can trigger 429s for everyone there. Consider per-account keys for refresh, or higher NAT-tolerant limits.",
+      "pg.Pool has no connectionTimeoutMillis or statement_timeout, so a stalled DB queues requests (including unauthenticated /readyz) without bound. Set timeouts.",
+      "Client-supplied X-Request-Id (regex-validated) is echoed and used as the log correlation id, so clients can collide ids in logs. Consider prefixing or always generating a server id and logging the client one separately.",
+      "docker-compose.yml contains a literal JWT_ACCESS_SECRET and DEMO_LOGIN_ENABLED=true with NODE_ENV=production. It is local only, but do not reuse it as a deployment template."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fapp.ts%23createApp::src%2Fapp.ts%23middleware%20chain%20and%20process%20configuration::profile%2Fquick%2Fall-in-scope-subsystems::ATTACK-CLASSES.md%23Obvious%20things",
+    "canonical_refs": {
+      "surface": "src/app.ts#createApp",
+      "boundary": "src/app.ts#middleware chain and process configuration",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "ATTACK-CLASSES.md#Obvious things"
+    },
+    "surface": "src/app.ts#createApp",
+    "boundary": "src/app.ts#middleware chain and process configuration",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Obvious things",
+    "starting_paths": [
+      "src/app.ts",
+      "src/server.ts",
+      "src/http",
+      "src/lib",
+      "src/config",
+      "src/db",
+      "scripts"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Obvious things",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h4-platform",
+    "reviewed_paths": [
+      ".dockerignore",
+      ".env.example",
+      ".github/workflows/ci.yml",
+      ".gitignore",
+      ".gitleaksignore",
+      "docker-compose.yml",
+      "package.json",
+      "pnpm-lock.yaml",
+      "src/app.ts",
+      "src/config/config.ts",
+      "src/http/middleware/error-handler.ts",
+      "src/http/pages.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h4-platform",
+        "reviewed_paths": ["src/app.ts", "src/config/config.ts", "src/http/pages.ts"],
+        "invariant": "Debug, docs and health endpoints and dev modes are gated",
+        "method": "source",
+        "result": "The unauthenticated routes are /, /privacy, /healthz, /readyz ({status} only), /docs and /openapi.json (public contract by design). There is no /debug, /admin, /env or /metrics. Response validation is off only when NODE_ENV=production, and the Dockerfile sets NODE_ENV=production. The pino-pretty dev transport is a devDependency, so a non-production NODE_ENV in the image would fail at boot rather than run dev mode. The demo login route is mounted only when DEMO_LOGIN_ENABLED is set, and README documents that it is on for the hosted review deployment (the demo-account risk itself belongs to the auth peer).",
+        "artifact": null
+      },
+      {
+        "agent_id": "h4-platform",
+        "reviewed_paths": [
+          ".gitignore",
+          ".dockerignore",
+          ".gitleaksignore",
+          ".env.example",
+          "docker-compose.yml",
+          ".github/workflows/ci.yml",
+          "package.json",
+          "pnpm-lock.yaml"
+        ],
+        "invariant": "No secrets are committed, and dependencies are pinned",
+        "method": "source",
+        "result": "git ls-files shows no .env, *.pem, *.key or credentials files. .gitignore covers .env and .env.* (except .env.example). .gitleaksignore suppresses 3 placeholder hits in an old docs commit. The grep found no TODO, FIXME or HACK security comments and no eval or child_process. The only credentials are the CI and compose postgres joinly/joinly and the local compose JWT secret. Dependencies are lockfile-pinned with integrity. The CVE database was not consulted (offline).",
+        "artifact": null
+      },
+      {
+        "agent_id": "h4-platform",
+        "reviewed_paths": ["src/app.ts", "src/http/middleware/error-handler.ts"],
+        "invariant": "CORS, cookies, redirects, TLS and production error disclosure",
+        "method": "source",
+        "result": "No CORS middleware exists, so cross-origin reads are blocked by default. No cookies are set (bearer tokens only). There are no redirects. TLS is terminated at the Railway edge (deployment) and helmet sets HSTS on non-/docs routes. Non-AppError errors map to a generic INTERNAL message with no stack. Express 5 async rejections reach errorHandler.",
+        "artifact": null
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "ci.yml has no permissions block. Add top-level 'permissions: contents: read' so push-to-main runs do not inherit a possibly write-scoped default GITHUB_TOKEN.",
+      "ci.yml secrets-scan: actions/checkout persists GITHUB_TOKEN in .git/config, and the whole checkout is bind-mounted into ghcr.io/gitleaks/gitleaks:v8.28.0 (tag, not digest). Set persist-credentials: false and pin the image by digest.",
+      "Pin actions (checkout@v5, setup-node@v5, pnpm/action-setup@v4) to commit SHAs, pin node:22-alpine and postgres:17-alpine by digest, and add the corepack +sha512 hash to packageManager.",
+      "src/db/database.ts:13 and pg-connection-string treat sslmode=require as TLS without certificate verification (rejectUnauthorized:false). Prefer sslmode=verify-full with the provider CA for managed Postgres reached over a public network.",
+      "src/app.ts:92-96 mounts /docs and /openapi.json before helmet, so Swagger UI is served without CSP, X-Frame-Options or HSTS (Swagger's Authorize dialog holds a pasted bearer token). Apply helmet with a Swagger-compatible CSP instead of skipping it.",
+      "scripts/release.ts:31 seeds on SEED_DEMO_DATA=true even when NODE_ENV=production, bypassing the SEED_CONFIRM guard in scripts/seed.ts:122. The seed revokes any live join code equal to 246810 (seed.ts:73-78), regardless of owner.",
+      "The per-IP auth limit (30/min, which also covers refresh) and join limit (60/min) are shared by every user behind one NAT (a school network). A class signing in together, or one student on the same network, can trigger 429s for everyone there. Consider per-account keys for refresh, or higher NAT-tolerant limits.",
+      "pg.Pool has no connectionTimeoutMillis or statement_timeout, so a stalled DB queues requests (including unauthenticated /readyz) without bound. Set timeouts.",
+      "Client-supplied X-Request-Id (regex-validated) is echoed and used as the log correlation id, so clients can collide ids in logs. Consider prefixing or always generating a server id and logging the client one separately.",
+      "docker-compose.yml contains a literal JWT_ACCESS_SECRET and DEMO_LOGIN_ENABLED=true with NODE_ENV=production. It is local only, but do not reuse it as a deployment template."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fapp.ts%23createApp::src%2Fapp.ts%23middleware%20chain%20and%20process%20configuration::profile%2Fquick%2Fall-in-scope-subsystems::CLOUD-AND-DEPLOYMENT.md%23Security-control%20precedence%20drift",
+    "canonical_refs": {
+      "surface": "src/app.ts#createApp",
+      "boundary": "src/app.ts#middleware chain and process configuration",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "CLOUD-AND-DEPLOYMENT.md#Security-control precedence drift"
+    },
+    "surface": "src/app.ts#createApp",
+    "boundary": "src/app.ts#middleware chain and process configuration",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Security-control precedence drift",
+    "starting_paths": [
+      "src/app.ts",
+      "src/server.ts",
+      "src/http",
+      "src/lib",
+      "src/config",
+      "src/db",
+      "scripts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "CLOUD-AND-DEPLOYMENT.md#Security-control precedence drift",
+      "CLOUD-AND-DEPLOYMENT.md#Core discipline",
+      "CLOUD-AND-DEPLOYMENT.md#Universal moves",
+      "CLOUD-AND-DEPLOYMENT.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h4-platform",
+    "reviewed_paths": [
+      "Dockerfile",
+      "docker-compose.yml",
+      "railway.json",
+      "scripts/release.ts",
+      "scripts/seed.ts",
+      "src/config/config.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h4-platform",
+        "reviewed_paths": [
+          "src/config/config.ts",
+          "Dockerfile",
+          "docker-compose.yml",
+          "railway.json"
+        ],
+        "invariant": "Env defaults and overlays cannot turn off auth or security controls in the deployed image",
+        "method": "source",
+        "result": "Rendered matrix. Image defaults: NODE_ENV=production, DEMO_LOGIN_ENABLED=false, TRUST_PROXY=0, no SEED_DEMO_DATA. Compose (local): DEMO_LOGIN_ENABLED and SEED_DEMO_DATA true with a literal JWT secret. Railway: variables are set by the operator per README (TRUST_PROXY=1, demo flags true on the review deployment). The boolean parser accepts only true, false, 1 and 0, and the JWT secret has no default. There is no env path that disables authentication or role checks.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h4-platform",
+        "reviewed_paths": ["scripts/release.ts", "scripts/seed.ts"],
+        "invariant": "The production seed guard holds on every seed path",
+        "method": "source",
+        "result": "seed.ts main() refuses NODE_ENV=production without SEED_CONFIRM=yes, but release.ts:31 seeds on SEED_DEMO_DATA=true with no production check. That is a guard divergence, but the only actor is the operator who sets env. The effect, at seed.ts:73-78, is revoking any live code equal to 246810 and resetting the demo teachers' classrooms. This is recorded as hardening; no lower-trust caller exists.",
+        "artifact": null
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "ci.yml has no permissions block. Add top-level 'permissions: contents: read' so push-to-main runs do not inherit a possibly write-scoped default GITHUB_TOKEN.",
+      "ci.yml secrets-scan: actions/checkout persists GITHUB_TOKEN in .git/config, and the whole checkout is bind-mounted into ghcr.io/gitleaks/gitleaks:v8.28.0 (tag, not digest). Set persist-credentials: false and pin the image by digest.",
+      "Pin actions (checkout@v5, setup-node@v5, pnpm/action-setup@v4) to commit SHAs, pin node:22-alpine and postgres:17-alpine by digest, and add the corepack +sha512 hash to packageManager.",
+      "src/db/database.ts:13 and pg-connection-string treat sslmode=require as TLS without certificate verification (rejectUnauthorized:false). Prefer sslmode=verify-full with the provider CA for managed Postgres reached over a public network.",
+      "src/app.ts:92-96 mounts /docs and /openapi.json before helmet, so Swagger UI is served without CSP, X-Frame-Options or HSTS (Swagger's Authorize dialog holds a pasted bearer token). Apply helmet with a Swagger-compatible CSP instead of skipping it.",
+      "scripts/release.ts:31 seeds on SEED_DEMO_DATA=true even when NODE_ENV=production, bypassing the SEED_CONFIRM guard in scripts/seed.ts:122. The seed revokes any live join code equal to 246810 (seed.ts:73-78), regardless of owner.",
+      "The per-IP auth limit (30/min, which also covers refresh) and join limit (60/min) are shared by every user behind one NAT (a school network). A class signing in together, or one student on the same network, can trigger 429s for everyone there. Consider per-account keys for refresh, or higher NAT-tolerant limits.",
+      "pg.Pool has no connectionTimeoutMillis or statement_timeout, so a stalled DB queues requests (including unauthenticated /readyz) without bound. Set timeouts.",
+      "Client-supplied X-Request-Id (regex-validated) is echoed and used as the log correlation id, so clients can collide ids in logs. Consider prefixing or always generating a server id and logging the client one separately.",
+      "docker-compose.yml contains a literal JWT_ACCESS_SECRET and DEMO_LOGIN_ENABLED=true with NODE_ENV=production. It is local only, but do not reuse it as a deployment template."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fapp.ts%23createApp::src%2Fapp.ts%23middleware%20chain%20and%20process%20configuration::profile%2Fquick%2Fall-in-scope-subsystems::CLOUD-AND-DEPLOYMENT.md%23Trusted-proxy%20and%20mesh%20identity%20bypass",
+    "canonical_refs": {
+      "surface": "src/app.ts#createApp",
+      "boundary": "src/app.ts#middleware chain and process configuration",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "CLOUD-AND-DEPLOYMENT.md#Trusted-proxy and mesh identity bypass"
+    },
+    "surface": "src/app.ts#createApp",
+    "boundary": "src/app.ts#middleware chain and process configuration",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Trusted-proxy and mesh identity bypass",
+    "starting_paths": [
+      "src/app.ts",
+      "src/server.ts",
+      "src/http",
+      "src/lib",
+      "src/config",
+      "src/db",
+      "scripts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "CLOUD-AND-DEPLOYMENT.md#Trusted-proxy and mesh identity bypass",
+      "CLOUD-AND-DEPLOYMENT.md#Core discipline",
+      "CLOUD-AND-DEPLOYMENT.md#Universal moves",
+      "CLOUD-AND-DEPLOYMENT.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "candidate",
+    "agent_id": "h4-platform",
+    "reviewed_paths": [
+      ".env.example",
+      "Dockerfile",
+      "README.md",
+      "node_modules/express/lib/utils.js",
+      "railway.json",
+      "src/app.ts",
+      "src/config/config.ts",
+      "src/http/middleware/rate-limit.ts",
+      "src/http/route.ts",
+      "src/lib/rate-limiter.ts",
+      "src/modules/auth/auth.controller.ts",
+      "src/modules/enrollments/enrollment.controller.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h4-platform",
+        "reviewed_paths": [
+          "src/app.ts",
+          "src/config/config.ts",
+          "src/http/middleware/rate-limit.ts"
+        ],
+        "invariant": "Client identity from forwarded headers is taken only from the intended ingress hop",
+        "method": "source",
+        "result": "app.ts:65 passes the numeric TRUST_PROXY to Express. express@5.3.0 compileTrust(number) is (a,i)=>i<val, so req.ip is the address that number of hops from the right of X-Forwarded-For. Client-prepended XFF entries are ignored as long as the hop count matches the real ingress. The only consumer is limitByIp (rate-limit.ts:8), and no auth decision uses forwarded identity. Whether the hop count matches Railway's edge is a deployment fact and decides the outcome (candidate).",
+        "artifact": null
+      },
+      {
+        "agent_id": "v2-trust-proxy",
+        "reviewed_paths": [
+          "src/http/middleware/rate-limit.ts",
+          "src/config/config.ts",
+          "src/app.ts",
+          "src/http/route.ts",
+          "src/lib/rate-limiter.ts",
+          "src/modules/auth/auth.controller.ts",
+          "src/modules/enrollments/enrollment.controller.ts",
+          "README.md",
+          "railway.json",
+          "Dockerfile",
+          ".env.example",
+          "node_modules/express/lib/utils.js"
+        ],
+        "invariant": "Per-IP rate-limit buckets use the client address recorded by the intended ingress hop only",
+        "method": "source",
+        "result": "All trace and evidence lines were verified. express 5.3.0 compileTrust(number) = (a,i)=>i<val. req.ip is consumed only by limitByIp, and mount() runs the limiter before authenticate. TRUST_PROXY defaults to 0. The README tells operators to set 1 for Railway, but no repo-controlled deployment file sets it. The per-student join-failure limiter does not use req.ip, which limits the spoof-bypass impact on code guessing. The deployed value decides the outcome, so the verdict stays needs_validation.",
+        "artifact": null
+      },
+      {
+        "agent_id": "v2-trust-proxy",
+        "reviewed_paths": ["src/http/middleware/rate-limit.ts", "src/lib/rate-limiter.ts"],
+        "invariant": "Per-IP rate-limit buckets use the client address recorded by the intended ingress hop only",
+        "method": "local",
+        "result": "A vitest/supertest fixture on loopback (no DB use, no external network) exercised the real limitByIp. trust 0 merged distinct XFF clients ([200,200,429]). trust 2 let spoofed leftmost XFF rotate buckets (5x200, req.ip = spoofed value). trust 1 ignored the spoofed prefix ([200,200,429], req.ip = rightmost). Ran under the parent-approved substitute boundary (no OS sandbox).",
+        "artifact": "agents/v2-trust-proxy/artifacts/trust-proxy-limiter.test.ts"
+      }
+    ],
+    "result_fingerprints": ["src/http/middleware/rate-limit.ts:limitByIp:trust-proxy-hop-count"],
+    "unresolved": [],
+    "x_hardening": [
+      "ci.yml has no permissions block. Add top-level 'permissions: contents: read' so push-to-main runs do not inherit a possibly write-scoped default GITHUB_TOKEN.",
+      "ci.yml secrets-scan: actions/checkout persists GITHUB_TOKEN in .git/config, and the whole checkout is bind-mounted into ghcr.io/gitleaks/gitleaks:v8.28.0 (tag, not digest). Set persist-credentials: false and pin the image by digest.",
+      "Pin actions (checkout@v5, setup-node@v5, pnpm/action-setup@v4) to commit SHAs, pin node:22-alpine and postgres:17-alpine by digest, and add the corepack +sha512 hash to packageManager.",
+      "src/db/database.ts:13 and pg-connection-string treat sslmode=require as TLS without certificate verification (rejectUnauthorized:false). Prefer sslmode=verify-full with the provider CA for managed Postgres reached over a public network.",
+      "src/app.ts:92-96 mounts /docs and /openapi.json before helmet, so Swagger UI is served without CSP, X-Frame-Options or HSTS (Swagger's Authorize dialog holds a pasted bearer token). Apply helmet with a Swagger-compatible CSP instead of skipping it.",
+      "scripts/release.ts:31 seeds on SEED_DEMO_DATA=true even when NODE_ENV=production, bypassing the SEED_CONFIRM guard in scripts/seed.ts:122. The seed revokes any live join code equal to 246810 (seed.ts:73-78), regardless of owner.",
+      "The per-IP auth limit (30/min, which also covers refresh) and join limit (60/min) are shared by every user behind one NAT (a school network). A class signing in together, or one student on the same network, can trigger 429s for everyone there. Consider per-account keys for refresh, or higher NAT-tolerant limits.",
+      "pg.Pool has no connectionTimeoutMillis or statement_timeout, so a stalled DB queues requests (including unauthenticated /readyz) without bound. Set timeouts.",
+      "Client-supplied X-Request-Id (regex-validated) is echoed and used as the log correlation id, so clients can collide ids in logs. Consider prefixing or always generating a server id and logging the client one separately.",
+      "docker-compose.yml contains a literal JWT_ACCESS_SECRET and DEMO_LOGIN_ENABLED=true with NODE_ENV=production. It is local only, but do not reuse it as a deployment template."
+    ],
+    "x_decisions": {
+      "src/http/middleware/rate-limit.ts:limitByIp:trust-proxy-hop-count": "needs_validation"
+    }
+  },
+  {
+    "coverage_id": "src%2Fapp.ts%23createApp::src%2Fapp.ts%23middleware%20chain%20and%20process%20configuration::profile%2Fquick%2Fall-in-scope-subsystems::DATA-ISOLATION-AND-LIFECYCLE.md%23Analytics%2C%20logs%2C%20traces%2C%20and%20diagnostics%20as%20alternate%20readers",
+    "canonical_refs": {
+      "surface": "src/app.ts#createApp",
+      "boundary": "src/app.ts#middleware chain and process configuration",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "DATA-ISOLATION-AND-LIFECYCLE.md#Analytics, logs, traces, and diagnostics as alternate readers"
+    },
+    "surface": "src/app.ts#createApp",
+    "boundary": "src/app.ts#middleware chain and process configuration",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Analytics, logs, traces, and diagnostics as alternate readers",
+    "starting_paths": [
+      "src/app.ts",
+      "src/server.ts",
+      "src/http",
+      "src/lib",
+      "src/config",
+      "src/db",
+      "scripts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Analytics, logs, traces, and diagnostics as alternate readers",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Core discipline",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Universal moves",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h4-platform",
+    "reviewed_paths": [
+      "scripts/release.ts",
+      "src/app.ts",
+      "src/http/middleware/error-handler.ts",
+      "src/lib/logger.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h4-platform",
+        "reviewed_paths": [
+          "src/app.ts",
+          "src/lib/logger.ts",
+          "src/http/middleware/error-handler.ts",
+          "scripts/release.ts"
+        ],
+        "invariant": "Credentials and private content are not emitted to logs",
+        "method": "source",
+        "result": "The pino-http serializers log only id, method, url and statusCode. Credentials travel in headers or bodies, never in query strings: the routes take only cursor and limit query params, and docs/api.md says join codes travel in bodies. Upstream verifier and JWT errors are caught and turned into AppErrors (google-verifier.ts:26, token.service.ts:100), so raw tokens never reach the INTERNAL err log. Unhandled pg errors may log a constraint detail such as a uuid or email to operator logs, which is operator-only under intended policy. release.ts logs only the public demo code.",
+        "artifact": null
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "ci.yml has no permissions block. Add top-level 'permissions: contents: read' so push-to-main runs do not inherit a possibly write-scoped default GITHUB_TOKEN.",
+      "ci.yml secrets-scan: actions/checkout persists GITHUB_TOKEN in .git/config, and the whole checkout is bind-mounted into ghcr.io/gitleaks/gitleaks:v8.28.0 (tag, not digest). Set persist-credentials: false and pin the image by digest.",
+      "Pin actions (checkout@v5, setup-node@v5, pnpm/action-setup@v4) to commit SHAs, pin node:22-alpine and postgres:17-alpine by digest, and add the corepack +sha512 hash to packageManager.",
+      "src/db/database.ts:13 and pg-connection-string treat sslmode=require as TLS without certificate verification (rejectUnauthorized:false). Prefer sslmode=verify-full with the provider CA for managed Postgres reached over a public network.",
+      "src/app.ts:92-96 mounts /docs and /openapi.json before helmet, so Swagger UI is served without CSP, X-Frame-Options or HSTS (Swagger's Authorize dialog holds a pasted bearer token). Apply helmet with a Swagger-compatible CSP instead of skipping it.",
+      "scripts/release.ts:31 seeds on SEED_DEMO_DATA=true even when NODE_ENV=production, bypassing the SEED_CONFIRM guard in scripts/seed.ts:122. The seed revokes any live join code equal to 246810 (seed.ts:73-78), regardless of owner.",
+      "The per-IP auth limit (30/min, which also covers refresh) and join limit (60/min) are shared by every user behind one NAT (a school network). A class signing in together, or one student on the same network, can trigger 429s for everyone there. Consider per-account keys for refresh, or higher NAT-tolerant limits.",
+      "pg.Pool has no connectionTimeoutMillis or statement_timeout, so a stalled DB queues requests (including unauthenticated /readyz) without bound. Set timeouts.",
+      "Client-supplied X-Request-Id (regex-validated) is echoed and used as the log correlation id, so clients can collide ids in logs. Consider prefixing or always generating a server id and logging the client one separately.",
+      "docker-compose.yml contains a literal JWT_ACCESS_SECRET and DEMO_LOGIN_ENABLED=true with NODE_ENV=production. It is local only, but do not reuse it as a deployment template."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fapp.ts%23createApp::src%2Fapp.ts%23middleware%20chain%20and%20process%20configuration::profile%2Fquick%2Fall-in-scope-subsystems::RESOURCE-EXHAUSTION-AND-AVAILABILITY.md%23Unbounded%20buffering%20and%20cardinality",
+    "canonical_refs": {
+      "surface": "src/app.ts#createApp",
+      "boundary": "src/app.ts#middleware chain and process configuration",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Unbounded buffering and cardinality"
+    },
+    "surface": "src/app.ts#createApp",
+    "boundary": "src/app.ts#middleware chain and process configuration",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Unbounded buffering and cardinality",
+    "starting_paths": [
+      "src/app.ts",
+      "src/server.ts",
+      "src/http",
+      "src/lib",
+      "src/config",
+      "src/db",
+      "scripts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Unbounded buffering and cardinality",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Core discipline",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Universal moves",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h4-platform",
+    "reviewed_paths": [
+      "src/app.ts",
+      "src/db/database.ts",
+      "src/http/common.schemas.ts",
+      "src/lib/rate-limiter.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h4-platform",
+        "reviewed_paths": [
+          "src/app.ts",
+          "src/lib/rate-limiter.ts",
+          "src/db/database.ts",
+          "src/http/common.schemas.ts"
+        ],
+        "invariant": "Bodies, limiter keys and DB work have per-item and aggregate bounds",
+        "method": "source",
+        "result": "express.json has a 10 kB limit (body-parser enforces it after decompression), and other content types are never buffered. Page limit is at most 100 and the cursor at most 200 characters. The MemoryRateLimiter map grows by one entry per distinct key and is swept once per minute of expired windows. Keys are IP (1-minute window) or authenticated student id (15 minutes), so retained state is linear in the attacker's own request rate with no amplification. The pg pool is max 10, and unauthenticated /readyz runs a constant select 1. There is no superlinear or persistent shared effect, so the remaining items are hardening (no pool connection or statement timeout).",
+        "artifact": null
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "ci.yml has no permissions block. Add top-level 'permissions: contents: read' so push-to-main runs do not inherit a possibly write-scoped default GITHUB_TOKEN.",
+      "ci.yml secrets-scan: actions/checkout persists GITHUB_TOKEN in .git/config, and the whole checkout is bind-mounted into ghcr.io/gitleaks/gitleaks:v8.28.0 (tag, not digest). Set persist-credentials: false and pin the image by digest.",
+      "Pin actions (checkout@v5, setup-node@v5, pnpm/action-setup@v4) to commit SHAs, pin node:22-alpine and postgres:17-alpine by digest, and add the corepack +sha512 hash to packageManager.",
+      "src/db/database.ts:13 and pg-connection-string treat sslmode=require as TLS without certificate verification (rejectUnauthorized:false). Prefer sslmode=verify-full with the provider CA for managed Postgres reached over a public network.",
+      "src/app.ts:92-96 mounts /docs and /openapi.json before helmet, so Swagger UI is served without CSP, X-Frame-Options or HSTS (Swagger's Authorize dialog holds a pasted bearer token). Apply helmet with a Swagger-compatible CSP instead of skipping it.",
+      "scripts/release.ts:31 seeds on SEED_DEMO_DATA=true even when NODE_ENV=production, bypassing the SEED_CONFIRM guard in scripts/seed.ts:122. The seed revokes any live join code equal to 246810 (seed.ts:73-78), regardless of owner.",
+      "The per-IP auth limit (30/min, which also covers refresh) and join limit (60/min) are shared by every user behind one NAT (a school network). A class signing in together, or one student on the same network, can trigger 429s for everyone there. Consider per-account keys for refresh, or higher NAT-tolerant limits.",
+      "pg.Pool has no connectionTimeoutMillis or statement_timeout, so a stalled DB queues requests (including unauthenticated /readyz) without bound. Set timeouts.",
+      "Client-supplied X-Request-Id (regex-validated) is echoed and used as the log correlation id, so clients can collide ids in logs. Consider prefixing or always generating a server id and logging the client one separately.",
+      "docker-compose.yml contains a literal JWT_ACCESS_SECRET and DEMO_LOGIN_ENABLED=true with NODE_ENV=production. It is local only, but do not reuse it as a deployment template."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fapp.ts%23createApp::src%2Fapp.ts%23middleware%20chain%20and%20process%20configuration::profile%2Fquick%2Fall-in-scope-subsystems::WEB-PROTOCOL-AND-AUTH.md%23Host%20and%20forwarded-header%20trust",
+    "canonical_refs": {
+      "surface": "src/app.ts#createApp",
+      "boundary": "src/app.ts#middleware chain and process configuration",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "WEB-PROTOCOL-AND-AUTH.md#Host and forwarded-header trust"
+    },
+    "surface": "src/app.ts#createApp",
+    "boundary": "src/app.ts#middleware chain and process configuration",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Host and forwarded-header trust",
+    "starting_paths": [
+      "src/app.ts",
+      "src/server.ts",
+      "src/http",
+      "src/lib",
+      "src/config",
+      "src/db",
+      "scripts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "WEB-PROTOCOL-AND-AUTH.md#Host and forwarded-header trust",
+      "WEB-PROTOCOL-AND-AUTH.md#Core discipline",
+      "WEB-PROTOCOL-AND-AUTH.md#Universal moves",
+      "WEB-PROTOCOL-AND-AUTH.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "candidate",
+    "agent_id": "h4-platform",
+    "reviewed_paths": [
+      ".env.example",
+      "Dockerfile",
+      "README.md",
+      "node_modules/express/lib/utils.js",
+      "railway.json",
+      "src/app.ts",
+      "src/config/config.ts",
+      "src/http/middleware/rate-limit.ts",
+      "src/http/openapi.ts",
+      "src/http/route.ts",
+      "src/lib/rate-limiter.ts",
+      "src/modules/auth/auth.controller.ts",
+      "src/modules/classrooms/join-link.ts",
+      "src/modules/enrollments/enrollment.controller.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h4-platform",
+        "reviewed_paths": [
+          "src/app.ts",
+          "src/modules/classrooms/join-link.ts",
+          "src/http/openapi.ts",
+          "src/http/middleware/rate-limit.ts"
+        ],
+        "invariant": "Host and X-Forwarded-* do not decide absolute URLs, callbacks, cache keys or authorization",
+        "method": "source",
+        "result": "There is no use of req.hostname, req.protocol, req.get('host') or Forwarded anywhere. Join URLs use the constant joinly:// scheme, and OpenAPI servers come from an option, not the request. The only forwarded-header consumer is req.ip in limitByIp, which is governed by the TRUST_PROXY hop count (same root cause as the trusted-proxy candidate).",
+        "artifact": null
+      },
+      {
+        "agent_id": "v2-trust-proxy",
+        "reviewed_paths": [
+          "src/http/middleware/rate-limit.ts",
+          "src/config/config.ts",
+          "src/app.ts",
+          "src/http/route.ts",
+          "src/lib/rate-limiter.ts",
+          "src/modules/auth/auth.controller.ts",
+          "src/modules/enrollments/enrollment.controller.ts",
+          "README.md",
+          "railway.json",
+          "Dockerfile",
+          ".env.example",
+          "node_modules/express/lib/utils.js"
+        ],
+        "invariant": "Per-IP rate-limit buckets use the client address recorded by the intended ingress hop only",
+        "method": "source",
+        "result": "All trace and evidence lines were verified. express 5.3.0 compileTrust(number) = (a,i)=>i<val. req.ip is consumed only by limitByIp, and mount() runs the limiter before authenticate. TRUST_PROXY defaults to 0. The README tells operators to set 1 for Railway, but no repo-controlled deployment file sets it. The per-student join-failure limiter does not use req.ip, which limits the spoof-bypass impact on code guessing. The deployed value decides the outcome, so the verdict stays needs_validation.",
+        "artifact": null
+      },
+      {
+        "agent_id": "v2-trust-proxy",
+        "reviewed_paths": ["src/http/middleware/rate-limit.ts", "src/lib/rate-limiter.ts"],
+        "invariant": "Per-IP rate-limit buckets use the client address recorded by the intended ingress hop only",
+        "method": "local",
+        "result": "A vitest/supertest fixture on loopback (no DB use, no external network) exercised the real limitByIp. trust 0 merged distinct XFF clients ([200,200,429]). trust 2 let spoofed leftmost XFF rotate buckets (5x200, req.ip = spoofed value). trust 1 ignored the spoofed prefix ([200,200,429], req.ip = rightmost). Ran under the parent-approved substitute boundary (no OS sandbox).",
+        "artifact": "agents/v2-trust-proxy/artifacts/trust-proxy-limiter.test.ts"
+      }
+    ],
+    "result_fingerprints": ["src/http/middleware/rate-limit.ts:limitByIp:trust-proxy-hop-count"],
+    "unresolved": [],
+    "x_hardening": [
+      "ci.yml has no permissions block. Add top-level 'permissions: contents: read' so push-to-main runs do not inherit a possibly write-scoped default GITHUB_TOKEN.",
+      "ci.yml secrets-scan: actions/checkout persists GITHUB_TOKEN in .git/config, and the whole checkout is bind-mounted into ghcr.io/gitleaks/gitleaks:v8.28.0 (tag, not digest). Set persist-credentials: false and pin the image by digest.",
+      "Pin actions (checkout@v5, setup-node@v5, pnpm/action-setup@v4) to commit SHAs, pin node:22-alpine and postgres:17-alpine by digest, and add the corepack +sha512 hash to packageManager.",
+      "src/db/database.ts:13 and pg-connection-string treat sslmode=require as TLS without certificate verification (rejectUnauthorized:false). Prefer sslmode=verify-full with the provider CA for managed Postgres reached over a public network.",
+      "src/app.ts:92-96 mounts /docs and /openapi.json before helmet, so Swagger UI is served without CSP, X-Frame-Options or HSTS (Swagger's Authorize dialog holds a pasted bearer token). Apply helmet with a Swagger-compatible CSP instead of skipping it.",
+      "scripts/release.ts:31 seeds on SEED_DEMO_DATA=true even when NODE_ENV=production, bypassing the SEED_CONFIRM guard in scripts/seed.ts:122. The seed revokes any live join code equal to 246810 (seed.ts:73-78), regardless of owner.",
+      "The per-IP auth limit (30/min, which also covers refresh) and join limit (60/min) are shared by every user behind one NAT (a school network). A class signing in together, or one student on the same network, can trigger 429s for everyone there. Consider per-account keys for refresh, or higher NAT-tolerant limits.",
+      "pg.Pool has no connectionTimeoutMillis or statement_timeout, so a stalled DB queues requests (including unauthenticated /readyz) without bound. Set timeouts.",
+      "Client-supplied X-Request-Id (regex-validated) is echoed and used as the log correlation id, so clients can collide ids in logs. Consider prefixing or always generating a server id and logging the client one separately.",
+      "docker-compose.yml contains a literal JWT_ACCESS_SECRET and DEMO_LOGIN_ENABLED=true with NODE_ENV=production. It is local only, but do not reuse it as a deployment template."
+    ],
+    "x_decisions": {
+      "src/http/middleware/rate-limit.ts:limitByIp:trust-proxy-hop-count": "needs_validation"
+    }
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fauth%2Fendpoints.ts%23%2Fv1%2Fauth%2F%2A%20and%20GET%20%2Fv1%2Fme::src%2Fhttp%2Froute.ts%23authenticate::profile%2Fquick%2Fall-in-scope-subsystems::ATTACK-CLASSES.md%23Access%20control",
+    "canonical_refs": {
+      "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+      "boundary": "src/http/route.ts#authenticate",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "ATTACK-CLASSES.md#Access control"
+    },
+    "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+    "boundary": "src/http/route.ts#authenticate",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Access control",
+    "starting_paths": [
+      "src/modules/auth",
+      "src/modules/users",
+      "src/http/route.ts",
+      "src/config/config.ts"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Access control",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "candidate",
+    "agent_id": "h1-auth",
+    "reviewed_paths": [
+      "README.md",
+      "scripts/release.ts",
+      "scripts/seed.ts",
+      "src/app.ts",
+      "src/config/config.ts",
+      "src/http/endpoint.ts",
+      "src/http/route.ts",
+      "src/modules/auth/auth.controller.ts",
+      "src/modules/auth/auth.service.ts",
+      "src/modules/auth/endpoints.ts",
+      "src/modules/auth/token.service.ts",
+      "src/modules/classrooms/classroom.repository.ts",
+      "src/modules/classrooms/classroom.service.ts",
+      "test/helpers.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h1-auth",
+        "reviewed_paths": [
+          "src/http/route.ts",
+          "src/http/endpoint.ts",
+          "src/modules/auth/endpoints.ts",
+          "src/modules/auth/auth.controller.ts"
+        ],
+        "invariant": "Every non-public endpoint runs authenticate() before params/body parsing and the handler; role check rejects a token whose role differs from endpoint.access unless access is 'authenticated'.",
+        "method": "source",
+        "result": "route.ts:47 calls authenticate for any access other than 'public'; route.ts:79-84 requires a strict Bearer header, verifies via TokenService and compares endpoint.access to user.role. logout and /v1/me are 'authenticated'; google/demo/refresh are 'public' and only issue tokens after their own credential check. No body field can override user.id or role (handlers use ctx.user).",
+        "artifact": null
+      },
+      {
+        "agent_id": "h1-auth",
+        "reviewed_paths": [
+          "src/modules/auth/token.service.ts",
+          "src/modules/auth/auth.controller.ts"
+        ],
+        "invariant": "Logout may revoke only a refresh family owned by the calling user.",
+        "method": "source",
+        "result": "token.service.ts:81-85 revokes the family only when row.user_id === userId (from the verified access token); another user's refresh token is a silent no-op, so no cross-user session revocation.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h1-auth",
+        "reviewed_paths": [
+          "src/modules/auth/auth.service.ts",
+          "src/modules/auth/auth.controller.ts",
+          "scripts/seed.ts",
+          "scripts/release.ts",
+          "README.md",
+          "src/modules/classrooms/classroom.repository.ts"
+        ],
+        "invariant": "The demo door (/v1/auth/demo) must not give an unauthenticated caller authority over data belonging to other real principals.",
+        "method": "source",
+        "result": "When DEMO_LOGIN_ENABLED=true (documented as on for the hosted review deployment, README.md:156 and :231) any anonymous caller receives full teacher/student tokens for the shared seeded demo identities (auth.service.ts:47-53, no credential). The seeded demo teacher owns 'Grade 8 Science' with joining open (scripts/seed.ts:86); any real Google-signed-in student who joins a demo-teacher classroom has name, email and avatar exposed via the roster (classroom.repository.ts:104-113) to every anonymous caller and can be removed by them. Recorded as needs_validation candidate src/modules/auth/auth.service.ts:signInDemo:shared-demo-identity-anonymous-takeover.",
+        "artifact": null
+      },
+      {
+        "agent_id": "v3-demo-login",
+        "reviewed_paths": [
+          "src/modules/auth/auth.controller.ts",
+          "src/modules/auth/endpoints.ts",
+          "src/modules/auth/auth.service.ts",
+          "src/modules/auth/token.service.ts",
+          "src/config/config.ts",
+          "src/app.ts",
+          "scripts/seed.ts",
+          "scripts/release.ts",
+          "src/modules/classrooms/classroom.service.ts",
+          "src/modules/classrooms/classroom.repository.ts",
+          "README.md"
+        ],
+        "invariant": "The demo door (/v1/auth/demo) must not give an unauthenticated caller authority over, or visibility into, data belonging to real principals.",
+        "method": "source",
+        "result": "All trace and evidence lines were verified. The demo route is mounted only behind the flag, with access public and a 30/min per-IP limiter. signInDemo checks only that the row exists. Roster authorization is only findOwned(teacherId), which the shared demo token satisfies. Nothing in config ties the flag to production, and nothing in enrollment separates real users from demo users. The README documents the flag as on for the hosted review deployment and suggests using Teacher demo for the QR flow.",
+        "artifact": null
+      },
+      {
+        "agent_id": "v3-demo-login",
+        "reviewed_paths": [
+          "test/helpers.ts",
+          "scripts/seed.ts",
+          "src/modules/auth/auth.service.ts",
+          "src/modules/classrooms/classroom.repository.ts"
+        ],
+        "invariant": "An anonymous caller must not read the email of, or remove, a real Google-authenticated student.",
+        "method": "local",
+        "result": "Ran with the parent-approved substitute boundary: a scratch copy with node_modules symlinked, env -i, timeout 120, vitest/supertest against the loopback joinly_test Postgres with dummy data. A real student joined demo 'Grade 8 Science' (201). A separate anonymous POST /v1/auth/demo returned a teacher token (200). The roster returned real@example.com (200), and DELETE of that student returned 204.",
+        "artifact": "agents/v3-demo-login/artifacts/demo-takeover.test.ts"
+      },
+      {
+        "agent_id": "v3-demo-login",
+        "reviewed_paths": ["test/helpers.ts"],
+        "invariant": "Observed output of the local reproduction.",
+        "method": "local",
+        "result": "Promoted run output: JOIN 201, ANON_DEMO 200 teacher, ROSTER 200 including real@example.com, REMOVE 204, 1 test passed.",
+        "artifact": "agents/v3-demo-login/artifacts/run-output.txt"
+      }
+    ],
+    "result_fingerprints": [
+      "src/modules/auth/auth.service.ts:signInDemo:shared-demo-identity-anonymous-takeover"
+    ],
+    "unresolved": [],
+    "x_hardening": [
+      "Access tokens stay valid until exp (default 15 min, configurable up to 1 h) after logout or family revocation because verification is stateless (token.service.ts:87-107); consider a short TTL cap or a per-user token version if immediate revocation matters.",
+      "Google ID tokens are not bound to a client-generated nonce (google-verifier.ts:24), so a leaked ID token for the configured audience can be replayed until its expiry; consider requiring a nonce in the native sign-in request.",
+      "scripts/release.ts:31 seeds demo data whenever SEED_DEMO_DATA=true, even in production, bypassing the SEED_CONFIRM=yes guard the seed CLI enforces (scripts/seed.ts main); align the two guards.",
+      "docker-compose.yml sets NODE_ENV=production with a fixed, publicly known JWT_ACCESS_SECRET and DEMO_LOGIN_ENABLED=true; fine for a local stack, but nothing prevents that file's values from being reused in a shared environment. Consider failing boot when the secret matches a known placeholder.",
+      "Concurrent refreshes of the same token (for example two app requests racing) revoke the entire family by design (token.service.ts:56-60, documented in README Known limitations); availability concern only."
+    ],
+    "x_decisions": {
+      "src/modules/auth/auth.service.ts:signInDemo:shared-demo-identity-anonymous-takeover": "confirmed"
+    }
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fauth%2Fendpoints.ts%23%2Fv1%2Fauth%2F%2A%20and%20GET%20%2Fv1%2Fme::src%2Fhttp%2Froute.ts%23authenticate::profile%2Fquick%2Fall-in-scope-subsystems::ATTACK-CLASSES.md%23Business%20logic",
+    "canonical_refs": {
+      "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+      "boundary": "src/http/route.ts#authenticate",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "ATTACK-CLASSES.md#Business logic"
+    },
+    "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+    "boundary": "src/http/route.ts#authenticate",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Business logic",
+    "starting_paths": [
+      "src/modules/auth",
+      "src/modules/users",
+      "src/http/route.ts",
+      "src/config/config.ts"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Business logic",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h1-auth",
+    "reviewed_paths": [
+      "migrations/1763838000000_initial-schema.sql",
+      "scripts/release.ts",
+      "scripts/seed.ts",
+      "src/config/config.ts",
+      "src/modules/auth/auth.controller.ts",
+      "src/modules/auth/auth.service.ts",
+      "src/modules/auth/refresh-token.repository.ts",
+      "src/modules/auth/token.service.ts",
+      "src/modules/users/user.repository.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h1-auth",
+        "reviewed_paths": [
+          "src/modules/auth/auth.service.ts",
+          "src/modules/users/user.repository.ts",
+          "migrations/1763838000000_initial-schema.sql"
+        ],
+        "invariant": "Role is fixed at first sign-in and cannot be changed by a later sign-in; concurrent first sign-ins cannot create duplicate users or flip role.",
+        "method": "source",
+        "result": "auth.service.ts:35-38 returns existing users before reading body.role; createOrGet uses INSERT ... ON CONFLICT (google_sub) DO NOTHING then re-selects (user.repository.ts:44-59); google_sub is UNIQUE in the migration. No path updates users.role.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h1-auth",
+        "reviewed_paths": [
+          "src/modules/auth/token.service.ts",
+          "src/modules/auth/refresh-token.repository.ts"
+        ],
+        "invariant": "Refresh rotation is atomic: a token can be exchanged once, reuse revokes the family, expired tokens are rejected, and the reissued access token carries the current DB role.",
+        "method": "source",
+        "result": "rotate() runs in one transaction with SELECT ... FOR UPDATE (refresh-token.repository.ts:28-35); revoked rows trigger revokeFamily and the transaction commits because the callback returns rather than throws (token.service.ts:56-60); expiry compared with <= now (line 61); role re-read from users (63-68). Concurrent refreshes serialize on the row lock; the loser sees revoked_at and revokes the family (fail-closed).",
+        "artifact": null
+      },
+      {
+        "agent_id": "h1-auth",
+        "reviewed_paths": [
+          "src/config/config.ts",
+          "src/modules/auth/auth.controller.ts",
+          "scripts/release.ts",
+          "scripts/seed.ts"
+        ],
+        "invariant": "Default/fallback posture of auth configuration fails closed.",
+        "method": "source",
+        "result": "DEMO_LOGIN_ENABLED defaults false and the route is not mounted when off (auth.controller.ts:34); JWT_ACCESS_SECRET requires >=32 chars; ACCESS_TOKEN_TTL bounded 60-3600 s; an empty GOOGLE_WEB_CLIENT_ID list (e.g. ',') yields audience [] which google-auth-library 10.9.1 rejects (oauth2client.js:775-787 indexOf on array). release.ts seeds whenever SEED_DEMO_DATA=true without the SEED_CONFIRM guard used by the seed CLI (noted as hardening).",
+        "artifact": null
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "Access tokens stay valid until exp (default 15 min, configurable up to 1 h) after logout or family revocation because verification is stateless (token.service.ts:87-107); consider a short TTL cap or a per-user token version if immediate revocation matters.",
+      "Google ID tokens are not bound to a client-generated nonce (google-verifier.ts:24), so a leaked ID token for the configured audience can be replayed until its expiry; consider requiring a nonce in the native sign-in request.",
+      "scripts/release.ts:31 seeds demo data whenever SEED_DEMO_DATA=true, even in production, bypassing the SEED_CONFIRM=yes guard the seed CLI enforces (scripts/seed.ts main); align the two guards.",
+      "docker-compose.yml sets NODE_ENV=production with a fixed, publicly known JWT_ACCESS_SECRET and DEMO_LOGIN_ENABLED=true; fine for a local stack, but nothing prevents that file's values from being reused in a shared environment. Consider failing boot when the secret matches a known placeholder.",
+      "Concurrent refreshes of the same token (for example two app requests racing) revoke the entire family by design (token.service.ts:56-60, documented in README Known limitations); availability concern only."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fauth%2Fendpoints.ts%23%2Fv1%2Fauth%2F%2A%20and%20GET%20%2Fv1%2Fme::src%2Fhttp%2Froute.ts%23authenticate::profile%2Fquick%2Fall-in-scope-subsystems::ATTACK-CLASSES.md%23Cryptography%20and%20secrets",
+    "canonical_refs": {
+      "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+      "boundary": "src/http/route.ts#authenticate",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "ATTACK-CLASSES.md#Cryptography and secrets"
+    },
+    "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+    "boundary": "src/http/route.ts#authenticate",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Cryptography and secrets",
+    "starting_paths": [
+      "src/modules/auth",
+      "src/modules/users",
+      "src/http/route.ts",
+      "src/config/config.ts"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Cryptography and secrets",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h1-auth",
+    "reviewed_paths": [
+      ".gitignore",
+      "docker-compose.yml",
+      "migrations/1763838000000_initial-schema.sql",
+      "src/config/config.ts",
+      "src/modules/auth/auth.controller.ts",
+      "src/modules/auth/auth.service.ts",
+      "src/modules/auth/google-verifier.ts",
+      "src/modules/auth/refresh-token.repository.ts",
+      "src/modules/auth/token.service.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h1-auth",
+        "reviewed_paths": [
+          "src/modules/auth/token.service.ts",
+          "src/modules/auth/refresh-token.repository.ts",
+          "migrations/1763838000000_initial-schema.sql"
+        ],
+        "invariant": "Refresh tokens are unpredictable and stored only as hashes; lookup does not leak timing on a secret comparison.",
+        "method": "source",
+        "result": "randomBytes(32) base64url (token.service.ts:121); stored as SHA-256 in bytea UNIQUE (line 137, migration refresh_tokens.token_hash). Lookup is by hash equality in Postgres, so there is no application-side comparison of the raw secret.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h1-auth",
+        "reviewed_paths": ["src/modules/auth/token.service.ts", "src/config/config.ts"],
+        "invariant": "Access tokens use a server-pinned HMAC key of sufficient length and fail closed on verification errors.",
+        "method": "source",
+        "result": "Key from JWT_ACCESS_SECRET (min 32 chars, config.ts:10) via TextEncoder; jwtVerify pins algorithms ['HS256'] (token.service.ts:92); every non-AppError exception maps to UNAUTHENTICATED (105). No fallback to unsigned or decoded tokens anywhere in src (no decodeJwt use).",
+        "artifact": null
+      },
+      {
+        "agent_id": "h1-auth",
+        "reviewed_paths": [
+          "src/modules/auth/auth.controller.ts",
+          "src/modules/auth/google-verifier.ts",
+          "src/modules/auth/auth.service.ts",
+          ".gitignore",
+          "docker-compose.yml"
+        ],
+        "invariant": "No secrets in responses, error messages or the committed repository for the auth surface.",
+        "method": "source",
+        "result": "Auth error messages are static strings; google-verifier.ts:26 swallows library errors. .env is gitignored and only .env.example is tracked (git ls-files). docker-compose.yml contains a placeholder JWT secret for a local stack only (noted as hardening). Log redaction is peer-owned (app.ts unit).",
+        "artifact": null
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "Access tokens stay valid until exp (default 15 min, configurable up to 1 h) after logout or family revocation because verification is stateless (token.service.ts:87-107); consider a short TTL cap or a per-user token version if immediate revocation matters.",
+      "Google ID tokens are not bound to a client-generated nonce (google-verifier.ts:24), so a leaked ID token for the configured audience can be replayed until its expiry; consider requiring a nonce in the native sign-in request.",
+      "scripts/release.ts:31 seeds demo data whenever SEED_DEMO_DATA=true, even in production, bypassing the SEED_CONFIRM=yes guard the seed CLI enforces (scripts/seed.ts main); align the two guards.",
+      "docker-compose.yml sets NODE_ENV=production with a fixed, publicly known JWT_ACCESS_SECRET and DEMO_LOGIN_ENABLED=true; fine for a local stack, but nothing prevents that file's values from being reused in a shared environment. Consider failing boot when the secret matches a known placeholder.",
+      "Concurrent refreshes of the same token (for example two app requests racing) revoke the entire family by design (token.service.ts:56-60, documented in README Known limitations); availability concern only."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fauth%2Fendpoints.ts%23%2Fv1%2Fauth%2F%2A%20and%20GET%20%2Fv1%2Fme::src%2Fhttp%2Froute.ts%23authenticate::profile%2Fquick%2Fall-in-scope-subsystems::WEB-PROTOCOL-AND-AUTH.md%23Account%20linking%20and%20identity%20collision",
+    "canonical_refs": {
+      "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+      "boundary": "src/http/route.ts#authenticate",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "WEB-PROTOCOL-AND-AUTH.md#Account linking and identity collision"
+    },
+    "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+    "boundary": "src/http/route.ts#authenticate",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Account linking and identity collision",
+    "starting_paths": [
+      "src/modules/auth",
+      "src/modules/users",
+      "src/http/route.ts",
+      "src/config/config.ts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "WEB-PROTOCOL-AND-AUTH.md#Account linking and identity collision",
+      "WEB-PROTOCOL-AND-AUTH.md#Core discipline",
+      "WEB-PROTOCOL-AND-AUTH.md#Universal moves",
+      "WEB-PROTOCOL-AND-AUTH.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "candidate",
+    "agent_id": "h1-auth",
+    "reviewed_paths": [
+      "README.md",
+      "migrations/1763838000000_initial-schema.sql",
+      "scripts/release.ts",
+      "scripts/seed.ts",
+      "src/app.ts",
+      "src/config/config.ts",
+      "src/modules/auth/auth.controller.ts",
+      "src/modules/auth/auth.service.ts",
+      "src/modules/auth/endpoints.ts",
+      "src/modules/auth/google-verifier.ts",
+      "src/modules/auth/token.service.ts",
+      "src/modules/classrooms/classroom.repository.ts",
+      "src/modules/classrooms/classroom.service.ts",
+      "src/modules/users/user.repository.ts",
+      "test/helpers.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h1-auth",
+        "reviewed_paths": [
+          "src/modules/auth/auth.service.ts",
+          "src/modules/users/user.repository.ts",
+          "src/modules/auth/google-verifier.ts",
+          "migrations/1763838000000_initial-schema.sql"
+        ],
+        "invariant": "Identity is bound to the immutable IdP subject, never to a mutable or attacker-influenced identifier such as email.",
+        "method": "source",
+        "result": "Lookup and upsert are keyed solely by google_sub (user.repository.ts:18-24, 53); email is not unique and is never used for lookup or authorization (grep: email only in DTO/roster output). No account-linking, unlink or multi-IdP path exists.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h1-auth",
+        "reviewed_paths": ["src/modules/auth/auth.service.ts", "scripts/seed.ts"],
+        "invariant": "Synthetic demo/seed subjects cannot collide with real Google subjects.",
+        "method": "source",
+        "result": "Demo/seed subs use 'demo:' and 'seed:' prefixes (auth.service.ts:13,17; seed.ts); Google subs are numeric strings so no real Google identity can map onto a seeded row. The seeded identities themselves are reachable credential-free through /v1/auth/demo when enabled; that door is the linked candidate src/modules/auth/auth.service.ts:signInDemo:shared-demo-identity-anonymous-takeover.",
+        "artifact": null
+      },
+      {
+        "agent_id": "v3-demo-login",
+        "reviewed_paths": [
+          "src/modules/auth/auth.controller.ts",
+          "src/modules/auth/endpoints.ts",
+          "src/modules/auth/auth.service.ts",
+          "src/modules/auth/token.service.ts",
+          "src/config/config.ts",
+          "src/app.ts",
+          "scripts/seed.ts",
+          "scripts/release.ts",
+          "src/modules/classrooms/classroom.service.ts",
+          "src/modules/classrooms/classroom.repository.ts",
+          "README.md"
+        ],
+        "invariant": "The demo door (/v1/auth/demo) must not give an unauthenticated caller authority over, or visibility into, data belonging to real principals.",
+        "method": "source",
+        "result": "All trace and evidence lines were verified. The demo route is mounted only behind the flag, with access public and a 30/min per-IP limiter. signInDemo checks only that the row exists. Roster authorization is only findOwned(teacherId), which the shared demo token satisfies. Nothing in config ties the flag to production, and nothing in enrollment separates real users from demo users. The README documents the flag as on for the hosted review deployment and suggests using Teacher demo for the QR flow.",
+        "artifact": null
+      },
+      {
+        "agent_id": "v3-demo-login",
+        "reviewed_paths": [
+          "test/helpers.ts",
+          "scripts/seed.ts",
+          "src/modules/auth/auth.service.ts",
+          "src/modules/classrooms/classroom.repository.ts"
+        ],
+        "invariant": "An anonymous caller must not read the email of, or remove, a real Google-authenticated student.",
+        "method": "local",
+        "result": "Ran with the parent-approved substitute boundary: a scratch copy with node_modules symlinked, env -i, timeout 120, vitest/supertest against the loopback joinly_test Postgres with dummy data. A real student joined demo 'Grade 8 Science' (201). A separate anonymous POST /v1/auth/demo returned a teacher token (200). The roster returned real@example.com (200), and DELETE of that student returned 204.",
+        "artifact": "agents/v3-demo-login/artifacts/demo-takeover.test.ts"
+      },
+      {
+        "agent_id": "v3-demo-login",
+        "reviewed_paths": ["test/helpers.ts"],
+        "invariant": "Observed output of the local reproduction.",
+        "method": "local",
+        "result": "Promoted run output: JOIN 201, ANON_DEMO 200 teacher, ROSTER 200 including real@example.com, REMOVE 204, 1 test passed.",
+        "artifact": "agents/v3-demo-login/artifacts/run-output.txt"
+      }
+    ],
+    "result_fingerprints": [
+      "src/modules/auth/auth.service.ts:signInDemo:shared-demo-identity-anonymous-takeover"
+    ],
+    "unresolved": [],
+    "x_hardening": [
+      "Access tokens stay valid until exp (default 15 min, configurable up to 1 h) after logout or family revocation because verification is stateless (token.service.ts:87-107); consider a short TTL cap or a per-user token version if immediate revocation matters.",
+      "Google ID tokens are not bound to a client-generated nonce (google-verifier.ts:24), so a leaked ID token for the configured audience can be replayed until its expiry; consider requiring a nonce in the native sign-in request.",
+      "scripts/release.ts:31 seeds demo data whenever SEED_DEMO_DATA=true, even in production, bypassing the SEED_CONFIRM=yes guard the seed CLI enforces (scripts/seed.ts main); align the two guards.",
+      "docker-compose.yml sets NODE_ENV=production with a fixed, publicly known JWT_ACCESS_SECRET and DEMO_LOGIN_ENABLED=true; fine for a local stack, but nothing prevents that file's values from being reused in a shared environment. Consider failing boot when the secret matches a known placeholder.",
+      "Concurrent refreshes of the same token (for example two app requests racing) revoke the entire family by design (token.service.ts:56-60, documented in README Known limitations); availability concern only."
+    ],
+    "x_decisions": {
+      "src/modules/auth/auth.service.ts:signInDemo:shared-demo-identity-anonymous-takeover": "confirmed"
+    }
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fauth%2Fendpoints.ts%23%2Fv1%2Fauth%2F%2A%20and%20GET%20%2Fv1%2Fme::src%2Fhttp%2Froute.ts%23authenticate::profile%2Fquick%2Fall-in-scope-subsystems::WEB-PROTOCOL-AND-AUTH.md%23JWT%20verification%20and%20claim%20binding",
+    "canonical_refs": {
+      "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+      "boundary": "src/http/route.ts#authenticate",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "WEB-PROTOCOL-AND-AUTH.md#JWT verification and claim binding"
+    },
+    "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+    "boundary": "src/http/route.ts#authenticate",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "JWT verification and claim binding",
+    "starting_paths": [
+      "src/modules/auth",
+      "src/modules/users",
+      "src/http/route.ts",
+      "src/config/config.ts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "WEB-PROTOCOL-AND-AUTH.md#JWT verification and claim binding",
+      "WEB-PROTOCOL-AND-AUTH.md#Core discipline",
+      "WEB-PROTOCOL-AND-AUTH.md#Universal moves",
+      "WEB-PROTOCOL-AND-AUTH.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h1-auth",
+    "reviewed_paths": [
+      "src/http/route.ts",
+      "src/modules/auth/google-verifier.ts",
+      "src/modules/auth/token.service.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h1-auth",
+        "reviewed_paths": ["src/modules/auth/token.service.ts", "src/http/route.ts"],
+        "invariant": "Access-token verification enforces signature, pinned alg, iss, aud, exp, and validates sub/role claims before use.",
+        "method": "source",
+        "result": "jwtVerify(token, key, {issuer:'joinly-api', audience:'joinly-app', algorithms:['HS256'], currentDate}) (token.service.ts:89-94); jose validates exp/nbf when present and all tokens are server-minted with exp (line 118); kid/jku/x5u are not consulted (symmetric key passed directly). sub must be a string and role must be 'teacher'|'student' (96-98). Bearer regex in route.ts:79 rejects multi-token or whitespace-padded headers.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h1-auth",
+        "reviewed_paths": ["src/modules/auth/google-verifier.ts"],
+        "invariant": "Google ID tokens are verified for signature, audience, issuer, expiry and verified email.",
+        "method": "source",
+        "result": "verifyIdToken with audience = configured client IDs (google-verifier.ts:24); google-auth-library 10.9.1 checks signature against Google certs, exp/iat bounds, issuer and audience (oauth2client.js:685-787); code re-checks issuer set (29) and email_verified === true (30).",
+        "artifact": null
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "Access tokens stay valid until exp (default 15 min, configurable up to 1 h) after logout or family revocation because verification is stateless (token.service.ts:87-107); consider a short TTL cap or a per-user token version if immediate revocation matters.",
+      "Google ID tokens are not bound to a client-generated nonce (google-verifier.ts:24), so a leaked ID token for the configured audience can be replayed until its expiry; consider requiring a nonce in the native sign-in request.",
+      "scripts/release.ts:31 seeds demo data whenever SEED_DEMO_DATA=true, even in production, bypassing the SEED_CONFIRM=yes guard the seed CLI enforces (scripts/seed.ts main); align the two guards.",
+      "docker-compose.yml sets NODE_ENV=production with a fixed, publicly known JWT_ACCESS_SECRET and DEMO_LOGIN_ENABLED=true; fine for a local stack, but nothing prevents that file's values from being reused in a shared environment. Consider failing boot when the secret matches a known placeholder.",
+      "Concurrent refreshes of the same token (for example two app requests racing) revoke the entire family by design (token.service.ts:56-60, documented in README Known limitations); availability concern only."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fauth%2Fendpoints.ts%23%2Fv1%2Fauth%2F%2A%20and%20GET%20%2Fv1%2Fme::src%2Fhttp%2Froute.ts%23authenticate::profile%2Fquick%2Fall-in-scope-subsystems::WEB-PROTOCOL-AND-AUTH.md%23OAuth%2FOIDC%20request%20and%20callback%20binding",
+    "canonical_refs": {
+      "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+      "boundary": "src/http/route.ts#authenticate",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "WEB-PROTOCOL-AND-AUTH.md#OAuth/OIDC request and callback binding"
+    },
+    "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+    "boundary": "src/http/route.ts#authenticate",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "OAuth/OIDC request and callback binding",
+    "starting_paths": [
+      "src/modules/auth",
+      "src/modules/users",
+      "src/http/route.ts",
+      "src/config/config.ts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "WEB-PROTOCOL-AND-AUTH.md#OAuth/OIDC request and callback binding",
+      "WEB-PROTOCOL-AND-AUTH.md#Core discipline",
+      "WEB-PROTOCOL-AND-AUTH.md#Universal moves",
+      "WEB-PROTOCOL-AND-AUTH.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h1-auth",
+    "reviewed_paths": [
+      "src/modules/auth/auth.controller.ts",
+      "src/modules/auth/endpoints.ts",
+      "src/modules/auth/google-verifier.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h1-auth",
+        "reviewed_paths": [
+          "src/modules/auth/endpoints.ts",
+          "src/modules/auth/auth.controller.ts",
+          "src/modules/auth/google-verifier.ts"
+        ],
+        "invariant": "OIDC flow binding: no server-side redirect_uri, state, or code exchange that could be mis-bound; ID token audience pins the token to this app's client IDs.",
+        "method": "source",
+        "result": "The backend accepts only a native-sign-in Google ID token (POST /v1/auth/google); there is no authorization-code callback, redirect_uri, or state handling in the backend, so redirect/state/PKCE classes are not applicable here. Cross-app token substitution is blocked by the audience check. No nonce is bound (native Credential Manager flow), noted as hardening; whether other clients can mint tokens for the configured audience is Google Cloud console configuration, out of scope.",
+        "artifact": null
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "Access tokens stay valid until exp (default 15 min, configurable up to 1 h) after logout or family revocation because verification is stateless (token.service.ts:87-107); consider a short TTL cap or a per-user token version if immediate revocation matters.",
+      "Google ID tokens are not bound to a client-generated nonce (google-verifier.ts:24), so a leaked ID token for the configured audience can be replayed until its expiry; consider requiring a nonce in the native sign-in request.",
+      "scripts/release.ts:31 seeds demo data whenever SEED_DEMO_DATA=true, even in production, bypassing the SEED_CONFIRM=yes guard the seed CLI enforces (scripts/seed.ts main); align the two guards.",
+      "docker-compose.yml sets NODE_ENV=production with a fixed, publicly known JWT_ACCESS_SECRET and DEMO_LOGIN_ENABLED=true; fine for a local stack, but nothing prevents that file's values from being reused in a shared environment. Consider failing boot when the secret matches a known placeholder.",
+      "Concurrent refreshes of the same token (for example two app requests racing) revoke the entire family by design (token.service.ts:56-60, documented in README Known limitations); availability concern only."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fauth%2Fendpoints.ts%23%2Fv1%2Fauth%2F%2A%20and%20GET%20%2Fv1%2Fme::src%2Fhttp%2Froute.ts%23authenticate::profile%2Fquick%2Fall-in-scope-subsystems::WEB-PROTOCOL-AND-AUTH.md%23Session%20fixation%20and%20invalidation",
+    "canonical_refs": {
+      "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+      "boundary": "src/http/route.ts#authenticate",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "WEB-PROTOCOL-AND-AUTH.md#Session fixation and invalidation"
+    },
+    "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+    "boundary": "src/http/route.ts#authenticate",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Session fixation and invalidation",
+    "starting_paths": [
+      "src/modules/auth",
+      "src/modules/users",
+      "src/http/route.ts",
+      "src/config/config.ts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "WEB-PROTOCOL-AND-AUTH.md#Session fixation and invalidation",
+      "WEB-PROTOCOL-AND-AUTH.md#Core discipline",
+      "WEB-PROTOCOL-AND-AUTH.md#Universal moves",
+      "WEB-PROTOCOL-AND-AUTH.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h1-auth",
+    "reviewed_paths": [
+      "migrations/1763838000000_initial-schema.sql",
+      "src/modules/auth/auth.service.ts",
+      "src/modules/auth/refresh-token.repository.ts",
+      "src/modules/auth/token.service.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h1-auth",
+        "reviewed_paths": ["src/modules/auth/token.service.ts", "src/modules/auth/auth.service.ts"],
+        "invariant": "Each sign-in starts a fresh server-generated session; no client-supplied session identifier is accepted.",
+        "method": "source",
+        "result": "issueForNewSession uses randomUUID family and randomBytes(32) token (token.service.ts:42-46,121); no endpoint accepts a client-chosen family or token, so fixation is not possible.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h1-auth",
+        "reviewed_paths": [
+          "src/modules/auth/token.service.ts",
+          "src/modules/auth/refresh-token.repository.ts",
+          "migrations/1763838000000_initial-schema.sql"
+        ],
+        "invariant": "Logout and reuse revoke the refresh family; revoked/expired refresh tokens cannot be exchanged; deleted users cannot refresh.",
+        "method": "source",
+        "result": "revokeFamily sets revoked_at for all live tokens in the family (refresh-token.repository.ts:53-60); rotate rejects revoked rows (token.service.ts:56) and missing users (68); refresh_tokens cascade on user delete. Access tokens remain valid until exp (<=15 min default, max 1 h) after logout because verification is stateless; documented design, noted as hardening.",
+        "artifact": null
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "Access tokens stay valid until exp (default 15 min, configurable up to 1 h) after logout or family revocation because verification is stateless (token.service.ts:87-107); consider a short TTL cap or a per-user token version if immediate revocation matters.",
+      "Google ID tokens are not bound to a client-generated nonce (google-verifier.ts:24), so a leaked ID token for the configured audience can be replayed until its expiry; consider requiring a nonce in the native sign-in request.",
+      "scripts/release.ts:31 seeds demo data whenever SEED_DEMO_DATA=true, even in production, bypassing the SEED_CONFIRM=yes guard the seed CLI enforces (scripts/seed.ts main); align the two guards.",
+      "docker-compose.yml sets NODE_ENV=production with a fixed, publicly known JWT_ACCESS_SECRET and DEMO_LOGIN_ENABLED=true; fine for a local stack, but nothing prevents that file's values from being reused in a shared environment. Consider failing boot when the secret matches a known placeholder.",
+      "Concurrent refreshes of the same token (for example two app requests racing) revoke the entire family by design (token.service.ts:56-60, documented in README Known limitations); availability concern only."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fauth%2Fendpoints.ts%23%2Fv1%2Fauth%2Fdemo%20%28demo%20teacher%20principal%29%20and%20src%2Fmodules%2Fclassrooms%2Fendpoints.ts%23%2Fv1%2Fclassrooms%2A%20reached%20as%20demo%20teacher::scripts%2Fseed.ts%23seedDemoData%20%2B%20scripts%2Frelease.ts%23SEED_DEMO_DATA%3A%20shared%20seeded%20demo%20identities%20on%20a%20deployment%20that%20also%20serves%20real%20Google%20users::profile%2Fquick%2Fall-in-scope-subsystems::DATA-ISOLATION-AND-LIFECYCLE.md%23Missing%20tenant%20or%20owner%20enforcement",
+    "canonical_refs": {
+      "surface": "src/modules/auth/endpoints.ts#/v1/auth/demo (demo teacher principal) and src/modules/classrooms/endpoints.ts#/v1/classrooms* reached as demo teacher",
+      "boundary": "scripts/seed.ts#seedDemoData + scripts/release.ts#SEED_DEMO_DATA: shared seeded demo identities on a deployment that also serves real Google users",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "DATA-ISOLATION-AND-LIFECYCLE.md#Missing tenant or owner enforcement"
+    },
+    "surface": "src/modules/auth/endpoints.ts#/v1/auth/demo (demo teacher principal) and src/modules/classrooms/endpoints.ts#/v1/classrooms* reached as demo teacher",
+    "boundary": "scripts/seed.ts#seedDemoData + scripts/release.ts#SEED_DEMO_DATA: shared seeded demo identities on a deployment that also serves real Google users",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Missing tenant or owner enforcement",
+    "starting_paths": [
+      "src/modules/auth/auth.service.ts",
+      "src/modules/auth/auth.controller.ts",
+      "scripts/seed.ts",
+      "scripts/release.ts",
+      "src/modules/classrooms/classroom.service.ts",
+      "src/modules/classrooms/classroom.repository.ts",
+      "src/modules/classrooms/classroom.mapper.ts",
+      "README.md"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Tenant and object-isolation attack classes",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Deletion, revocation, and lifecycle attack classes",
+      "WEB-PROTOCOL-AND-AUTH.md#Federated-identity attack classes"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "deferred",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "quick_profile_final_critic: Both h1-auth and h4-platform reported this as uncovered. signInDemo (auth.service.ts) issues a full session for the seeded demo teacher to any anonymous caller when DEMO_LOGIN_ENABLED is on (README says it is on for the hosted deployment). The seeded 'Grade 8 Science' class is open to joining (seed.ts), so real Google students who join it appear in listStudents (classroom.service.ts) for every anonymous demo-teacher session, which can also remove them, regenerate or close the code, or delete the class. On each start release.ts reseeds, which deletes the demo teachers' classrooms and so cascades away real users' enrollments. The seed also force-revokes any other live classroom's code 246810 with revoked_reason 'regenerated' (seed.ts). Units h1 Access control/Account linking hold only the takeover fingerprint, and h2 checked ownership only between distinct real teachers. No unit owns how demo principals meet real users' data, or the reseed lifecycle."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fauth%2Fendpoints.ts%23POST%20%2Fv1%2Fauth%2Fgoogle%2C%20%2Fv1%2Fauth%2Fdemo%2C%20%2Fv1%2Fauth%2Frefresh%2C%20%2Fv1%2Fauth%2Flogout::src%2Fmodules%2Fauth%2Fauth.controller.ts%23limitByIp%28authIp%2030%2Fmin%29%20before%20Google%20verification%2C%20user%20creation%20and%20refresh-token%20issuance::profile%2Fquick%2Fall-in-scope-subsystems::RESOURCE-EXHAUSTION-AND-AVAILABILITY.md%23Pre-authentication%20work%20imbalance",
+    "canonical_refs": {
+      "surface": "src/modules/auth/endpoints.ts#POST /v1/auth/google, /v1/auth/demo, /v1/auth/refresh, /v1/auth/logout",
+      "boundary": "src/modules/auth/auth.controller.ts#limitByIp(authIp 30/min) before Google verification, user creation and refresh-token issuance",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Pre-authentication work imbalance"
+    },
+    "surface": "src/modules/auth/endpoints.ts#POST /v1/auth/google, /v1/auth/demo, /v1/auth/refresh, /v1/auth/logout",
+    "boundary": "src/modules/auth/auth.controller.ts#limitByIp(authIp 30/min) before Google verification, user creation and refresh-token issuance",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Pre-authentication work imbalance",
+    "starting_paths": [
+      "src/modules/auth/auth.controller.ts",
+      "src/modules/auth/auth.service.ts",
+      "src/modules/auth/google-verifier.ts",
+      "src/modules/auth/token.service.ts",
+      "src/modules/auth/refresh-token.repository.ts",
+      "src/modules/users/user.repository.ts",
+      "src/http/middleware/rate-limit.ts",
+      "src/lib/rate-limiter.ts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Computational amplification attack classes",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Resource accumulation attack classes",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Quota and scheduling attack classes"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "deferred",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "quick_profile_final_critic: The architecture selects pre-auth work for resource exhaustion, but the only pre-auth unit is h3's, on enrollments, and the h1 auth units have no resource-exhaustion class. The public auth routes do Google ID-token verification, which may fetch certs. Each demo sign-in or Google sign-in inserts a new refresh-token family row, and the only bound is the in-memory per-IP 30/min limiter, whose key depends on the trust-proxy candidate. Logout is unlimited. Nobody has checked unbounded growth of refresh_tokens and users, or whether expired rows are ever pruned."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fclassrooms%2Fendpoints.ts%23%2Fv1%2Fclassrooms%2A::src%2Fmodules%2Fclassrooms%2Fclassroom.repository.ts%23teacher%20ownership%20predicate::profile%2Fquick%2Fall-in-scope-subsystems::ATTACK-CLASSES.md%23Access%20control",
+    "canonical_refs": {
+      "surface": "src/modules/classrooms/endpoints.ts#/v1/classrooms*",
+      "boundary": "src/modules/classrooms/classroom.repository.ts#teacher ownership predicate",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "ATTACK-CLASSES.md#Access control"
+    },
+    "surface": "src/modules/classrooms/endpoints.ts#/v1/classrooms*",
+    "boundary": "src/modules/classrooms/classroom.repository.ts#teacher ownership predicate",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Access control",
+    "starting_paths": [
+      "src/modules/classrooms",
+      "src/http/route.ts",
+      "migrations/1763838000000_initial-schema.sql"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Access control",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h2-classrooms",
+    "reviewed_paths": [
+      "docs/decisions.md",
+      "migrations/1763838000000_initial-schema.sql",
+      "src/app.ts",
+      "src/http/common.schemas.ts",
+      "src/http/route.ts",
+      "src/modules/auth/token.service.ts",
+      "src/modules/classrooms/classroom.controller.ts",
+      "src/modules/classrooms/classroom.repository.ts",
+      "src/modules/classrooms/classroom.service.ts",
+      "src/modules/classrooms/endpoints.ts",
+      "src/modules/classrooms/schemas.ts",
+      "src/modules/users/user.repository.ts",
+      "test/classrooms.test.ts",
+      "test/helpers.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h2-classrooms",
+        "reviewed_paths": [
+          "src/http/route.ts",
+          "src/modules/auth/token.service.ts",
+          "src/modules/classrooms/endpoints.ts",
+          "src/app.ts"
+        ],
+        "invariant": "Every /v1/classrooms* route requires a valid bearer token and role=teacher; students get 403.",
+        "method": "source",
+        "result": "mount() calls authenticate() for every non-public endpoint; authenticate() rejects when endpoint.access ('teacher' for all nine classroom endpoints) differs from the JWT role, which verifyAccessToken restricts to teacher|student after HS256/iss/aud/exp checks.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h2-classrooms",
+        "reviewed_paths": [
+          "src/modules/users/user.repository.ts",
+          "docs/decisions.md",
+          "migrations/1763838000000_initial-schema.sql"
+        ],
+        "invariant": "The JWT role claim cannot drift from the stored role (no role change path).",
+        "method": "source",
+        "result": "createOrGet inserts role only on first sign-in (onConflict google_sub doNothing); no update of users.role exists (D2). Composite FKs (teacher_id,teacher_role)->users(id,role) with CHECK teacher_role='teacher' make a student-owned classroom impossible at the DB.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h2-classrooms",
+        "reviewed_paths": ["src/modules/classrooms/schemas.ts", "src/http/common.schemas.ts"],
+        "invariant": "Request bodies/params cannot supply or override the owner.",
+        "method": "source",
+        "result": "CreateClassroomBody/UpdateClassroomBody/ClassroomIdParams/RosterStudentParams/PageQuery are strictObject; owner comes only from user.id in the controller.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h2-classrooms",
+        "reviewed_paths": [
+          "src/modules/classrooms/classroom.repository.ts",
+          "src/modules/classrooms/classroom.service.ts",
+          "src/modules/classrooms/classroom.controller.ts",
+          "test/helpers.ts",
+          "test/classrooms.test.ts"
+        ],
+        "invariant": "Cross-teacher and student-token access to all classroom routes is rejected; body owner fields rejected.",
+        "method": "local",
+        "result": "Bounded vitest run (loopback Postgres, dummy users): existing access-control suite (12 tests) passes; new repro shows student token gets 403 on all 7 per-classroom routes, teacherId/teacher_id body fields return 400, and B removing A's student via B's own classroom id returns 404 with A's enrollment intact.",
+        "artifact": "agents/h2-classrooms/artifacts/h2-ownership.txt"
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "issueCode runs a global sweepExpired over all classrooms on every create/regenerate; it is semantically safe today but is a cross-tenant write performed in a teacher-scoped transaction and could be scoped to the generated number or moved to a background job.",
+      "insertIfFree uses onConflict doNothing without a conflict target, so a conflict on the per-classroom live-code index (rather than the code-number index) would be silently retried and end in a 500; specifying the code-number index as the target would make the failure explicit.",
+      "D11 accepts that a removed student can rejoin with the still-live code; an optional server-side regenerate-on-remove or per-classroom block list would remove the reliance on the client prompting the teacher."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fclassrooms%2Fendpoints.ts%23%2Fv1%2Fclassrooms%2A::src%2Fmodules%2Fclassrooms%2Fclassroom.repository.ts%23teacher%20ownership%20predicate::profile%2Fquick%2Fall-in-scope-subsystems::ATTACK-CLASSES.md%23Business%20logic",
+    "canonical_refs": {
+      "surface": "src/modules/classrooms/endpoints.ts#/v1/classrooms*",
+      "boundary": "src/modules/classrooms/classroom.repository.ts#teacher ownership predicate",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "ATTACK-CLASSES.md#Business logic"
+    },
+    "surface": "src/modules/classrooms/endpoints.ts#/v1/classrooms*",
+    "boundary": "src/modules/classrooms/classroom.repository.ts#teacher ownership predicate",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Business logic",
+    "starting_paths": [
+      "src/modules/classrooms",
+      "src/http/route.ts",
+      "migrations/1763838000000_initial-schema.sql"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Business logic",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h2-classrooms",
+    "reviewed_paths": [
+      "docs/decisions.md",
+      "migrations/1763838000000_initial-schema.sql",
+      "src/modules/classrooms/classroom.mapper.ts",
+      "src/modules/classrooms/classroom.repository.ts",
+      "src/modules/classrooms/classroom.service.ts",
+      "src/modules/classrooms/join-code.repository.ts",
+      "src/modules/classrooms/join-code.ts",
+      "src/modules/classrooms/join-link.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h2-classrooms",
+        "reviewed_paths": [
+          "src/modules/classrooms/classroom.service.ts",
+          "src/modules/classrooms/classroom.repository.ts",
+          "src/modules/classrooms/join-code.repository.ts"
+        ],
+        "invariant": "Join code regeneration is atomic and serialized per classroom; one live code per class.",
+        "method": "source",
+        "result": "regenerateJoinCode runs in a transaction: lockOwned (SELECT ... FOR UPDATE scoped by teacher_id), revokeLive, issueCode; partial unique indexes join_codes_live_classroom_key/live_code_key back this at the DB. Collisions retry with onConflict doNothing up to MAX_CODE_ATTEMPTS then 500 (no wrong-classroom code).",
+        "artifact": null
+      },
+      {
+        "agent_id": "h2-classrooms",
+        "reviewed_paths": [
+          "src/modules/classrooms/classroom.mapper.ts",
+          "src/modules/classrooms/join-code.repository.ts",
+          "src/modules/classrooms/classroom.service.ts",
+          "src/modules/classrooms/join-code.ts",
+          "src/modules/classrooms/join-link.ts"
+        ],
+        "invariant": "Expiry boundary is consistent between DTO liveness and sweep.",
+        "method": "source",
+        "result": "toClassroomDto treats a code live only if expires_at > now; sweepExpired/revokeLive treat expires_at <= at as expired. Global sweepExpired in issueCode touches other teachers' rows but only applies the same expired state lookups already imply (no live code revoked).",
+        "artifact": null
+      },
+      {
+        "agent_id": "h2-classrooms",
+        "reviewed_paths": [
+          "src/modules/classrooms/classroom.service.ts",
+          "src/modules/classrooms/classroom.repository.ts",
+          "docs/decisions.md",
+          "migrations/1763838000000_initial-schema.sql"
+        ],
+        "invariant": "Remove-student and delete-classroom lifecycle matches documented contract.",
+        "method": "source",
+        "result": "removeStudent deletes the enrollment row after ownership check; rejoin with the still-live code is explicitly accepted in D11 (app offers regeneration). Classroom delete cascades join_codes and enrollments by FK (D12). teacher_id is never updated so the check-then-delete in removeStudent cannot race an ownership change.",
+        "artifact": null
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "issueCode runs a global sweepExpired over all classrooms on every create/regenerate; it is semantically safe today but is a cross-tenant write performed in a teacher-scoped transaction and could be scoped to the generated number or moved to a background job.",
+      "insertIfFree uses onConflict doNothing without a conflict target, so a conflict on the per-classroom live-code index (rather than the code-number index) would be silently retried and end in a 500; specifying the code-number index as the target would make the failure explicit.",
+      "D11 accepts that a removed student can rejoin with the still-live code; an optional server-side regenerate-on-remove or per-classroom block list would remove the reliance on the client prompting the teacher."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fclassrooms%2Fendpoints.ts%23%2Fv1%2Fclassrooms%2A::src%2Fmodules%2Fclassrooms%2Fclassroom.repository.ts%23teacher%20ownership%20predicate::profile%2Fquick%2Fall-in-scope-subsystems::ATTACK-CLASSES.md%23Injection",
+    "canonical_refs": {
+      "surface": "src/modules/classrooms/endpoints.ts#/v1/classrooms*",
+      "boundary": "src/modules/classrooms/classroom.repository.ts#teacher ownership predicate",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "ATTACK-CLASSES.md#Injection"
+    },
+    "surface": "src/modules/classrooms/endpoints.ts#/v1/classrooms*",
+    "boundary": "src/modules/classrooms/classroom.repository.ts#teacher ownership predicate",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Injection",
+    "starting_paths": [
+      "src/modules/classrooms",
+      "src/http/route.ts",
+      "migrations/1763838000000_initial-schema.sql"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Injection",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h2-classrooms",
+    "reviewed_paths": [
+      "src/lib/cursor.ts",
+      "src/modules/classrooms/classroom.controller.ts",
+      "src/modules/classrooms/classroom.mapper.ts",
+      "src/modules/classrooms/classroom.repository.ts",
+      "src/modules/classrooms/classroom.service.ts",
+      "src/modules/classrooms/join-code.repository.ts",
+      "src/modules/classrooms/join-link.ts",
+      "src/modules/classrooms/schemas.ts",
+      "test/classrooms.test.ts",
+      "test/helpers.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h2-classrooms",
+        "reviewed_paths": [
+          "src/modules/classrooms/classroom.repository.ts",
+          "src/modules/classrooms/join-code.repository.ts",
+          "src/modules/classrooms/classroom.service.ts",
+          "src/lib/cursor.ts"
+        ],
+        "invariant": "No untrusted value reaches SQL as raw text.",
+        "method": "source",
+        "result": "All classroom/join-code queries use Kysely builders with bound parameters; the only sql`` templates are count(*) and the revokeLive CASE with ${at} bound as a parameter. Cursor is base64url JSON parsed by zod (iso datetime + uuid) before use in a tuple comparison.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h2-classrooms",
+        "reviewed_paths": [
+          "src/modules/classrooms/classroom.mapper.ts",
+          "src/modules/classrooms/join-link.ts",
+          "src/modules/classrooms/schemas.ts"
+        ],
+        "invariant": "Stored name/description and join link cannot inject into secondary sinks.",
+        "method": "source",
+        "result": "name/description are returned as JSON only; buildJoinUrl interpolates a code constrained to ^[0-9]{6}$ by DB CHECK and generator. HTML pages are peer-owned (h4).",
+        "artifact": null
+      },
+      {
+        "agent_id": "h2-classrooms",
+        "reviewed_paths": [
+          "src/modules/classrooms/classroom.repository.ts",
+          "src/modules/classrooms/classroom.service.ts",
+          "src/modules/classrooms/classroom.controller.ts",
+          "test/helpers.ts",
+          "test/classrooms.test.ts"
+        ],
+        "invariant": "Injection-shaped classroom names are stored and returned verbatim without executing.",
+        "method": "local",
+        "result": "Repro created name \"x'); DELETE FROM classrooms;--\" (201, echoed verbatim) and classroom count stayed 3.",
+        "artifact": "agents/h2-classrooms/artifacts/h2-ownership.txt"
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "issueCode runs a global sweepExpired over all classrooms on every create/regenerate; it is semantically safe today but is a cross-tenant write performed in a teacher-scoped transaction and could be scoped to the generated number or moved to a background job.",
+      "insertIfFree uses onConflict doNothing without a conflict target, so a conflict on the per-classroom live-code index (rather than the code-number index) would be silently retried and end in a 500; specifying the code-number index as the target would make the failure explicit.",
+      "D11 accepts that a removed student can rejoin with the still-live code; an optional server-side regenerate-on-remove or per-classroom block list would remove the reliance on the client prompting the teacher."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fclassrooms%2Fendpoints.ts%23%2Fv1%2Fclassrooms%2A::src%2Fmodules%2Fclassrooms%2Fclassroom.repository.ts%23teacher%20ownership%20predicate::profile%2Fquick%2Fall-in-scope-subsystems::DATA-ISOLATION-AND-LIFECYCLE.md%23Missing%20tenant%20or%20owner%20enforcement",
+    "canonical_refs": {
+      "surface": "src/modules/classrooms/endpoints.ts#/v1/classrooms*",
+      "boundary": "src/modules/classrooms/classroom.repository.ts#teacher ownership predicate",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "DATA-ISOLATION-AND-LIFECYCLE.md#Missing tenant or owner enforcement"
+    },
+    "surface": "src/modules/classrooms/endpoints.ts#/v1/classrooms*",
+    "boundary": "src/modules/classrooms/classroom.repository.ts#teacher ownership predicate",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Missing tenant or owner enforcement",
+    "starting_paths": [
+      "src/modules/classrooms",
+      "src/http/route.ts",
+      "migrations/1763838000000_initial-schema.sql"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Missing tenant or owner enforcement",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Core discipline",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Universal moves",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h2-classrooms",
+    "reviewed_paths": [
+      "src/modules/classrooms/classroom.controller.ts",
+      "src/modules/classrooms/classroom.repository.ts",
+      "src/modules/classrooms/classroom.service.ts",
+      "test/classrooms.test.ts",
+      "test/helpers.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h2-classrooms",
+        "reviewed_paths": [
+          "src/modules/classrooms/classroom.repository.ts",
+          "src/modules/classrooms/classroom.service.ts"
+        ],
+        "invariant": "Every classroom read/update/delete/list/count/roster path binds teacher_id.",
+        "method": "source",
+        "result": "findOwned/listOwned use baseQuery with c.teacher_id = teacherId; update/delete/lockOwned include teacher_id; roster/rosterTotal/removeStudent are keyed by classroom_id only but every caller (listStudents, removeStudent) first requires findOwned(id, teacherId); getJoinCode goes through get(). studentCount subquery is correlated to the owned c.id.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h2-classrooms",
+        "reviewed_paths": [
+          "src/modules/classrooms/classroom.repository.ts",
+          "src/modules/classrooms/classroom.service.ts",
+          "src/modules/classrooms/classroom.controller.ts",
+          "test/helpers.ts",
+          "test/classrooms.test.ts"
+        ],
+        "invariant": "Cross-teacher dummy tenants cannot read, mutate, paginate into, or remove members of another teacher's classroom.",
+        "method": "local",
+        "result": "Existing suite: 7 per-classroom routes return 404 for teacher B and A's data unchanged. Repro: B's list with a cursor built from A's classroom key returns only B's rows / empty; B's DELETE /v1/classrooms/{B}/students/{A's student} returns 404 and A's enrollment count stays 1.",
+        "artifact": "agents/h2-classrooms/artifacts/h2-ownership.txt"
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "issueCode runs a global sweepExpired over all classrooms on every create/regenerate; it is semantically safe today but is a cross-tenant write performed in a teacher-scoped transaction and could be scoped to the generated number or moved to a background job.",
+      "insertIfFree uses onConflict doNothing without a conflict target, so a conflict on the per-classroom live-code index (rather than the code-number index) would be silently retried and end in a 500; specifying the code-number index as the target would make the failure explicit.",
+      "D11 accepts that a removed student can rejoin with the still-live code; an optional server-side regenerate-on-remove or per-classroom block list would remove the reliance on the client prompting the teacher."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fclassrooms%2Fendpoints.ts%23%2Fv1%2Fclassrooms%2A::src%2Fmodules%2Fclassrooms%2Fclassroom.repository.ts%23teacher%20ownership%20predicate::profile%2Fquick%2Fall-in-scope-subsystems::DATA-ISOLATION-AND-LIFECYCLE.md%23Policy%20and%20query%20disagreement",
+    "canonical_refs": {
+      "surface": "src/modules/classrooms/endpoints.ts#/v1/classrooms*",
+      "boundary": "src/modules/classrooms/classroom.repository.ts#teacher ownership predicate",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "DATA-ISOLATION-AND-LIFECYCLE.md#Policy and query disagreement"
+    },
+    "surface": "src/modules/classrooms/endpoints.ts#/v1/classrooms*",
+    "boundary": "src/modules/classrooms/classroom.repository.ts#teacher ownership predicate",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Policy and query disagreement",
+    "starting_paths": [
+      "src/modules/classrooms",
+      "src/http/route.ts",
+      "migrations/1763838000000_initial-schema.sql"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Policy and query disagreement",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Core discipline",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Universal moves",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h2-classrooms",
+    "reviewed_paths": [
+      "migrations/1763838000000_initial-schema.sql",
+      "src/http/route.ts",
+      "src/lib/cursor.ts",
+      "src/modules/classrooms/classroom.repository.ts",
+      "src/modules/classrooms/endpoints.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h2-classrooms",
+        "reviewed_paths": [
+          "src/modules/classrooms/classroom.repository.ts",
+          "migrations/1763838000000_initial-schema.sql",
+          "src/modules/classrooms/endpoints.ts"
+        ],
+        "invariant": "The application ownership predicate and DB constraints agree across joins and aggregates.",
+        "method": "source",
+        "result": "baseQuery left-joins only the live join code of the same classroom (jc.revoked_at is null, unique per classroom) so no row multiplication or cross-class code leak; aggregates are correlated by c.id; the DB has no RLS, and there is no bypass/service client or alternate classroom read path in this module (enrollment-side reads are peer-owned). Policy (D13 404) matches every query-miss path.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h2-classrooms",
+        "reviewed_paths": ["src/http/route.ts", "src/lib/cursor.ts"],
+        "invariant": "Error/missing-context paths do not fall back to unscoped queries.",
+        "method": "source",
+        "result": "Malformed params map to 404 before the handler; invalid cursor raises 400; user is always populated for teacher endpoints because authenticate throws otherwise.",
+        "artifact": null
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "issueCode runs a global sweepExpired over all classrooms on every create/regenerate; it is semantically safe today but is a cross-tenant write performed in a teacher-scoped transaction and could be scoped to the generated number or moved to a background job.",
+      "insertIfFree uses onConflict doNothing without a conflict target, so a conflict on the per-classroom live-code index (rather than the code-number index) would be silently retried and end in a 500; specifying the code-number index as the target would make the failure explicit.",
+      "D11 accepts that a removed student can rejoin with the still-live code; an optional server-side regenerate-on-remove or per-classroom block list would remove the reliance on the client prompting the teacher."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fclassrooms%2Fendpoints.ts%23%2Fv1%2Fclassrooms%2A::src%2Fmodules%2Fclassrooms%2Fclassroom.repository.ts%23teacher%20ownership%20predicate::profile%2Fquick%2Fall-in-scope-subsystems::DATA-ISOLATION-AND-LIFECYCLE.md%23Stale%20authorization%20and%20derived%20copy%20use",
+    "canonical_refs": {
+      "surface": "src/modules/classrooms/endpoints.ts#/v1/classrooms*",
+      "boundary": "src/modules/classrooms/classroom.repository.ts#teacher ownership predicate",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "DATA-ISOLATION-AND-LIFECYCLE.md#Stale authorization and derived copy use"
+    },
+    "surface": "src/modules/classrooms/endpoints.ts#/v1/classrooms*",
+    "boundary": "src/modules/classrooms/classroom.repository.ts#teacher ownership predicate",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Stale authorization and derived copy use",
+    "starting_paths": [
+      "src/modules/classrooms",
+      "src/http/route.ts",
+      "migrations/1763838000000_initial-schema.sql"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Stale authorization and derived copy use",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Core discipline",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Universal moves",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h2-classrooms",
+    "reviewed_paths": [
+      "docs/decisions.md",
+      "src/modules/auth/token.service.ts",
+      "src/modules/classrooms/classroom.mapper.ts",
+      "src/modules/classrooms/classroom.repository.ts",
+      "src/modules/classrooms/classroom.service.ts",
+      "src/modules/classrooms/join-code.repository.ts",
+      "src/modules/users/user.repository.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h2-classrooms",
+        "reviewed_paths": [
+          "src/modules/auth/token.service.ts",
+          "src/modules/users/user.repository.ts",
+          "docs/decisions.md"
+        ],
+        "invariant": "Role in a still-valid access token cannot outlive a role change.",
+        "method": "source",
+        "result": "Role is immutable after creation (D2, no update path), so a 15-minute token cannot carry a stale role; user deletion has no API path.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h2-classrooms",
+        "reviewed_paths": [
+          "src/modules/classrooms/classroom.service.ts",
+          "src/modules/classrooms/join-code.repository.ts",
+          "src/modules/classrooms/classroom.repository.ts",
+          "src/modules/classrooms/classroom.mapper.ts"
+        ],
+        "invariant": "Regeneration/removal/deletion invalidate derived authorizations.",
+        "method": "source",
+        "result": "Regenerate revokes the live code row in the same transaction (QR is the same code, D6, so it dies too); classroom delete cascades codes and enrollments; no caches, jobs, or materialized copies of classroom/roster data exist in this module. Rejoin after removal is documented-accepted (D11).",
+        "artifact": null
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "issueCode runs a global sweepExpired over all classrooms on every create/regenerate; it is semantically safe today but is a cross-tenant write performed in a teacher-scoped transaction and could be scoped to the generated number or moved to a background job.",
+      "insertIfFree uses onConflict doNothing without a conflict target, so a conflict on the per-classroom live-code index (rather than the code-number index) would be silently retried and end in a 500; specifying the code-number index as the target would make the failure explicit.",
+      "D11 accepts that a removed student can rejoin with the still-live code; an optional server-side regenerate-on-remove or per-classroom block list would remove the reliance on the client prompting the teacher."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fclassrooms%2Fendpoints.ts%23POST%20%2Fv1%2Fclassrooms%20and%20POST%20%2Fv1%2Fclassrooms%2F%3Aid%2Fjoin-code::src%2Fmodules%2Fclassrooms%2Fclassroom.service.ts%23issueCode%20global%20live-code%20namespace%20%2810%5E6%20six-digit%20codes%2C%20MAX_CODE_ATTEMPTS%3D5%2C%20global%20sweepExpired%20per%20issue%29::profile%2Fquick%2Fall-in-scope-subsystems::RESOURCE-EXHAUSTION-AND-AVAILABILITY.md%23Quota-accounting%20scope%20and%20reset%20gaps",
+    "canonical_refs": {
+      "surface": "src/modules/classrooms/endpoints.ts#POST /v1/classrooms and POST /v1/classrooms/:id/join-code",
+      "boundary": "src/modules/classrooms/classroom.service.ts#issueCode global live-code namespace (10^6 six-digit codes, MAX_CODE_ATTEMPTS=5, global sweepExpired per issue)",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Quota-accounting scope and reset gaps"
+    },
+    "surface": "src/modules/classrooms/endpoints.ts#POST /v1/classrooms and POST /v1/classrooms/:id/join-code",
+    "boundary": "src/modules/classrooms/classroom.service.ts#issueCode global live-code namespace (10^6 six-digit codes, MAX_CODE_ATTEMPTS=5, global sweepExpired per issue)",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Quota-accounting scope and reset gaps",
+    "starting_paths": [
+      "src/modules/classrooms/classroom.service.ts",
+      "src/modules/classrooms/join-code.ts",
+      "src/modules/classrooms/join-code.repository.ts",
+      "src/modules/classrooms/classroom.controller.ts",
+      "src/modules/auth/auth.service.ts",
+      "migrations/1763838000000_initial-schema.sql",
+      "docs/decisions.md"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Quota and scheduling attack classes",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Resource accumulation attack classes",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Computational amplification attack classes",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Enumeration and aggregate oracles"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "deferred",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "quick_profile_final_critic: The resource-exhaustion companion was selected, but the classroom surface has no unit for it. The h2 units cover access control, business logic, injection and isolation only. Classroom routes have no rate limiter or per-teacher quota (classroom.controller.ts mounts no middleware), and anyone can self-select the teacher role at first Google sign-in. Each create or regenerate claims one live code in a global 10^6 space, retries only 5 times and then throws a 500 (classroom.service.ts issueCode), and runs a global sweepExpired UPDATE. That allows code-space exhaustion that denies service to every teacher. It also raises live-code density, which directly improves the per-guess hit rate of the enrollment brute-force path that h3 assessed (h3 assumed sparse codes, saying 'guessing an existing number dominates attacker cost')."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fenrollments%2Fendpoints.ts%23%2Fv1%2Fenrollments%2A%20reached%20as%20demo%20student::src%2Fmodules%2Fenrollments%2Fenrollment.service.ts%23resolveCode%20join-fail%3A%3CstudentId%3E%20key%20shared%20by%20every%20anonymous%20demo-student%20session::profile%2Fquick%2Fall-in-scope-subsystems::RESOURCE-EXHAUSTION-AND-AVAILABILITY.md%23Quota-accounting%20scope%20and%20reset%20gaps",
+    "canonical_refs": {
+      "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments* reached as demo student",
+      "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode join-fail:<studentId> key shared by every anonymous demo-student session",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Quota-accounting scope and reset gaps"
+    },
+    "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments* reached as demo student",
+    "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode join-fail:<studentId> key shared by every anonymous demo-student session",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Quota-accounting scope and reset gaps",
+    "starting_paths": [
+      "src/modules/auth/auth.service.ts",
+      "src/modules/enrollments/enrollment.service.ts",
+      "src/modules/enrollments/enrollment.repository.ts",
+      "src/lib/rate-limiter.ts",
+      "src/app.ts",
+      "scripts/seed.ts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Quota and scheduling attack classes",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Tenant and object-isolation attack classes"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "deferred",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "quick_profile_final_critic: h1-auth reported this as uncovered. Every demo-student caller gets the same user id, so every anonymous caller shares one per-student failure budget of 5 per 15 minutes. Any one caller can lock out every reviewer, and the shared enrollment state lets one caller join or leave classes for all of them. h3's quota unit looked only at per-real-account scoping and at the check-then-hit race. It did not look at a principal shared across callers."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fenrollments%2Fendpoints.ts%23%2Fv1%2Fenrollments%2A::src%2Fmodules%2Fenrollments%2Fenrollment.service.ts%23resolveCode::profile%2Fquick%2Fall-in-scope-subsystems::ATTACK-CLASSES.md%23Access%20control",
+    "canonical_refs": {
+      "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments*",
+      "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "ATTACK-CLASSES.md#Access control"
+    },
+    "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments*",
+    "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Access control",
+    "starting_paths": [
+      "src/modules/enrollments",
+      "src/modules/classrooms/join-code.repository.ts",
+      "src/lib/rate-limiter.ts",
+      "src/app.ts"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Access control",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h3-enrollments",
+    "reviewed_paths": [
+      "migrations/1763838000000_initial-schema.sql",
+      "src/http/route.ts",
+      "src/modules/classrooms/join-code.repository.ts",
+      "src/modules/enrollments/endpoints.ts",
+      "src/modules/enrollments/enrollment.controller.ts",
+      "src/modules/enrollments/enrollment.repository.ts",
+      "src/modules/enrollments/enrollment.service.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h3-enrollments",
+        "reviewed_paths": ["src/modules/enrollments/endpoints.ts", "src/http/route.ts"],
+        "invariant": "Every /v1/enrollments* endpoint requires a valid access token and the student role.",
+        "method": "source",
+        "result": "All four endpoints declare access 'student'; mount() runs authenticate() which rejects non-student roles with FORBIDDEN_ROLE before params/body parsing and the handler. Teachers cannot preview/join/list/leave.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h3-enrollments",
+        "reviewed_paths": [
+          "src/modules/enrollments/enrollment.controller.ts",
+          "src/modules/enrollments/enrollment.service.ts",
+          "src/modules/enrollments/enrollment.repository.ts"
+        ],
+        "invariant": "Student identity for list/leave/join comes only from the verified token, never from the request.",
+        "method": "source",
+        "result": "Handlers pass user.id from the token; bodies are strictObject (code, via) so no student_id/classroom_id override; leave deletes WHERE classroom_id AND student_id = token user, list filters mine.student_id = token user. No cross-student read or write path.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h3-enrollments",
+        "reviewed_paths": [
+          "migrations/1763838000000_initial-schema.sql",
+          "src/modules/enrollments/enrollment.repository.ts"
+        ],
+        "invariant": "Database independently enforces that only students enroll and one enrollment per student per class.",
+        "method": "source",
+        "result": "enrollments has composite FK (student_id, student_role='student') to users(id, role) and PRIMARY KEY (classroom_id, student_id); insertIfAbsent uses ON CONFLICT DO NOTHING. A teacher token cannot create an enrollment even if the role check were bypassed.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h3-enrollments",
+        "reviewed_paths": [
+          "src/modules/enrollments/enrollment.service.ts",
+          "src/modules/classrooms/join-code.repository.ts"
+        ],
+        "invariant": "Joining a classroom requires a currently usable code (live, unexpired, joining open).",
+        "method": "source",
+        "result": "resolveCode rejects missing/regenerated (invalid), revoked-expired or expires_at <= now (expired) and joining_open=false (closed); findLatestByCode orders live (revoked_at NULL) first so a live code always wins over historical rows with the same number. Only the classroom id from the matched row is used.",
+        "artifact": null
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "resolveCode does not count JOIN_CODE_EXPIRED or JOINING_CLOSED outcomes as failures (src/modules/enrollments/enrollment.service.ts lines 107-115), so these act as free oracles that a code number exists or existed. The attacker's cost is still dominated by invalid guesses. Counting every non-success lookup would remove the free probe.",
+      "The per-IP join limiter (src/http/middleware/rate-limit.ts) runs before authentication and counts unauthenticated and failed requests. One client behind a shared school NAT can use up the 60/min budget and block joins for every student on that IP while it keeps sending. Consider keying the IP limiter after authentication, or adding a per-user dimension.",
+      "MemoryRateLimiter is fixed-window, so up to 2x the budget fits across a window boundary. It is also per-process, so a multi-instance deployment would multiply every budget. The current single-container deployment is unaffected."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fenrollments%2Fendpoints.ts%23%2Fv1%2Fenrollments%2A::src%2Fmodules%2Fenrollments%2Fenrollment.service.ts%23resolveCode::profile%2Fquick%2Fall-in-scope-subsystems::ATTACK-CLASSES.md%23Business%20logic",
+    "canonical_refs": {
+      "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments*",
+      "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "ATTACK-CLASSES.md#Business logic"
+    },
+    "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments*",
+    "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Business logic",
+    "starting_paths": [
+      "src/modules/enrollments",
+      "src/modules/classrooms/join-code.repository.ts",
+      "src/lib/rate-limiter.ts",
+      "src/app.ts"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Business logic",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "candidate",
+    "agent_id": "h3-enrollments",
+    "reviewed_paths": [
+      "docs/decisions.md",
+      "src/app.ts",
+      "src/http/middleware/rate-limit.ts",
+      "src/http/route.ts",
+      "src/lib/rate-limiter.ts",
+      "src/modules/classrooms/classroom.service.ts",
+      "src/modules/classrooms/join-code.repository.ts",
+      "src/modules/enrollments/enrollment.controller.ts",
+      "src/modules/enrollments/enrollment.repository.ts",
+      "src/modules/enrollments/enrollment.service.ts",
+      "test/helpers.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h3-enrollments",
+        "reviewed_paths": [
+          "src/modules/enrollments/enrollment.service.ts",
+          "src/lib/rate-limiter.ts"
+        ],
+        "invariant": "Limiter gate and accounting are atomic with respect to the code lookup.",
+        "method": "source",
+        "result": "resolveCode calls failedAttempts.check(key) (line 93, read-only, count < limit), awaits findLatestByCode (line 100), and only then calls failedAttempts.hit(key) (line 104). MemoryRateLimiter.check does not reserve a slot, so every request admitted while earlier lookups are in flight is evaluated; the only bound on the burst is the per-IP limiter (60/min, src/app.ts line 49).",
+        "artifact": null
+      },
+      {
+        "agent_id": "h3-enrollments",
+        "reviewed_paths": [
+          "src/modules/enrollments/enrollment.service.ts",
+          "src/lib/rate-limiter.ts",
+          "src/app.ts",
+          "test/helpers.ts"
+        ],
+        "invariant": "D7 per-student budget: at most 5 failed join-code lookups per student per 15 minutes are evaluated against the database.",
+        "method": "local",
+        "result": "Local vitest (scratch copy, loopback Postgres, dummy users t1/s1/s2): 50 concurrent wrong-code POST /v1/enrollments/preview from one student produced 11 JOIN_CODE_INVALID evaluations and 39 RATE_LIMITED; 10 sequential wrong guesses from another student produced exactly 5 evaluations. The concurrent burst exceeds the 5-failure budget because check() runs before the awaited DB lookup and hit() runs after it.",
+        "artifact": "agents/h3-enrollments/artifacts/join-fail-race.txt"
+      },
+      {
+        "agent_id": "h3-enrollments",
+        "reviewed_paths": [
+          "src/modules/enrollments/enrollment.service.ts",
+          "src/modules/enrollments/enrollment.repository.ts",
+          "src/modules/classrooms/join-code.repository.ts",
+          "src/modules/classrooms/classroom.service.ts"
+        ],
+        "invariant": "Join state transitions and partial failures leave no invalid state.",
+        "method": "source",
+        "result": "Join is a single idempotent insert guarded by the PK; classroom deleted between lookup and insert maps FK violation to JOIN_CODE_INVALID. A regenerate/close racing with an in-flight join can admit one join on the just-revoked code (sub-millisecond TOCTOU between resolveCode and insert); benign. Rejoin after teacher removal is documented accepted behaviour (docs/decisions.md D11).",
+        "artifact": null
+      },
+      {
+        "agent_id": "h3-enrollments",
+        "reviewed_paths": [
+          "src/modules/enrollments/enrollment.service.ts",
+          "src/modules/classrooms/join-code.repository.ts",
+          "src/modules/classrooms/classroom.service.ts"
+        ],
+        "invariant": "Expiry boundary is consistent between lookup and sweep.",
+        "method": "source",
+        "result": "resolveCode treats expiresAt <= now as expired; sweepExpired and revokeLive use expires_at <= at; consistent at the exact boundary. Clock is injected; DB timestamps are timestamptz.",
+        "artifact": null
+      },
+      {
+        "agent_id": "v1-limiter-race",
+        "reviewed_paths": [
+          "src/modules/enrollments/enrollment.controller.ts",
+          "src/modules/enrollments/enrollment.service.ts",
+          "src/lib/rate-limiter.ts",
+          "src/app.ts",
+          "src/http/middleware/rate-limit.ts",
+          "src/http/route.ts",
+          "docs/decisions.md"
+        ],
+        "invariant": "Limiter gate and accounting are atomic with respect to the join-code lookup (D7).",
+        "method": "source",
+        "result": "Confirmed. resolveCode calls check() at line 93, which is read-only (rate-limiter.ts lines 42-46), awaits findLatestByCode at line 100, and calls hit() at line 104 only for unknown or regenerated codes. No lock, reservation or other per-student serialization exists on the path. limitByIp (60/min per req.ip) is the only bound on the burst. Hunter trace lines verified; the entrypoint line was corrected from 16 to 15, the mount() call.",
+        "artifact": null
+      },
+      {
+        "agent_id": "v1-limiter-race",
+        "reviewed_paths": [
+          "src/modules/enrollments/enrollment.service.ts",
+          "src/lib/rate-limiter.ts",
+          "src/app.ts",
+          "test/helpers.ts"
+        ],
+        "invariant": "D7: at most 5 failed join-code lookups per student per 15 minutes are evaluated.",
+        "method": "local",
+        "result": "Violated. Over 3 runs, 55 concurrent wrong codes evaluated 11/10/11 as invalid on /v1/enrollments/preview and 6/5/7 on /v1/enrollments. The sequential control gave 5 every run, and the next request after a burst got 429. A limiter that reserves at the gate gave exactly 5 every run, which supports the proposed fix. The hunter test's filter compared guesses with createClassroom(...).code, which is undefined (the real field is joinCode.code). Its guess range was unlikely to hit the live code, so its result still stands.",
+        "artifact": "agents/v1-limiter-race/artifacts/limiter-race-verify.txt"
+      },
+      {
+        "agent_id": "v1-limiter-race",
+        "reviewed_paths": ["src/modules/enrollments/enrollment.service.ts", "docs/decisions.md"],
+        "invariant": "Severity and remediation match only what the evidence establishes.",
+        "method": "source",
+        "result": "Low overall is supported: the impact is a bounded speed-up of brute force with a recoverable outcome (D14 data only, D11 removal and regeneration). The proposed fix needs refund on expired, closed and success outcomes to keep D16, and a refund method on the RateLimiter interface. The corrected code_changes include both, and keep the reservation when the lookup throws (fails closed).",
+        "artifact": null
+      }
+    ],
+    "result_fingerprints": ["enrollments/resolveCode:failed-attempt-limiter-check-then-hit-race"],
+    "unresolved": [],
+    "x_hardening": [
+      "resolveCode does not count JOIN_CODE_EXPIRED or JOINING_CLOSED outcomes as failures (src/modules/enrollments/enrollment.service.ts lines 107-115), so these act as free oracles that a code number exists or existed. The attacker's cost is still dominated by invalid guesses. Counting every non-success lookup would remove the free probe.",
+      "The per-IP join limiter (src/http/middleware/rate-limit.ts) runs before authentication and counts unauthenticated and failed requests. One client behind a shared school NAT can use up the 60/min budget and block joins for every student on that IP while it keeps sending. Consider keying the IP limiter after authentication, or adding a per-user dimension.",
+      "MemoryRateLimiter is fixed-window, so up to 2x the budget fits across a window boundary. It is also per-process, so a multi-instance deployment would multiply every budget. The current single-container deployment is unaffected."
+    ],
+    "x_decisions": {
+      "enrollments/resolveCode:failed-attempt-limiter-check-then-hit-race": "confirmed"
+    }
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fenrollments%2Fendpoints.ts%23%2Fv1%2Fenrollments%2A::src%2Fmodules%2Fenrollments%2Fenrollment.service.ts%23resolveCode::profile%2Fquick%2Fall-in-scope-subsystems::ATTACK-CLASSES.md%23Feature%20abuse%20and%20data%20leakage",
+    "canonical_refs": {
+      "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments*",
+      "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "ATTACK-CLASSES.md#Feature abuse and data leakage"
+    },
+    "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments*",
+    "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Feature abuse and data leakage",
+    "starting_paths": [
+      "src/modules/enrollments",
+      "src/modules/classrooms/join-code.repository.ts",
+      "src/lib/rate-limiter.ts",
+      "src/app.ts"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Feature abuse and data leakage",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h3-enrollments",
+    "reviewed_paths": [
+      "docs/decisions.md",
+      "src/modules/enrollments/endpoints.ts",
+      "src/modules/enrollments/enrollment.controller.ts",
+      "src/modules/enrollments/enrollment.repository.ts",
+      "src/modules/enrollments/enrollment.service.ts",
+      "src/modules/enrollments/schemas.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h3-enrollments",
+        "reviewed_paths": [
+          "src/modules/enrollments/enrollment.service.ts",
+          "src/modules/enrollments/enrollment.repository.ts",
+          "src/modules/enrollments/schemas.ts",
+          "docs/decisions.md"
+        ],
+        "invariant": "Preview/join/list disclose only the D14 summary (name, description, teacher name/avatar, student count), never classmates.",
+        "method": "source",
+        "result": "summaryQuery selects only c.id, name, description, teacher name/avatar and a count(*); ClassroomSummary schema matches. Preview requires a valid live code, so it discloses nothing beyond what the code holder could see by joining; no classmate identity reaches students.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h3-enrollments",
+        "reviewed_paths": [
+          "src/modules/enrollments/endpoints.ts",
+          "src/modules/enrollments/enrollment.controller.ts"
+        ],
+        "invariant": "No export, search, webhook or URL-fetch feature exists on the enrollment surface.",
+        "method": "source",
+        "result": "Surface is preview, join, list (own), leave (own); no server-side fetch, import, or search features.",
+        "artifact": null
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "resolveCode does not count JOIN_CODE_EXPIRED or JOINING_CLOSED outcomes as failures (src/modules/enrollments/enrollment.service.ts lines 107-115), so these act as free oracles that a code number exists or existed. The attacker's cost is still dominated by invalid guesses. Counting every non-success lookup would remove the free probe.",
+      "The per-IP join limiter (src/http/middleware/rate-limit.ts) runs before authentication and counts unauthenticated and failed requests. One client behind a shared school NAT can use up the 60/min budget and block joins for every student on that IP while it keeps sending. Consider keying the IP limiter after authentication, or adding a per-user dimension.",
+      "MemoryRateLimiter is fixed-window, so up to 2x the budget fits across a window boundary. It is also per-process, so a multi-instance deployment would multiply every budget. The current single-container deployment is unaffected."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fenrollments%2Fendpoints.ts%23%2Fv1%2Fenrollments%2A::src%2Fmodules%2Fenrollments%2Fenrollment.service.ts%23resolveCode::profile%2Fquick%2Fall-in-scope-subsystems::DATA-ISOLATION-AND-LIFECYCLE.md%23Enumeration%20and%20aggregate%20oracles",
+    "canonical_refs": {
+      "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments*",
+      "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "DATA-ISOLATION-AND-LIFECYCLE.md#Enumeration and aggregate oracles"
+    },
+    "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments*",
+    "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Enumeration and aggregate oracles",
+    "starting_paths": [
+      "src/modules/enrollments",
+      "src/modules/classrooms/join-code.repository.ts",
+      "src/lib/rate-limiter.ts",
+      "src/app.ts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Enumeration and aggregate oracles",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Core discipline",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Universal moves",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h3-enrollments",
+    "reviewed_paths": [
+      "src/modules/classrooms/join-code.repository.ts",
+      "src/modules/enrollments/enrollment.repository.ts",
+      "src/modules/enrollments/enrollment.service.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h3-enrollments",
+        "reviewed_paths": [
+          "src/modules/enrollments/enrollment.service.ts",
+          "src/modules/classrooms/join-code.repository.ts"
+        ],
+        "invariant": "Distinct error codes for a code number do not leak protected state beyond the documented design.",
+        "method": "source",
+        "result": "Responses distinguish invalid (never existed or regenerated), expired, and joining-closed by design (endpoints.ts errors, join-code.repository.ts comment). Expired and closed outcomes do not call failedAttempts.hit, so they are free oracles, but they are reached only after guessing an existing number, which dominates attacker cost; recorded as hardening, not a finding.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h3-enrollments",
+        "reviewed_paths": [
+          "src/modules/enrollments/enrollment.service.ts",
+          "src/modules/enrollments/enrollment.repository.ts"
+        ],
+        "invariant": "alreadyMember and studentCount do not reveal other students' membership.",
+        "method": "source",
+        "result": "alreadyMember is computed for the caller only (repo.find with token student id); studentCount is an aggregate shown by design (D14). No per-student existence oracle.",
+        "artifact": null
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "resolveCode does not count JOIN_CODE_EXPIRED or JOINING_CLOSED outcomes as failures (src/modules/enrollments/enrollment.service.ts lines 107-115), so these act as free oracles that a code number exists or existed. The attacker's cost is still dominated by invalid guesses. Counting every non-success lookup would remove the free probe.",
+      "The per-IP join limiter (src/http/middleware/rate-limit.ts) runs before authentication and counts unauthenticated and failed requests. One client behind a shared school NAT can use up the 60/min budget and block joins for every student on that IP while it keeps sending. Consider keying the IP limiter after authentication, or adding a per-user dimension.",
+      "MemoryRateLimiter is fixed-window, so up to 2x the budget fits across a window boundary. It is also per-process, so a multi-instance deployment would multiply every budget. The current single-container deployment is unaffected."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fenrollments%2Fendpoints.ts%23%2Fv1%2Fenrollments%2A::src%2Fmodules%2Fenrollments%2Fenrollment.service.ts%23resolveCode::profile%2Fquick%2Fall-in-scope-subsystems::RESOURCE-EXHAUSTION-AND-AVAILABILITY.md%23Pre-authentication%20work%20imbalance",
+    "canonical_refs": {
+      "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments*",
+      "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Pre-authentication work imbalance"
+    },
+    "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments*",
+    "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Pre-authentication work imbalance",
+    "starting_paths": [
+      "src/modules/enrollments",
+      "src/modules/classrooms/join-code.repository.ts",
+      "src/lib/rate-limiter.ts",
+      "src/app.ts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Pre-authentication work imbalance",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Core discipline",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Universal moves",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h3-enrollments",
+    "reviewed_paths": [
+      "src/app.ts",
+      "src/http/middleware/rate-limit.ts",
+      "src/http/route.ts",
+      "src/lib/rate-limiter.ts",
+      "src/modules/enrollments/enrollment.controller.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h3-enrollments",
+        "reviewed_paths": [
+          "src/modules/enrollments/enrollment.controller.ts",
+          "src/http/route.ts",
+          "src/http/middleware/rate-limit.ts",
+          "src/app.ts"
+        ],
+        "invariant": "Work before authentication on /v1/enrollments* is bounded and cheap.",
+        "method": "source",
+        "result": "limitByIp runs before authenticate(): one in-memory Map hit. express.json caps bodies at 10 kB; authenticate does a regex and HS256 jose verify (no DB, no external call). The DB lookup in resolveCode happens only after auth and role check. No amplification before auth.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h3-enrollments",
+        "reviewed_paths": ["src/lib/rate-limiter.ts"],
+        "invariant": "Limiter memory is bounded.",
+        "method": "source",
+        "result": "MemoryRateLimiter.sweep drops expired windows at most once per minute on hit(); retained keys are bounded by distinct IPs/students active within one window. Key cardinality from spoofed client IPs depends on TRUST_PROXY handling, which is peer-owned (h4-platform trusted-proxy unit).",
+        "artifact": null
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "resolveCode does not count JOIN_CODE_EXPIRED or JOINING_CLOSED outcomes as failures (src/modules/enrollments/enrollment.service.ts lines 107-115), so these act as free oracles that a code number exists or existed. The attacker's cost is still dominated by invalid guesses. Counting every non-success lookup would remove the free probe.",
+      "The per-IP join limiter (src/http/middleware/rate-limit.ts) runs before authentication and counts unauthenticated and failed requests. One client behind a shared school NAT can use up the 60/min budget and block joins for every student on that IP while it keeps sending. Consider keying the IP limiter after authentication, or adding a per-user dimension.",
+      "MemoryRateLimiter is fixed-window, so up to 2x the budget fits across a window boundary. It is also per-process, so a multi-instance deployment would multiply every budget. The current single-container deployment is unaffected."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fenrollments%2Fendpoints.ts%23%2Fv1%2Fenrollments%2A::src%2Fmodules%2Fenrollments%2Fenrollment.service.ts%23resolveCode::profile%2Fquick%2Fall-in-scope-subsystems::RESOURCE-EXHAUSTION-AND-AVAILABILITY.md%23Quota-accounting%20scope%20and%20reset%20gaps",
+    "canonical_refs": {
+      "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments*",
+      "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Quota-accounting scope and reset gaps"
+    },
+    "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments*",
+    "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Quota-accounting scope and reset gaps",
+    "starting_paths": [
+      "src/modules/enrollments",
+      "src/modules/classrooms/join-code.repository.ts",
+      "src/lib/rate-limiter.ts",
+      "src/app.ts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Quota-accounting scope and reset gaps",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Core discipline",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Universal moves",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "none",
+    "attempts": [],
+    "wave": 1,
+    "status": "candidate",
+    "agent_id": "h3-enrollments",
+    "reviewed_paths": [
+      "docs/decisions.md",
+      "src/app.ts",
+      "src/http/middleware/rate-limit.ts",
+      "src/http/route.ts",
+      "src/lib/rate-limiter.ts",
+      "src/modules/enrollments/enrollment.controller.ts",
+      "src/modules/enrollments/enrollment.service.ts",
+      "test/helpers.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h3-enrollments",
+        "reviewed_paths": [
+          "src/modules/enrollments/enrollment.service.ts",
+          "src/lib/rate-limiter.ts"
+        ],
+        "invariant": "Limiter gate and accounting are atomic with respect to the code lookup.",
+        "method": "source",
+        "result": "resolveCode calls failedAttempts.check(key) (line 93, read-only, count < limit), awaits findLatestByCode (line 100), and only then calls failedAttempts.hit(key) (line 104). MemoryRateLimiter.check does not reserve a slot, so every request admitted while earlier lookups are in flight is evaluated; the only bound on the burst is the per-IP limiter (60/min, src/app.ts line 49).",
+        "artifact": null
+      },
+      {
+        "agent_id": "h3-enrollments",
+        "reviewed_paths": [
+          "src/modules/enrollments/enrollment.service.ts",
+          "src/lib/rate-limiter.ts",
+          "src/app.ts",
+          "test/helpers.ts"
+        ],
+        "invariant": "D7 per-student budget: at most 5 failed join-code lookups per student per 15 minutes are evaluated against the database.",
+        "method": "local",
+        "result": "Local vitest (scratch copy, loopback Postgres, dummy users t1/s1/s2): 50 concurrent wrong-code POST /v1/enrollments/preview from one student produced 11 JOIN_CODE_INVALID evaluations and 39 RATE_LIMITED; 10 sequential wrong guesses from another student produced exactly 5 evaluations. The concurrent burst exceeds the 5-failure budget because check() runs before the awaited DB lookup and hit() runs after it.",
+        "artifact": "agents/h3-enrollments/artifacts/join-fail-race.txt"
+      },
+      {
+        "agent_id": "h3-enrollments",
+        "reviewed_paths": ["src/lib/rate-limiter.ts", "src/app.ts", "docs/decisions.md"],
+        "invariant": "Failed-attempt accounting is scoped to the student and cannot be reset by the attacker.",
+        "method": "source",
+        "result": "Key is join-fail:<token user id>; successes and expired/closed outcomes do not reset it; window is fixed 15 min. Budget is per account by documented design (D7), and any Google account can choose the student role at first sign-in, so multi-account scaling is an accepted design property rather than a code defect. Fixed-window boundary allows up to 10 failures across a window edge (hardening).",
+        "artifact": null
+      },
+      {
+        "agent_id": "v1-limiter-race",
+        "reviewed_paths": [
+          "src/modules/enrollments/enrollment.controller.ts",
+          "src/modules/enrollments/enrollment.service.ts",
+          "src/lib/rate-limiter.ts",
+          "src/app.ts",
+          "src/http/middleware/rate-limit.ts",
+          "src/http/route.ts",
+          "docs/decisions.md"
+        ],
+        "invariant": "Limiter gate and accounting are atomic with respect to the join-code lookup (D7).",
+        "method": "source",
+        "result": "Confirmed. resolveCode calls check() at line 93, which is read-only (rate-limiter.ts lines 42-46), awaits findLatestByCode at line 100, and calls hit() at line 104 only for unknown or regenerated codes. No lock, reservation or other per-student serialization exists on the path. limitByIp (60/min per req.ip) is the only bound on the burst. Hunter trace lines verified; the entrypoint line was corrected from 16 to 15, the mount() call.",
+        "artifact": null
+      },
+      {
+        "agent_id": "v1-limiter-race",
+        "reviewed_paths": [
+          "src/modules/enrollments/enrollment.service.ts",
+          "src/lib/rate-limiter.ts",
+          "src/app.ts",
+          "test/helpers.ts"
+        ],
+        "invariant": "D7: at most 5 failed join-code lookups per student per 15 minutes are evaluated.",
+        "method": "local",
+        "result": "Violated. Over 3 runs, 55 concurrent wrong codes evaluated 11/10/11 as invalid on /v1/enrollments/preview and 6/5/7 on /v1/enrollments. The sequential control gave 5 every run, and the next request after a burst got 429. A limiter that reserves at the gate gave exactly 5 every run, which supports the proposed fix. The hunter test's filter compared guesses with createClassroom(...).code, which is undefined (the real field is joinCode.code). Its guess range was unlikely to hit the live code, so its result still stands.",
+        "artifact": "agents/v1-limiter-race/artifacts/limiter-race-verify.txt"
+      },
+      {
+        "agent_id": "v1-limiter-race",
+        "reviewed_paths": ["src/modules/enrollments/enrollment.service.ts", "docs/decisions.md"],
+        "invariant": "Severity and remediation match only what the evidence establishes.",
+        "method": "source",
+        "result": "Low overall is supported: the impact is a bounded speed-up of brute force with a recoverable outcome (D14 data only, D11 removal and regeneration). The proposed fix needs refund on expired, closed and success outcomes to keep D16, and a refund method on the RateLimiter interface. The corrected code_changes include both, and keep the reservation when the lookup throws (fails closed).",
+        "artifact": null
+      }
+    ],
+    "result_fingerprints": ["enrollments/resolveCode:failed-attempt-limiter-check-then-hit-race"],
+    "unresolved": [],
+    "x_hardening": [
+      "resolveCode does not count JOIN_CODE_EXPIRED or JOINING_CLOSED outcomes as failures (src/modules/enrollments/enrollment.service.ts lines 107-115), so these act as free oracles that a code number exists or existed. The attacker's cost is still dominated by invalid guesses. Counting every non-success lookup would remove the free probe.",
+      "The per-IP join limiter (src/http/middleware/rate-limit.ts) runs before authentication and counts unauthenticated and failed requests. One client behind a shared school NAT can use up the 60/min budget and block joins for every student on that IP while it keeps sending. Consider keying the IP limiter after authentication, or adding a per-user dimension.",
+      "MemoryRateLimiter is fixed-window, so up to 2x the budget fits across a window boundary. It is also per-process, so a multi-instance deployment would multiply every budget. The current single-container deployment is unaffected."
+    ],
+    "x_decisions": {
+      "enrollments/resolveCode:failed-attempt-limiter-check-then-hit-race": "confirmed"
+    }
+  }
+]

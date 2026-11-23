@@ -14,6 +14,7 @@ the Expo app lives in [wide-impact-joinly-mobile](https://github.com/ammarelgml/
 | Development approach  | [docs/approach.md](docs/approach.md), decision log in [docs/decisions.md](docs/decisions.md) |
 | AI usage disclosure   | [docs/ai-usage.md](docs/ai-usage.md)                                                         |
 | Manual test checklist | [docs/testing-checklist.md](docs/testing-checklist.md)                                       |
+| Security audit        | [docs/security-audit/REPORT.md](docs/security-audit/REPORT.md)                               |
 
 ## Overview
 
@@ -239,6 +240,11 @@ the release step first (`dist/scripts/release.js`: migrations, then the demo see
 - **Refresh rotation has no grace window.** If the network drops the response to a refresh, the app's
   retry presents a rotated token and the session is revoked, so the user signs in again. Strict by
   choice; a few-seconds grace window is the usual refinement.
+- **Demo accounts are shared.** Teacher demo and Student demo are one account each for every
+  caller, so anyone using them sees and can change the same data. Use the demo accounts together, or
+  your own Google accounts together; a real account that joins a demo class is visible to every demo
+  session until the next deploy reseeds it. Turn `DEMO_LOGIN_ENABLED` off for any deployment that
+  serves real users.
 - **One role per account**, chosen at first sign-in and not changeable in the app (an admin task).
 - **Out of scope:** anything inside a classroom beyond the roster (posts, assignments, grades),
   co-teachers, push notifications, account deletion, and a web client.

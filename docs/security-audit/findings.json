@@ -1,0 +1,367 @@
+[
+  {
+    "verdict": "confirmed",
+    "fingerprint": "enrollments/resolveCode:failed-attempt-limiter-check-then-hit-race",
+    "title": "Per-student failed join-code limiter is check-then-act and admits concurrent bursts beyond the D7 budget",
+    "description": "EnrollmentService.resolveCode gates each lookup with the non-reserving failedAttempts.check(key), awaits findLatestByCode(code), and calls failedAttempts.hit(key) only after the lookup returns no usable code. Concurrent wrong guesses from one student all pass the gate before any failure is recorded, so more than the documented 5 failed lookups per 15 minutes are evaluated against the database. Independent local reproduction (3 runs, loopback PostgreSQL, dummy users): 55 concurrent wrong codes to POST /v1/enrollments/preview from one student evaluated 10-11 as JOIN_CODE_INVALID; the same burst to POST /v1/enrollments evaluated 5-7. A sequential control evaluated exactly 5 every run. Once the counter reaches 5, later requests are blocked for the rest of the window, so the overshoot is limited to the requests in flight during the first lookups. On a single IP that is bounded from source by the per-IP join limiter (60 requests per minute), so at most about 60 evaluations per student per window per IP (about 12x). Using more IPs raises that bound.",
+    "root_cause": "src/modules/enrollments/enrollment.service.ts resolveCode (line 93) uses RateLimiter.check(), which only reads count < limit (src/lib/rate-limiter.ts line 42-46), as the gate and records the failure with hit() (line 104) only after the awaited findLatestByCode() at line 100. Gate and accounting are not atomic across concurrent requests for the same join-fail:<studentId> key.",
+    "intended_behavior": "docs/decisions.md D7: per student, at most 5 failed join-code lookups per 15 minutes, then 429 with Retry-After. Each guess must reserve its slot before the lookup, so concurrency cannot exceed the budget. Expired and closed outcomes must still not count (D16).",
+    "trace": [
+      {
+        "kind": "entrypoint",
+        "file": "src/modules/enrollments/enrollment.controller.ts",
+        "line": 15,
+        "scope": "enrollmentController (previewEnrollment mount; joinClassroom mount at line 23)",
+        "description": "An authenticated student POSTs {code} to /v1/enrollments/preview (or {code, via} to /v1/enrollments). Only limitByIp(joinIpLimiter, 'join') (line 13) and authenticate/role/zod in mount() (src/http/route.ts lines 46-47) run before the handler."
+      },
+      {
+        "kind": "propagation",
+        "file": "src/modules/enrollments/enrollment.service.ts",
+        "line": 93,
+        "scope": "EnrollmentService.resolveCode",
+        "description": "failedAttempts.check(key) returns allowed while count < 5 and records nothing, so every request that arrives concurrently passes."
+      },
+      {
+        "kind": "propagation",
+        "file": "src/modules/enrollments/enrollment.service.ts",
+        "line": 100,
+        "scope": "EnrollmentService.resolveCode",
+        "description": "The awaited findLatestByCode(code) yields the event loop, so further requests pass check() before any failure is counted."
+      },
+      {
+        "kind": "sink",
+        "file": "src/modules/enrollments/enrollment.service.ts",
+        "line": 104,
+        "scope": "EnrollmentService.resolveCode",
+        "description": "failedAttempts.hit(key) runs only after the lookup. By the time the counter passes 5, the extra guesses have already been evaluated and answered."
+      }
+    ],
+    "evidence": [
+      {
+        "file": "src/lib/rate-limiter.ts",
+        "line": 42,
+        "description": "check() computes allowed = count < limit and never increments. hit() at line 33 is the only mutator, and the interface comment at line 19 documents check() as non-recording."
+      },
+      {
+        "file": "src/app.ts",
+        "line": 48,
+        "description": "joinFailures is MemoryRateLimiter(5, 15 min) (D7). joinIp at line 49 is MemoryRateLimiter(60, 1 min), applied per req.ip by src/http/middleware/rate-limit.ts line 8, and is the only bound on the burst size."
+      },
+      {
+        "file": "docs/decisions.md",
+        "line": 14,
+        "description": "D7 states the per-student 5-per-15-minutes guarantee and the roughly 2%-per-hour-per-account brute-force argument that depends on it."
+      },
+      {
+        "file": "src/modules/enrollments/enrollment.service.ts",
+        "line": 107,
+        "description": "Expired and closed outcomes return without hit() (D16), so a fix must keep them uncounted, for example with a refund."
+      }
+    ],
+    "conditions": [
+      {
+        "kind": "authentication_level",
+        "description": "The attacker holds a valid student access token. Any Google account can sign in and choose the student role at first sign-in (D2)."
+      },
+      {
+        "kind": "timing_dependency",
+        "description": "Wrong guesses must be in flight together within the lookup latency window. The overshoot depends on concurrency and DB or pool latency: locally 5-11 evaluations per 55-request burst."
+      },
+      {
+        "kind": "system_configuration",
+        "description": "The per-IP join limiter (60/min per req.ip) caps one burst per IP. More source IPs, or how forwarded headers are handled under TRUST_PROXY (tracked separately), change the ceiling. A single in-memory instance is assumed, as src/lib/rate-limiter.ts documents."
+      }
+    ],
+    "execution": {
+      "attacker_perspective": "Authenticated dummy student on a single client IP (loopback), against a local app instance from createApp with default limiters and a disposable loopback PostgreSQL.",
+      "payloads": [
+        "Promise.all of 55 POST /v1/enrollments/preview with the same bearer token, bodies {\"code\":\"200000\"}..{\"code\":\"200055\"} excluding the live code",
+        "Promise.all of 55 POST /v1/enrollments with bodies {\"code\":\"2000NN\",\"via\":\"code\"} from a second student on a fresh app instance",
+        "Control: 8 sequential POST /v1/enrollments/preview wrong codes from a student on a fresh app instance"
+      ],
+      "instructions": [
+        "Copy the repository to scratch without node_modules, symlink node_modules, and add test/limiter-race-verify.test.ts (artifact agents/v1-limiter-race/artifacts/limiter-race-verify.test.ts).",
+        "Run env -i PATH=<repo>/node_modules/.bin:$PATH HOME=$HOME TEST_DATABASE_URL=postgres://joinly:joinly@localhost:5432/joinly_test timeout 120 vitest run test/limiter-race-verify.test.ts.",
+        "Count JOIN_CODE_INVALID responses in each concurrent burst and compare them with the sequential control. The third case swaps in a limiter that reserves at the gate and shows the burst bounded at exactly 5."
+      ],
+      "observed_result": "Across 3 runs: preview concurrent invalid=11/10/11 of 55 (rest 429 RATE_LIMITED); join concurrent invalid=6/5/7; sequential control invalid=5 every run; a correct code after the burst got 429; the reserve-at-gate model gave invalid=5 every run. Artifact: agents/v1-limiter-race/artifacts/limiter-race-verify.txt. In run 2 the join case produced exactly 5, so the join overshoot depends on timing. Consistent with the hunter's result (11 of 50)."
+    },
+    "remediation": {
+      "strategy": "Reserve the attempt synchronously before the awaited lookup, with an atomic increment-and-compare, and refund the reservation on every non-failure outcome (expired, closed, success) so D16 still holds. A lookup that throws keeps its reservation, which fails closed. If the service ever runs as several instances, use a shared atomic store such as Postgres UPDATE ... RETURNING or Redis INCR. Add a regression test that sends N concurrent wrong guesses and asserts at most 5 JOIN_CODE_INVALID. Local modelling of reserve-at-gate gave exactly 5.",
+      "code_changes": [
+        {
+          "file_name": "src/lib/rate-limiter.ts",
+          "fixed_code": "// RateLimiter interface: add\n/** Gives back one previously recorded hit (e.g. a reservation that turned out not to be a failure). */\nrefund(key: string): void;\n\n// MemoryRateLimiter: add\nrefund(key: string): void {\n  const now = this.clock.now().getTime();\n  const w = this.windows.get(key);\n  if (w && w.resetAt > now && w.count > 0) w.count -= 1;\n}"
+        },
+        {
+          "file_name": "src/modules/enrollments/enrollment.service.ts",
+          "fixed_code": "private async resolveCode(studentId: string, code: string): Promise<string> {\n  const key = `join-fail:${studentId}`;\n  const gate = this.failedAttempts.hit(key); // reserve synchronously, before any await\n  if (!gate.allowed) {\n    throw new AppError('RATE_LIMITED', 'Too many invalid codes. Wait and try again.', {\n      retryAfterSeconds: gate.retryAfterSeconds,\n    });\n  }\n  const found = await new JoinCodeRepository(this.db).findLatestByCode(code);\n  const now = this.clock.now();\n  if (!found || found.revokedReason === 'regenerated') throw invalidCode(); // keeps the reservation\n  this.failedAttempts.refund(key); // only invalid guesses count (D16)\n  if (found.revokedReason === 'expired' || found.expiresAt <= now) {\n    throw new AppError('JOIN_CODE_EXPIRED', 'This code has expired. Ask your teacher for a new one.');\n  }\n  if (!found.joiningOpen) {\n    throw new AppError('JOINING_CLOSED', 'The teacher has closed joining for this class.');\n  }\n  return found.classroomId;\n}"
+        }
+      ]
+    },
+    "severity": {
+      "likelihood": {
+        "score": "medium",
+        "reason": "Any student account can trigger it with ordinary concurrent HTTP requests. The gain depends on timing and is capped per IP by the 60/min join limiter."
+      },
+      "impact": {
+        "score": "low",
+        "reason": "Demonstrated: about 2x (up to 11 against a budget of 5) per student per window locally. From source the ceiling is about 12x per IP. This speeds up join-code brute force, which can end in an unauthorized enrollment. That exposes only the D14 summary and is recoverable: the teacher can remove the student and regenerate the code. The per-account budget is already soft, because student accounts are cheap to create."
+      },
+      "overall_severity": "low"
+    },
+    "confidence": {
+      "score": "high",
+      "reason": "The check-await-hit ordering is in the source. Independent local runs reproduced an overshoot on preview every time (10-11 against 5), with an exact sequential control. The reserve-at-gate model removed the overshoot. Only the magnitude depends on timing."
+    }
+  },
+  {
+    "verdict": "needs_validation",
+    "fingerprint": "src/http/middleware/rate-limit.ts:limitByIp:trust-proxy-hop-count",
+    "title": "Per-IP auth and join rate limits only work if TRUST_PROXY matches Railway's edge hop count. A mismatch either puts all clients in one bucket or lets clients spoof X-Forwarded-For",
+    "description": "Google sign-in (POST /v1/auth/google), demo sign-in (/v1/auth/demo, when enabled) and token refresh (/v1/auth/refresh) share one in-memory per-IP limiter (30/min, scope 'auth'). Join preview and join share another (60/min, scope 'join'). mount() runs these limiters before authenticate (route.ts:46-47), so both are reached before any authentication. Both limiters key on req.ip. Express 5.3.0 derives req.ip from the bare numeric TRUST_PROXY hop count, which defaults to 0. If the deployed value is lower than the real proxy hops in front of the container, req.ip is the proxy's address for every client. One anonymous client sending more than 30 auth requests a minute (or 60 join requests) would then get 429 returned to every user's Google sign-in and refresh (or join) until the window resets, and this lasts as long as the client keeps sending. If the value is higher than the real hops, the leftmost X-Forwarded-For entries, which the client controls, become req.ip, and the client can rotate buckets to bypass the IP limits. The bypass impact is limited: sign-in still needs a valid Google ID token, refresh tokens are 32 random bytes, and join-code guessing is still capped by the per-student 5-failures/15-min limiter, which does not use req.ip. The code is correct only when TRUST_PROXY equals the exact number of appending proxy hops. The README tells operators to set it to 1 for Railway. The value actually deployed, and how Railway's edge handles X-Forwarded-For, are not in the repository.",
+    "claimed_root_cause": "limitByIp keys on req.ip. Express derives req.ip from a bare hop count (app.set('trust proxy', config.trustProxy)), and that count comes from an env var with a 0 default. Nothing checks that the immediate peer is the platform edge, and nothing guards against a wrong value. So whether the per-IP limits isolate clients depends entirely on an unverified deployment variable matching the platform's proxy topology.",
+    "trace": [
+      {
+        "kind": "entrypoint",
+        "file": "src/modules/auth/auth.controller.ts",
+        "line": 23,
+        "scope": "authController",
+        "description": "limited = [limitByIp(deps.authLimiter, 'auth')] is applied to googleSignIn (line 30), demoSignIn when enabled (line 40) and refresh (line 49). All three are public, anonymous endpoints."
+      },
+      {
+        "kind": "propagation",
+        "file": "src/config/config.ts",
+        "line": 28,
+        "scope": "EnvSchema.TRUST_PROXY",
+        "description": "TRUST_PROXY: z.coerce.number().int().min(0).default(0). It maps to config.trustProxy at line 73."
+      },
+      {
+        "kind": "propagation",
+        "file": "src/app.ts",
+        "line": 65,
+        "scope": "createApp",
+        "description": "app.set('trust proxy', config.trustProxy). In express 5.3.0 (lib/utils.js:202-205), compileTrust(number) returns (a,i)=>i<val. That is a pure hop count with no check on the address."
+      },
+      {
+        "kind": "propagation",
+        "file": "src/app.ts",
+        "line": 50,
+        "scope": "createApp limiters",
+        "description": "authIp = new MemoryRateLimiter(30, MINUTE, clock): one process-wide fixed window per key. joinIp (line 49) is 60/min."
+      },
+      {
+        "kind": "propagation",
+        "file": "src/http/route.ts",
+        "line": 46,
+        "scope": "mount",
+        "description": "Endpoint middleware (the limiter) runs before authenticate (line 47), so the join IP limiter is also reached without authentication."
+      },
+      {
+        "kind": "sink",
+        "file": "src/http/middleware/rate-limit.ts",
+        "line": 8,
+        "scope": "limitByIp",
+        "description": "limiter.hit(`${scope}:${req.ip}`). Once over the limit, it throws RATE_LIMITED (lines 10-13) for every request that shares that req.ip."
+      }
+    ],
+    "evidence": [
+      {
+        "file": "src/config/config.ts",
+        "line": 28,
+        "description": "TRUST_PROXY defaults to 0. Behind any proxy this makes req.ip the proxy's socket address."
+      },
+      {
+        "file": "src/app.ts",
+        "line": 65,
+        "description": "The numeric hop count goes straight into Express trust proxy, with no address allowlist."
+      },
+      {
+        "file": "src/http/middleware/rate-limit.ts",
+        "line": 8,
+        "description": "The rate-limit key comes only from req.ip."
+      },
+      {
+        "file": "src/modules/auth/auth.controller.ts",
+        "line": 49,
+        "description": "Token refresh shares the 30/min auth bucket, so a merged bucket also blocks session renewal for all clients."
+      },
+      {
+        "file": "src/modules/enrollments/enrollment.controller.ts",
+        "line": 13,
+        "description": "Join preview and join use limitByIp(joinIpLimiter,'join') (60/min) on the same req.ip."
+      },
+      {
+        "file": "README.md",
+        "line": 131,
+        "description": "The README documents TRUST_PROXY default 0 and says 'Railway: 1'. Line 230 lists TRUST_PROXY=1 in the production variables. Neither railway.json nor the Dockerfile sets it, so the deployed value is an operator fact."
+      },
+      {
+        "file": "src/lib/rate-limiter.ts",
+        "line": 33,
+        "description": "MemoryRateLimiter.hit is a fixed-window counter per key string. It has no notion of identity beyond the key, so the effect depends entirely on how req.ip is derived."
+      }
+    ],
+    "blockers": [
+      "The TRUST_PROXY value on the deployed Railway production service is not in source. README.md:131/230 tell operators to set 1, but railway.json and the Dockerfile do not set it, and .env.example has 0.",
+      "How many proxy hops Railway's edge adds in front of the container, and whether it appends to or overwrites a client-supplied X-Forwarded-For, are hosted-platform facts. They are not visible in the repository and cannot be observed locally."
+    ],
+    "validation_plan": {
+      "local": "Done in the bounded fixture agents/v2-trust-proxy/artifacts/trust-proxy-limiter.test.ts, which mounts the real limitByIp and MemoryRateLimiter (limit 2/min) on Express 5.3.0 and sends requests over supertest loopback. With trust proxy 0 and XFF set to 198.51.100.1, .2 and .3, the statuses were [200,200,429] (one merged bucket). With trust proxy 2 and XFF '203.0.113.<i>, 198.51.100.9', all 5 returned 200, with req.ip equal to the spoofed 203.0.113.<i>. With trust proxy 1, the same headers gave req.ip 198.51.100.9 and statuses [200,200,429] (correct per-client bucket). The source behavior is therefore reproduced. Only the deployed hop count remains open.",
+      "deployment": "The owner should check the production service's TRUST_PROXY variable in the Railway dashboard (expect 1). On a non-production review deployment of the same service type, temporarily log req.ip and req.ips for one request sent from a known client IP with the header 'X-Forwarded-For: 203.0.113.9'. Expected for TRUST_PROXY=1: req.ip is the known client IP, not 203.0.113.9, and not a private or edge address. This shows Railway adds exactly one hop that appends to the header. Do not send rate-limit load to production."
+    }
+  },
+  {
+    "verdict": "confirmed",
+    "fingerprint": "src/modules/auth/auth.service.ts:signInDemo:shared-demo-identity-anonymous-takeover",
+    "title": "Credential-free demo login gives any anonymous caller the shared demo-teacher identity, exposing and letting them remove real students who join its classrooms",
+    "description": "When DEMO_LOGIN_ENABLED=true, POST /v1/auth/demo issues a full access/refresh pair for the single seeded demo teacher (or demo student) to any unauthenticated caller. Nothing separates those shared identities from data created by real Google-authenticated users: a real student can join a demo-teacher classroom (the seeded 'Grade 8 Science' is open and has a live code, and the README QR walkthrough tells a teacher 'or Teacher demo' to show a code that a student scans). Once a real student has joined, every anonymous internet caller can mint a demo-teacher token and read that student's name, email and avatar through GET /v1/classrooms/:id/students, and can remove the student, rotate the code or close joining. The README documents the flag as on for the hosted review deployment, which also accepts real Google sign-in, and no code stops the flag from being on with NODE_ENV=production. Reproduced locally: a real student's email was returned to a separate anonymous demo-teacher session, and the same session removed them (204).",
+    "root_cause": "AuthService.signInDemo (auth.service.ts:47-53) issues tokens for a fixed, shared, publicly reachable principal with no proof of possession. Classroom ownership and roster authorization then treat that principal like any real teacher, and nothing stops real users from enrolling in demo-owned classrooms, so the roster PII of real principals reaches an identity that anyone can use.",
+    "intended_behavior": "Demo access should never give authority over, or visibility into, data belonging to real principals. Either demo identities are isolated (real accounts cannot join demo-owned classrooms, or demo-owned rosters hide or omit non-demo users), or each demo login gets its own private, ephemeral sandbox identity and data, and the demo door is refused in any environment that also serves real users.",
+    "trace": [
+      {
+        "kind": "entrypoint",
+        "file": "src/modules/auth/auth.controller.ts",
+        "line": 34,
+        "scope": "authController",
+        "description": "When deps.demoLoginEnabled is true, mounts POST /v1/auth/demo (endpoints.ts:32 access 'public'), behind only the 30/min per-IP auth limiter."
+      },
+      {
+        "kind": "propagation",
+        "file": "src/modules/auth/auth.service.ts",
+        "line": 47,
+        "scope": "AuthService.signInDemo",
+        "description": "Looks up the fixed google_sub 'demo:teacher' or 'demo:student' and calls session() with no credential check."
+      },
+      {
+        "kind": "propagation",
+        "file": "src/modules/auth/token.service.ts",
+        "line": 42,
+        "scope": "TokenService.issueForNewSession",
+        "description": "Mints a new refresh family and an access token carrying the shared demo user's id and role."
+      },
+      {
+        "kind": "propagation",
+        "file": "scripts/seed.ts",
+        "line": 86,
+        "scope": "seedDemoData",
+        "description": "Creates 'Grade 8 Science' owned by the demo teacher. ClassroomService.create (classroom.service.ts:42) issues a live join code, and joining is open, so real students can enroll."
+      },
+      {
+        "kind": "propagation",
+        "file": "src/modules/classrooms/classroom.service.ts",
+        "line": 110,
+        "scope": "ClassroomService.roster",
+        "description": "The only authorization is findOwned(id, teacherId), which the shared demo-teacher token satisfies."
+      },
+      {
+        "kind": "sink",
+        "file": "src/modules/classrooms/classroom.repository.ts",
+        "line": 104,
+        "scope": "ClassroomRepository.roster",
+        "description": "Returns u.name, u.email and u.avatar_url for every enrolled student, real users included, to whoever holds a demo-teacher token."
+      }
+    ],
+    "evidence": [
+      {
+        "file": "src/modules/auth/auth.service.ts",
+        "line": 51,
+        "description": "The only check is that the seeded row exists; no secret, Google token or other proof is required."
+      },
+      {
+        "file": "src/config/config.ts",
+        "line": 27,
+        "description": "DEMO_LOGIN_ENABLED is a plain boolean with no guard against NODE_ENV=production or against Google sign-in also being on."
+      },
+      {
+        "file": "README.md",
+        "line": 156,
+        "description": "States DEMO_LOGIN_ENABLED=true is on for the hosted review deployment, where reviewers also sign in with their own Google accounts (README.md:154)."
+      },
+      {
+        "file": "README.md",
+        "line": 188,
+        "description": "QR walkthrough: phone A signs in as a teacher 'or Teacher demo' and shows the code; phone B signs in as a student (possibly a real Google account) and joins."
+      },
+      {
+        "file": "README.md",
+        "line": 231,
+        "description": "Railway setup tells the review deployment to set DEMO_LOGIN_ENABLED=true and SEED_DEMO_DATA=true alongside NODE_ENV=production."
+      },
+      {
+        "file": "src/modules/classrooms/classroom.repository.ts",
+        "line": 111,
+        "description": "The roster selects u.email for each enrolled student."
+      },
+      {
+        "file": "agents/v3-demo-login/artifacts/demo-takeover.test.ts",
+        "line": 1,
+        "description": "Local vitest/supertest reproduction against the disposable loopback Postgres with dummy data."
+      },
+      {
+        "file": "agents/v3-demo-login/artifacts/run-output.txt",
+        "line": 1,
+        "description": "Observed output: JOIN 201, ANON_DEMO 200 teacher, ROSTER 200 including real@example.com, REMOVE 204."
+      }
+    ],
+    "conditions": [
+      {
+        "kind": "system_configuration",
+        "description": "DEMO_LOGIN_ENABLED=true and the demo rows are seeded (SEED_DEMO_DATA=true). The README documents both for the hosted review deployment; any other deployment's setting is not visible in source."
+      },
+      {
+        "kind": "user_interaction",
+        "description": "A real Google-authenticated student must join a classroom owned by the demo teacher, for example by scanning a code a reviewer shows from Teacher demo, as the README walkthrough suggests."
+      },
+      {
+        "kind": "data_state",
+        "description": "The enrollment must still exist: every release with SEED_DEMO_DATA=true deletes and recreates the demo teacher's classrooms, which cascades to enrollments, so the exposure lasts until the next deploy."
+      },
+      {
+        "kind": "authentication_level",
+        "description": "The attacker needs no credentials. The 30 requests/min per-IP limiter on /v1/auth/demo is the only control."
+      }
+    ],
+    "execution": {
+      "attacker_perspective": "Anonymous internet client with no account, against an instance where demo login is enabled and a real Google user has joined a demo-teacher classroom.",
+      "payloads": [
+        "POST /v1/auth/demo {\"account\":\"teacher\"}",
+        "GET /v1/classrooms (Bearer <demo access token>) to find the 'Grade 8 Science' id",
+        "GET /v1/classrooms/<scienceId>/students (Bearer <demo access token>)",
+        "DELETE /v1/classrooms/<scienceId>/students/<realStudentId> (Bearer <demo access token>)"
+      ],
+      "instructions": [
+        "In a scratch copy of the repository, using the disposable local test Postgres, build the app with makeApp({auth:{demoLoginEnabled:true}}) and run seedDemoData(db, testConfig({demoLoginEnabled:true})).",
+        "Sign in as Teacher demo and read the live join code of 'Grade 8 Science' from GET /v1/classrooms.",
+        "Sign in a dummy real student through the fake Google verifier (idToken 'google:real', role student), then POST /v1/enrollments {code, via:'qr'}.",
+        "As a separate caller with no credentials, POST /v1/auth/demo {account:'teacher'}, then GET /v1/classrooms/<id>/students with the returned token.",
+        "With the same token, DELETE /v1/classrooms/<id>/students/<real student id>."
+      ],
+      "observed_result": "JOIN 201. The anonymous POST /v1/auth/demo returned 200 with role teacher. The roster returned 200 with emails [\"real@example.com\",\"demo.student@joinly.app\",\"layla.mostafa@joinly.app\",\"karim.adel@joinly.app\"], so the real student's email reached an unauthenticated caller. The DELETE returned 204, removing the real student. Testing stopped there."
+    },
+    "remediation": {
+      "strategy": "Stop shared demo identities from reaching real principals' data at the authorization layer, rather than relying on the deployment flag. (1) Mark demo/seed users explicitly, for example with an is_demo column or a check on the google_sub prefix in one helper. In EnrollmentService.join/preview, reject a non-demo student joining a classroom whose teacher is a demo user, and a demo student joining a non-demo teacher's classroom. Alternatively, have ClassroomService.roster return only demo/seed students when the caller is a demo teacher. (2) Better still, give each POST /v1/auth/demo call its own ephemeral demo user and seeded classroom set, so callers never share a principal. (3) Refuse to boot with DEMO_LOGIN_ENABLED=true when NODE_ENV=production unless an explicit review-only acknowledgement is set, and document that the review deployment must not serve real users. The fix must enforce isolation in the server; moving trust to a client-side 'demo' flag is not enough.",
+      "code_changes": [
+        {
+          "file_name": "src/modules/enrollments/enrollment.service.ts",
+          "fixed_code": "// Before inserting an enrollment (and in preview), after resolving the classroom:\nconst isDemo = (sub: string) => sub.startsWith('demo:') || sub.startsWith('seed:');\nif (isDemo(teacher.google_sub) !== isDemo(student.google_sub)) {\n  throw new AppError('JOIN_CODE_INVALID', 'This code is not valid.');\n}"
+        }
+      ]
+    },
+    "severity": {
+      "likelihood": {
+        "score": "low",
+        "reason": "Needs the demo flag on (documented only for the hosted review deployment) and a real Google user who joins a demo-teacher classroom before the next reseed. The attacker side then takes no skill and no credentials."
+      },
+      "impact": {
+        "score": "medium",
+        "reason": "Discloses the name, email and Google avatar URL of real users who joined demo-teacher classrooms to anyone, and lets anyone remove them, rotate codes or close joining. The impact is limited to those users and classrooms; other real teachers' data is untouched because of ownership checks."
+      },
+      "overall_severity": "low"
+    },
+    "confidence": {
+      "score": "high",
+      "reason": "The source trace was verified line by line, and a bounded local supertest run showed both the disclosure and the removal. Only the live deployment's flag value is unobserved, and that is stated as a condition."
+    }
+  }
+]
