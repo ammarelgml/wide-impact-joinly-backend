@@ -3,6 +3,7 @@ import { pino } from 'pino';
 import { describe, expect, it } from 'vitest';
 import { buildOpenApiDocument } from '../src/http/openapi.js';
 import { decodeCursor, encodeCursor } from '../src/lib/cursor.js';
+import { KeyedMutex } from '../src/lib/keyed-mutex.js';
 import { REDACT_PATHS } from '../src/lib/logger.js';
 import { MemoryRateLimiter } from '../src/lib/rate-limiter.js';
 import { generateJoinCode } from '../src/modules/classrooms/join-code.js';
@@ -78,5 +79,31 @@ describe('OpenAPI document', () => {
       (m) => m[1]!,
     );
     for (const r of refs) expect(doc.components.schemas).toHaveProperty(r);
+  });
+});
+
+describe('KeyedMutex', () => {
+  it('runs tasks for one key in order, keeps going after a failure, and frees idle keys', async () => {
+    const mutex = new KeyedMutex();
+    const order: string[] = [];
+    const task = (name: string, ms: number, fail = false) => () =>
+      new Promise<string>((resolve, reject) =>
+        setTimeout(() => {
+          order.push(name);
+          if (fail) reject(new Error(name));
+          else resolve(name);
+        }, ms),
+      );
+    const a = mutex.run('k', task('a', 20));
+    const b = mutex.run('k', task('b', 1, true));
+    const c = mutex.run('k', task('c', 1));
+    const other = mutex.run('j', task('other', 1));
+    await expect(a).resolves.toBe('a');
+    await expect(b).rejects.toThrow('b');
+    await expect(c).resolves.toBe('c');
+    await other;
+    expect(order).toEqual(['other', 'a', 'b', 'c']);
+    await new Promise((r) => setTimeout(r, 0));
+    expect((mutex as unknown as { tails: Map<string, unknown> }).tails.size).toBe(0);
   });
 });

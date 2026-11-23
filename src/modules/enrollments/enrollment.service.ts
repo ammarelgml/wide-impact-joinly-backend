@@ -6,6 +6,7 @@ import { isForeignKeyViolation } from '../../db/database.js';
 import { AppError, notFound } from '../../lib/app-error.js';
 import type { Clock } from '../../lib/clock.js';
 import { decodeCursor, toPage } from '../../lib/cursor.js';
+import { KeyedMutex } from '../../lib/keyed-mutex.js';
 import type { RateLimiter } from '../../lib/rate-limiter.js';
 import { JoinCodeRepository } from '../classrooms/join-code.repository.js';
 import {
@@ -19,6 +20,8 @@ import {
  * so they behave identically, and regenerating a code disables both.
  */
 export class EnrollmentService {
+  private readonly lookups = new KeyedMutex();
+
   constructor(
     private readonly db: Database,
     private readonly clock: Clock,
@@ -87,9 +90,19 @@ export class EnrollmentService {
     }
   }
 
-  /** Maps a code to a joinable classroom id, or throws the precise reason it is not joinable. */
-  private async resolveCode(studentId: string, code: string): Promise<string> {
+  /**
+   * Maps a code to a joinable classroom id, or throws the precise reason it is not joinable.
+   *
+   * Lookups are serialised per student so the failed-attempt budget holds under
+   * concurrency: otherwise a burst of wrong guesses could all pass check() before
+   * any of them is counted by hit().
+   */
+  private resolveCode(studentId: string, code: string): Promise<string> {
     const key = `join-fail:${studentId}`;
+    return this.lookups.run(key, () => this.resolveCodeNow(key, code));
+  }
+
+  private async resolveCodeNow(key: string, code: string): Promise<string> {
     const gate = this.failedAttempts.check(key);
     if (!gate.allowed) {
       throw new AppError('RATE_LIMITED', 'Too many invalid codes. Wait and try again.', {

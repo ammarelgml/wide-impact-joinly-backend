@@ -9,6 +9,9 @@ export function createDatabase(connectionString: string, options: { max?: number
   const pool = new pg.Pool({
     connectionString,
     max: options.max ?? 10,
+    // Fail fast instead of queueing requests forever if the database stalls.
+    connectionTimeoutMillis: 10_000,
+    statement_timeout: 15_000,
     // Managed Postgres (Railway, Neon) needs TLS; local does not.
     ssl: /sslmode=require/.test(connectionString) ? { rejectUnauthorized: false } : undefined,
   });

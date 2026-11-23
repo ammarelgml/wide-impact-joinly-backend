@@ -120,6 +120,34 @@ describe('join', () => {
     expect(after.status).toBe(201);
   });
 
+  it('holds the failed-guess budget under a concurrent burst (security audit)', async () => {
+    const { http, student, code } = await setup();
+    const guesses = Array.from({ length: 30 }, (_, i) => String(100000 + i)).filter(
+      (g) => g !== code,
+    );
+    const results = await Promise.all(
+      guesses.map((g) =>
+        http.post('/v1/enrollments/preview').set(bearer(student)).send({ code: g }),
+      ),
+    );
+    const evaluated = results.filter((r) => r.body.code === 'JOIN_CODE_INVALID').length;
+    const limited = results.filter((r) => r.body.code === 'RATE_LIMITED').length;
+    expect(evaluated).toBe(5);
+    expect(limited).toBe(guesses.length - 5);
+  });
+
+  it('does not spend the budget on a code that resolves', async () => {
+    const { http, student, code } = await setup();
+    const wrong = code === '000000' ? '000001' : '000000';
+    const guess = () =>
+      http.post('/v1/enrollments/preview').set(bearer(student)).send({ code: wrong });
+    for (let i = 0; i < 4; i++) expect((await guess()).body.code).toBe('JOIN_CODE_INVALID');
+    const ok = await http.post('/v1/enrollments/preview').set(bearer(student)).send({ code });
+    expect(ok.status).toBe(200);
+    expect((await guess()).body.code).toBe('JOIN_CODE_INVALID');
+    expect((await guess()).body.code).toBe('RATE_LIMITED');
+  });
+
   it('limits per student, not globally', async () => {
     const { app, http, student, code } = await setup();
     for (let i = 0; i < 5; i++) {
