@@ -15,6 +15,11 @@ describe('generateJoinCode', () => {
     expect(generateJoinCode(() => 999_999)).toBe('999999');
     for (let i = 0; i < 1000; i++) expect(generateJoinCode()).toMatch(/^\d{6}$/);
   });
+
+  it('never issues the published demo code (security audit)', () => {
+    const draws = [246810, 246810, 7];
+    expect(generateJoinCode(() => draws.shift()!)).toBe('000007');
+  });
 });
 
 describe('cursor', () => {
@@ -86,14 +91,16 @@ describe('KeyedMutex', () => {
   it('runs tasks for one key in order, keeps going after a failure, and frees idle keys', async () => {
     const mutex = new KeyedMutex();
     const order: string[] = [];
-    const task = (name: string, ms: number, fail = false) => () =>
-      new Promise<string>((resolve, reject) =>
-        setTimeout(() => {
-          order.push(name);
-          if (fail) reject(new Error(name));
-          else resolve(name);
-        }, ms),
-      );
+    const task =
+      (name: string, ms: number, fail = false) =>
+      () =>
+        new Promise<string>((resolve, reject) =>
+          setTimeout(() => {
+            order.push(name);
+            if (fail) reject(new Error(name));
+            else resolve(name);
+          }, ms),
+        );
     const a = mutex.run('k', task('a', 20));
     const b = mutex.run('k', task('b', 1, true));
     const c = mutex.run('k', task('c', 1));

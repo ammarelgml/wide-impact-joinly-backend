@@ -225,3 +225,23 @@ describe('public pages', () => {
     expect(privacy.text).toContain('support@example.com');
   });
 });
+
+describe('refresh token retention (security audit)', () => {
+  it("clears a user's expired refresh tokens when they sign in again", async () => {
+    const { app, clock } = makeApp();
+    const s = await signIn(app, 'returning', 'student');
+    await signIn(app, 'returning', 'student');
+    const count = () =>
+      db
+        .selectFrom('refresh_tokens')
+        .select((eb) => eb.fn.countAll<string>().as('n'))
+        .where('user_id', '=', s.userId)
+        .executeTakeFirstOrThrow()
+        .then((r) => Number(r.n));
+    expect(await count()).toBe(2);
+
+    clock.advance(31 * 24 * 60 * MINUTE);
+    await signIn(app, 'returning', 'student');
+    expect(await count()).toBe(1);
+  });
+});

@@ -39,10 +39,11 @@ export class TokenService {
   }
 
   /** Starts a new refresh family (one per sign-in / device). */
-  issueForNewSession(user: AuthUser): Promise<TokenPair> {
-    return this.issuePair(user, randomUUID(), new RefreshTokenRepository(this.db)).then(
-      (r) => r.pair,
-    );
+  async issueForNewSession(user: AuthUser): Promise<TokenPair> {
+    const repo = new RefreshTokenRepository(this.db);
+    // Keep the table bounded: each sign-in clears this user's expired tokens.
+    await repo.deleteExpired(this.clock.now(), user.id);
+    return (await this.issuePair(user, randomUUID(), repo)).pair;
   }
 
   async rotate(rawRefreshToken: string): Promise<{ pair: TokenPair; userId: string }> {

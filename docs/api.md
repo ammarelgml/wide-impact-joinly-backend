@@ -275,7 +275,7 @@ List the teacher's classrooms. Newest first, cursor paginated.
 
 ### POST `/v1/classrooms`
 
-Create a classroom. The classroom is created with its first join code.
+Create a classroom. The classroom is created with its first join code. Limited to 30 new classrooms or codes per hour per account.
 
 **Auth:** Bearer token, teacher (owner of the classroom)
 
@@ -313,7 +313,7 @@ Create a classroom. The classroom is created with its first join code.
 }
 ```
 
-**Errors:** `UNAUTHENTICATED`, `TOKEN_EXPIRED`, `FORBIDDEN_ROLE`, `VALIDATION_FAILED`
+**Errors:** `RATE_LIMITED`, `UNAUTHENTICATED`, `TOKEN_EXPIRED`, `FORBIDDEN_ROLE`, `VALIDATION_FAILED`
 
 ### GET `/v1/classrooms/:id`
 
@@ -442,7 +442,7 @@ Get the live join code. Returns 404 NOT_FOUND if there is no live code (the last
 
 ### POST `/v1/classrooms/:id/join-code`
 
-Regenerate the join code. Revokes the current code (and its QR) immediately and issues a new one.
+Regenerate the join code. Revokes the current code (and its QR) immediately and issues a new one. Shares the 30 per hour limit with creating classrooms.
 
 **Auth:** Bearer token, teacher (owner of the classroom)
 
@@ -463,7 +463,7 @@ Regenerate the join code. Revokes the current code (and its QR) immediately and 
 }
 ```
 
-**Errors:** `NOT_FOUND`, `UNAUTHENTICATED`, `TOKEN_EXPIRED`, `FORBIDDEN_ROLE`
+**Errors:** `NOT_FOUND`, `RATE_LIMITED`, `UNAUTHENTICATED`, `TOKEN_EXPIRED`, `FORBIDDEN_ROLE`
 
 ### GET `/v1/classrooms/:id/students`
 

@@ -36,6 +36,7 @@ interface Limiters {
   joinFailures: RateLimiter;
   joinIp: RateLimiter;
   authIp: RateLimiter;
+  classroomWrites: RateLimiter;
 }
 
 const MINUTE = 60_000;
@@ -48,6 +49,8 @@ export function createApp(deps: AppDeps): Express {
     joinFailures: new MemoryRateLimiter(5, 15 * MINUTE, clock), // D7
     joinIp: new MemoryRateLimiter(60, MINUTE, clock),
     authIp: new MemoryRateLimiter(30, MINUTE, clock),
+    // Creating a classroom or a new code claims a number in the shared code space.
+    classroomWrites: new MemoryRateLimiter(30, 60 * MINUTE, clock),
     ...deps.limiters,
   };
 
@@ -114,7 +117,10 @@ export function createApp(deps: AppDeps): Express {
       demoLoginEnabled: config.auth.demoLoginEnabled,
     }),
   );
-  app.use('/', classroomController({ ...routeDeps, classrooms }));
+  app.use(
+    '/',
+    classroomController({ ...routeDeps, classrooms, writeLimiter: limiters.classroomWrites }),
+  );
   app.use('/', enrollmentController({ ...routeDeps, enrollments, joinIpLimiter: limiters.joinIp }));
 
   app.use(notFoundHandler);

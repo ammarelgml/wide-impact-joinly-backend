@@ -14,11 +14,12 @@ import { type Database, createDatabase } from '../src/db/database.js';
 import { HOUR_MS, DAY_MS, addMs, systemClock } from '../src/lib/clock.js';
 import { DEMO_ACCOUNTS } from '../src/modules/auth/auth.service.js';
 import { ClassroomService } from '../src/modules/classrooms/classroom.service.js';
+import { DEMO_JOIN_CODE } from '../src/modules/classrooms/join-code.js';
 import { JoinCodeRepository } from '../src/modules/classrooms/join-code.repository.js';
 import { EnrollmentRepository } from '../src/modules/enrollments/enrollment.repository.js';
 import type { UserRole } from '../src/db/schema.js';
 
-export const DEMO_JOIN_CODE = '246810';
+export { DEMO_JOIN_CODE };
 
 async function upsertUser(
   db: Database,
@@ -69,13 +70,6 @@ export async function seedDemoData(db: Database, config: Config): Promise<void> 
     .deleteFrom('classrooms')
     .where('teacher_id', 'in', [teacher.id, otherTeacher.id])
     .execute();
-  // Free the fixed demo code if any other classroom holds it.
-  await db
-    .updateTable('join_codes')
-    .set({ revoked_at: new Date(), revoked_reason: 'regenerated' })
-    .where('code', '=', DEMO_JOIN_CODE)
-    .where('revoked_at', 'is', null)
-    .execute();
 
   const classrooms = new ClassroomService(db, systemClock, {
     joinCodeTtlHours: config.joinCodeTtlHours,
@@ -108,12 +102,14 @@ export async function seedDemoData(db: Database, config: Config): Promise<void> 
   });
   const codes = new JoinCodeRepository(db);
   await codes.revokeLive(arabic.id, now);
-  await codes.insertIfFree({
+  // The generator never issues DEMO_JOIN_CODE, so only the seeded class can hold it.
+  const demoCode = await codes.insertIfFree({
     classroomId: arabic.id,
     code: DEMO_JOIN_CODE,
     createdAt: now,
     expiresAt: addMs(now, 30 * DAY_MS),
   });
+  if (!demoCode) throw new Error(`Demo join code ${DEMO_JOIN_CODE} is held by another classroom`);
 }
 
 /** CLI: `pnpm db:seed`. Refuses production unless SEED_CONFIRM=yes. */

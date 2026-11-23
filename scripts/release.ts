@@ -2,7 +2,8 @@
  * Release step, run by the container before the server starts:
  *   1. apply pending migrations (node-pg-migrate takes an advisory lock, so
  *      concurrent starts are safe),
- *   2. reseed the reviewer demo data when SEED_DEMO_DATA=true.
+ *   2. delete expired refresh tokens,
+ *   3. reseed the reviewer demo data when SEED_DEMO_DATA=true.
  * Runs with plain `node`, no package manager needed at runtime.
  */
 import { resolve } from 'node:path';
@@ -10,6 +11,7 @@ import { runner } from 'node-pg-migrate';
 import { loadConfig } from '../src/config/config.js';
 import { createDatabase } from '../src/db/database.js';
 import { createLogger } from '../src/lib/logger.js';
+import { RefreshTokenRepository } from '../src/modules/auth/refresh-token.repository.js';
 import { DEMO_JOIN_CODE, seedDemoData } from './seed.js';
 
 const config = loadConfig();
@@ -27,6 +29,16 @@ async function release() {
     log: (msg) => logger.debug(msg),
   });
   logger.info({ applied: applied.map((m) => m.name) }, 'Migrations up to date');
+
+  {
+    const db = createDatabase(config.databaseUrl, { max: 1 });
+    try {
+      const pruned = await new RefreshTokenRepository(db).deleteExpired(new Date());
+      logger.info({ pruned }, 'Expired refresh tokens removed');
+    } finally {
+      await db.destroy();
+    }
+  }
 
   if (process.env.SEED_DEMO_DATA === 'true') {
     const db = createDatabase(config.databaseUrl, { max: 2 });

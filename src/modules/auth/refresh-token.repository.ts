@@ -24,6 +24,17 @@ export class RefreshTokenRepository {
       .executeTakeFirstOrThrow();
   }
 
+  /**
+   * Deletes refresh tokens past their expiry, for one user or for everyone.
+   * An expired token can never be exchanged, so nothing depends on its row.
+   */
+  async deleteExpired(now: Date, userId?: string): Promise<number> {
+    let q = this.db.deleteFrom('refresh_tokens').where('expires_at', '<=', now);
+    if (userId) q = q.where('user_id', '=', userId);
+    const res = await q.executeTakeFirst();
+    return Number(res.numDeletedRows);
+  }
+
   /** Locks the row so two concurrent refreshes of one token serialize. */
   findByHashForUpdate(tokenHash: Buffer): Promise<RefreshTokenRow | undefined> {
     return this.db

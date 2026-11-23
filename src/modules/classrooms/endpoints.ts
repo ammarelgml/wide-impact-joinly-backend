@@ -28,11 +28,12 @@ export const classroomsEndpoints = defineEndpoints({
     path: '/v1/classrooms',
     tag: 'Classrooms',
     summary: 'Create a classroom',
-    description: 'The classroom is created with its first join code.',
+    description:
+      'The classroom is created with its first join code. Limited to 30 new classrooms or codes per hour per account.',
     access: 'teacher',
     body: CreateClassroomBody,
     responses: { 201: Classroom },
-    errors: [],
+    errors: ['RATE_LIMITED'],
   },
   getClassroom: {
     method: 'GET',
@@ -83,11 +84,12 @@ export const classroomsEndpoints = defineEndpoints({
     path: '/v1/classrooms/:id/join-code',
     tag: 'Classrooms',
     summary: 'Regenerate the join code',
-    description: 'Revokes the current code (and its QR) immediately and issues a new one.',
+    description:
+      'Revokes the current code (and its QR) immediately and issues a new one. Shares the 30 per hour limit with creating classrooms.',
     access: 'teacher',
     params: ClassroomIdParams,
     responses: { 201: JoinCode },
-    errors: ['NOT_FOUND'],
+    errors: ['NOT_FOUND', 'RATE_LIMITED'],
   },
   listStudents: {
     method: 'GET',

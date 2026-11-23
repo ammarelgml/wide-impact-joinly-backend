@@ -253,3 +253,37 @@ describe('roster', () => {
     expect(after.body.total).toBe(1);
   });
 });
+
+describe('code-space protection (security audit)', () => {
+  it('limits new classrooms and codes to 30 an hour per account', async () => {
+    const { app, http, clock } = makeApp();
+    const teacher = await signIn(app, 'busy-teacher', 'teacher');
+    const first = await createClassroom(app, teacher);
+    for (let i = 0; i < 28; i++) await createClassroom(app, teacher, `Class ${i}`);
+    const regen = await http.post(`/v1/classrooms/${first.id}/join-code`).set(bearer(teacher));
+    expect(regen.status).toBe(201);
+
+    const blocked = await http
+      .post('/v1/classrooms')
+      .set(bearer(teacher))
+      .send({ name: 'One more' });
+    expect(blocked.status).toBe(429);
+    expect(blocked.body.code).toBe('RATE_LIMITED');
+    expect(Number(blocked.headers['retry-after'])).toBeGreaterThan(0);
+    const blockedRegen = await http
+      .post(`/v1/classrooms/${first.id}/join-code`)
+      .set(bearer(teacher));
+    expect(blockedRegen.status).toBe(429);
+
+    // Other teachers are unaffected, and the limit resets after the hour.
+    const other = await signIn(app, 'other-teacher', 'teacher');
+    expect(
+      (await http.post('/v1/classrooms').set(bearer(other)).send({ name: 'Mine' })).status,
+    ).toBe(201);
+    clock.advance(HOUR);
+    const again = await signIn(app, 'busy-teacher', 'teacher');
+    expect(
+      (await http.post('/v1/classrooms').set(bearer(again)).send({ name: 'Later' })).status,
+    ).toBe(201);
+  });
+});
