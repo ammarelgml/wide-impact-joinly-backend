@@ -6,15 +6,16 @@ the Expo app lives in [wide-impact-joinly-mobile](https://github.com/ammarelgml/
 
 [![CI](https://github.com/ammarelgml/wide-impact-joinly-backend/actions/workflows/ci.yml/badge.svg)](https://github.com/ammarelgml/wide-impact-joinly-backend/actions/workflows/ci.yml)
 
-|                       |                                                                                              |
-| --------------------- | -------------------------------------------------------------------------------------------- |
-| Hosted API            | https://wide-impact-joinly-backend-production.up.railway.app                                 |
-| Interactive API docs  | `<hosted API>/docs` (Swagger UI), raw OpenAPI 3.1 at `/openapi.json`                         |
-| API reference         | [docs/api.md](docs/api.md)                                                                   |
-| Development approach  | [docs/approach.md](docs/approach.md), decision log in [docs/decisions.md](docs/decisions.md) |
-| AI usage disclosure   | [docs/ai-usage.md](docs/ai-usage.md)                                                         |
-| Manual test checklist | [docs/testing-checklist.md](docs/testing-checklist.md)                                       |
-| Security audit        | [docs/security-audit/REPORT.md](docs/security-audit/REPORT.md)                               |
+|                       |                                                                                                                                                                                                                                                                                      |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Hosted API            | https://wide-impact-joinly-backend-production.up.railway.app                                                                                                                                                                                                                         |
+| Interactive API docs  | `<hosted API>/docs` (Swagger UI), raw OpenAPI 3.1 at `/openapi.json`                                                                                                                                                                                                                 |
+| API reference         | [docs/api.md](docs/api.md)                                                                                                                                                                                                                                                           |
+| Development approach  | [docs/approach.md](docs/approach.md), decision log in [docs/decisions.md](docs/decisions.md)                                                                                                                                                                                         |
+| AI usage disclosure   | [docs/ai-usage.md](docs/ai-usage.md)                                                                                                                                                                                                                                                 |
+| Manual test checklist | [docs/testing-checklist.md](docs/testing-checklist.md)                                                                                                                                                                                                                               |
+| Security audit        | [docs/security-audit/REPORT.md](docs/security-audit/REPORT.md)                                                                                                                                                                                                                       |
+| Demo videos           | [Teacher flow](https://github.com/ammarelgml/wide-impact-joinly-mobile/releases/download/v1.0.0/joinly-teacher-flow.mp4), [Student flow](https://github.com/ammarelgml/wide-impact-joinly-mobile/releases/download/v1.0.0/joinly-student-flow.mp4) (recorded on an Android emulator) |
 
 ## Overview
 
