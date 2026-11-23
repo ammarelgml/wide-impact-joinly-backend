@@ -154,12 +154,12 @@ Reviewers have two ways in:
 1. **Your own Google account.** Sign in, choose Teacher or Student once, and use the app normally.
    Use two Google accounts (one per role) on two phones to test the full flow.
 2. **Demo accounts**, no Google needed. With `DEMO_LOGIN_ENABLED=true` (on for the hosted review
-   deployment), the app's sign-in screen offers _Demo teacher_ and _Demo student_:
+   deployment), the app's sign-in screen offers **Teacher demo** and **Student demo**:
 
 | Account      | Name             | Seeded data                                                                             |
 | ------------ | ---------------- | --------------------------------------------------------------------------------------- |
-| Demo teacher | Ms. Amira Hassan | "Grade 8 Science" (joining open, 3 students) and "Grade 9 Mathematics" (joining closed) |
-| Demo student | Omar Khaled      | Enrolled in "Grade 8 Science"                                                           |
+| Teacher demo | Ms. Amira Hassan | "Grade 8 Science" (joining open, 3 students) and "Grade 9 Mathematics" (joining closed) |
+| Student demo | Omar Khaled      | Enrolled in "Grade 8 Science"                                                           |
 
 A third seeded classroom, **"Arabic Literature"**, belongs to another teacher and has the fixed
 join code **`246810`** (valid 30 days), so the demo student can test joining without a second device.
