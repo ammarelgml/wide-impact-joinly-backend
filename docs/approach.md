@@ -137,8 +137,6 @@ Expo app ──HTTPS/JSON──▶ Express API ──SQL (pg pool)──▶ Post
 - Android APK only; the code is cross-platform but no iOS build was made in the time box.
 - Demo sign-in is enabled on the review deployment only, so reviewers are not blocked by Google's
   device checks.
-- Light theme and English only, although the design tokens already include a dark palette and the
-  layouts use start/end for right-to-left.
 
 ## What I would improve with more time
 
