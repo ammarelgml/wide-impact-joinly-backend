@@ -75,7 +75,7 @@ Two low-severity issues were confirmed, and one deployment-dependent lead needs 
 | ---------------------------------------------------------------------------- | ------------------------------------------------ | ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
 | Per-IP auth/join limits depend on `TRUST_PROXY` matching Railway's hop count | `config.ts:28` → `app.ts:65` → `rate-limit.ts:8` | Deployed `TRUST_PROXY` value and Railway edge X-Forwarded-For behaviour are not in source | Fixture showed trust 0 merges all clients into one bucket, trust 2 allows X-Forwarded-For spoofing, trust 1 gives correct per-client buckets | Confirm the Railway variable `TRUST_PROXY=1` |
 
-Details: [NEEDS-VALIDATION.md](NEEDS-VALIDATION.md).
+Owner check done 2026-11-23: `TRUST_PROXY=1` is set on the Railway service, which matches Railway's single edge hop. Details: [NEEDS-VALIDATION.md](NEEDS-VALIDATION.md).
 
 ## 6. Hardening and positive patterns
 
