@@ -172,29 +172,37 @@ curl -X POST $API/v1/auth/demo -H 'Content-Type: application/json' -d '{"account
 
 ## Testing QR code and numeric code onboarding
 
+The full walkthrough, with every screen, is in the
+[mobile app README](https://github.com/ammarelgml/wide-impact-joinly-mobile#testing-qr-code-and-numeric-code-onboarding).
+In short:
+
 **Numeric code, one device**
 
-1. Sign in as _Demo student_ (or any student account).
-2. Tap **Enter code**, type `246 810`. The preview shows "Arabic Literature" by Mr. Youssef Nabil.
-3. Tap **Join**. The class appears in My classrooms. Joining again shows "You're already in this class".
+1. Sign in as **Student demo**.
+2. Tap **Join a class**, then **Enter code**, and type `246810`. It checks the code once the sixth digit is in.
+3. The confirm screen shows "Arabic Literature" by Mr. Youssef Nabil. Tap **Join class**.
+4. The class appears in My classrooms. Entering the code again shows "You're already in this class".
 
 **QR code, two devices**
 
-1. Phone A: sign in as a teacher, open a classroom, tap **Show QR**.
-2. Phone B: sign in as a student, tap **Scan QR** and point it at phone A (or scan with the phone's
-   own camera app, which opens `joinly://join?code=…` in Joinly).
-3. Confirm on the preview. Phone A's roster updates within a few seconds.
+1. Phone A: sign in as a teacher (or **Teacher demo**), open a classroom, tap **Show QR code**.
+2. Phone B: sign in as a student, tap **Join a class**, then **Scan QR code**, and point it at phone A
+   (or scan with the phone's own camera app, which opens `joinly://join?code=…` in Joinly).
+3. Tap **Join class** on phone B. Phone A's student counter updates within seconds.
 
-**QR code, one device**: scan this QR (code `246810`) from a screen or printout with the student app:
+**QR code, one device**: scan this QR (code `246810`) from another screen or a printout:
 
-![Join QR for code 246810](docs/assets/demo-join-qr.png)
+<img src="docs/assets/demo-join-qr.png" alt="Join QR for code 246810" width="200" />
 
-**Edge cases worth trying**
+**What the API does in each edge case**
 
-- Teacher taps **Regenerate**: the old code and its QR stop working at once (`JOIN_CODE_INVALID`).
-- Teacher turns **Joining open** off: valid codes return "Joining is closed" (`JOINING_CLOSED`).
-- Five wrong codes within 15 minutes: the sixth attempt is blocked with a countdown (`RATE_LIMITED`).
-- A code older than 24 hours: "This code has expired" (`JOIN_CODE_EXPIRED`).
+| Try this                                                      | API response                          |
+| ------------------------------------------------------------- | ------------------------------------- |
+| Teacher taps **Regenerate**, student uses the old code or QR  | `404 JOIN_CODE_INVALID`               |
+| Teacher turns **Joining open** off, student uses a valid code | `409 JOINING_CLOSED`                  |
+| Six wrong codes within 15 minutes                             | `429 RATE_LIMITED` with `Retry-After` |
+| A code older than 24 hours                                    | `410 JOIN_CODE_EXPIRED`               |
+| Joining a class you're already in                             | `200` with `alreadyMember: true`      |
 
 ## Security
 
