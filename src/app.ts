@@ -58,6 +58,7 @@ export function createApp(deps: AppDeps): Express {
   const auth = new AuthService(db, deps.google, tokens);
   const classrooms = new ClassroomService(db, clock, {
     joinCodeTtlHours: config.joinCodeTtlHours,
+    ...(config.publicUrl && { publicUrl: config.publicUrl }),
     ...(deps.generateCode && { generateCode: deps.generateCode }),
   });
   const enrollments = new EnrollmentService(db, clock, limiters.joinFailures);
@@ -99,7 +100,7 @@ export function createApp(deps: AppDeps): Express {
   app.use(helmet());
   app.use(express.json({ limit: '10kb' }));
 
-  app.use(pagesRouter({ supportEmail: config.supportEmail }));
+  app.use(pagesRouter({ supportEmail: config.supportEmail, android: config.android }));
   app.get('/healthz', (_req, res) => res.json({ status: 'ok' }));
   app.get('/readyz', async (_req, res) => {
     await sql`select 1`.execute(db);

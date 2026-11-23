@@ -27,6 +27,31 @@ const EnvSchema = z.object({
   DEMO_LOGIN_ENABLED: bool.default(false),
   TRUST_PROXY: z.coerce.number().int().min(0).default(0),
   SUPPORT_EMAIL: z.email().optional(),
+  /** Public https origin of this API. When set, QR codes carry https join links. */
+  PUBLIC_URL: z
+    .url({ protocol: /^https?$/ })
+    .transform((u) => u.replace(/\/+$/, ''))
+    .optional(),
+  ANDROID_PACKAGE: z
+    .string()
+    .regex(/^[a-zA-Z][\w]*(\.[a-zA-Z][\w]*)+$/)
+    .default('com.ammarelgml.joinly'),
+  /** Signing-certificate SHA-256 fingerprints (AA:BB:...) for Android App Links. */
+  ANDROID_CERT_SHA256: z
+    .string()
+    .default('')
+    .transform((s) =>
+      s
+        .split(',')
+        .map((x) => x.trim().toUpperCase())
+        .filter(Boolean),
+    )
+    .pipe(z.array(z.string().regex(/^([0-9A-F]{2}:){31}[0-9A-F]{2}$/))),
+  APK_DOWNLOAD_URL: z
+    .url()
+    .default(
+      'https://github.com/ammarelgml/wide-impact-joinly-mobile/releases/latest/download/joinly.apk',
+    ),
 });
 
 export interface Config {
@@ -45,6 +70,9 @@ export interface Config {
   trustProxy: number;
   /** Shown on the public privacy page. */
   supportEmail: string | undefined;
+  /** Public origin; when set, join links are https://<publicUrl>/join?code=NNNNNN. */
+  publicUrl: string | undefined;
+  android: { packageName: string; certSha256: string[]; apkDownloadUrl: string };
   /** Check every response against its contract schema. On outside production. */
   validateResponses: boolean;
 }
@@ -72,6 +100,12 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     joinCodeTtlHours: e.JOIN_CODE_TTL_HOURS,
     trustProxy: e.TRUST_PROXY,
     supportEmail: e.SUPPORT_EMAIL,
+    publicUrl: e.PUBLIC_URL,
+    android: {
+      packageName: e.ANDROID_PACKAGE,
+      certSha256: e.ANDROID_CERT_SHA256,
+      apkDownloadUrl: e.APK_DOWNLOAD_URL,
+    },
     validateResponses: e.NODE_ENV !== 'production',
   };
 }

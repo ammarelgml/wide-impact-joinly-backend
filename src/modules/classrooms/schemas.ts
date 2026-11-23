@@ -14,8 +14,9 @@ export const JoinCode = z
       .regex(/^\d{6}$/)
       .meta({ example: '482913' }),
     joinUrl: z.string().meta({
-      description: 'Deep link encoded in the QR code.',
-      example: 'joinly://join?code=482913',
+      description:
+        'Link encoded in the QR code. An https link to /join on this API when PUBLIC_URL is set (opens the app on Android, or a page with the code and a download link); otherwise joinly://join?code=.',
+      example: 'https://wide-impact-joinly-backend-production.up.railway.app/join?code=482913',
     }),
     expiresAt: Timestamp,
     createdAt: Timestamp,

@@ -17,6 +17,8 @@ import { JoinCodeRepository } from './join-code.repository.js';
 
 export interface ClassroomServiceOptions {
   joinCodeTtlHours: number;
+  /** Public origin for https join links; custom-scheme links when absent. */
+  publicUrl?: string;
   generateCode?: () => string;
 }
 
@@ -48,7 +50,7 @@ export class ClassroomService {
   async get(teacherId: string, id: string): Promise<Classroom> {
     const record = await new ClassroomRepository(this.db).findOwned(id, teacherId);
     if (!record) throw notFound('Classroom');
-    return toClassroomDto(record, this.clock.now());
+    return toClassroomDto(record, this.clock.now(), this.opts.publicUrl);
   }
 
   async list(
@@ -66,7 +68,7 @@ export class ClassroomService {
       rows,
       limit,
       (r) => ({ t: r.createdAt, id: r.id }),
-      (r) => toClassroomDto(r, now),
+      (r) => toClassroomDto(r, now, this.opts.publicUrl),
     );
   }
 
@@ -138,7 +140,7 @@ export class ClassroomService {
         createdAt: now,
         expiresAt: addMs(now, this.opts.joinCodeTtlHours * HOUR_MS),
       });
-      if (row) return toJoinCodeDto(row);
+      if (row) return toJoinCodeDto(row, this.opts.publicUrl);
     }
     throw new Error(`Could not allocate a free join code after ${MAX_CODE_ATTEMPTS} attempts`);
   }

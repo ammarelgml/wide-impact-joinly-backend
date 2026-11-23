@@ -59,16 +59,27 @@ export function testConfig(overrides: Partial<Config['auth']> = {}): Config {
     joinCodeTtlHours: 24,
     trustProxy: 0,
     supportEmail: 'support@example.com',
+    publicUrl: undefined,
+    android: {
+      packageName: 'com.ammarelgml.joinly',
+      certSha256: [],
+      apkDownloadUrl: 'https://example.com/joinly.apk',
+    },
     validateResponses: true,
   };
 }
 
 export function makeApp(
-  opts: { clock?: TestClock; auth?: Partial<Config['auth']>; generateCode?: () => string } = {},
+  opts: {
+    clock?: TestClock;
+    auth?: Partial<Config['auth']>;
+    config?: Partial<Omit<Config, 'auth'>>;
+    generateCode?: () => string;
+  } = {},
 ) {
   const clock = opts.clock ?? new TestClock();
   const app = createApp({
-    config: testConfig(opts.auth),
+    config: { ...testConfig(opts.auth), ...opts.config },
     db,
     logger: createLogger('silent'),
     clock,

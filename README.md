@@ -23,8 +23,10 @@ the Expo app lives in [wide-impact-joinly-mobile](https://github.com/ammarelgml/
 - **Students** sign in with Google, join by scanning the QR code or typing the code (with a preview
   of the class before confirming), see their classrooms, and leave one.
 - A join code is 6 random digits, one live code per classroom, valid for 24 hours. Regenerating
-  revokes the old code and its QR immediately. The QR encodes `joinly://join?code=482913`, so a
-  scanned QR and a typed code go through the same API call.
+  revokes the old code and its QR immediately. The QR encodes
+  `https://<api>/join?code=482913`, so a scanned QR and a typed code go through the same API call.
+  On Android with Joinly installed that link opens the app (App Links); on any other phone it opens
+  a small page with the code and a download link for the app.
 
 ## Technologies
 
@@ -117,27 +119,31 @@ pnpm dev                      # http://localhost:3000, reloads on change
 
 See [`.env.example`](.env.example). The server validates them at boot and lists every problem.
 
-| Variable                   | Required | Default       | Purpose                                                                    |
-| -------------------------- | -------- | ------------- | -------------------------------------------------------------------------- |
-| `DATABASE_URL`             | yes      |               | PostgreSQL connection string                                               |
-| `JWT_ACCESS_SECRET`        | yes      |               | HS256 key for access tokens, 32+ characters (`openssl rand -base64 48`)    |
-| `GOOGLE_WEB_CLIENT_ID`     | yes      |               | Google OAuth Web client ID (the ID token audience); comma-separate several |
-| `PORT`                     | no       | `3000`        | HTTP port                                                                  |
-| `NODE_ENV`                 | no       | `development` | `development`, `test` or `production`                                      |
-| `LOG_LEVEL`                | no       | `info`        | pino level                                                                 |
-| `ACCESS_TOKEN_TTL_SECONDS` | no       | `900`         | Access token lifetime (15 min)                                             |
-| `REFRESH_TOKEN_TTL_DAYS`   | no       | `30`          | Refresh token lifetime                                                     |
-| `JOIN_CODE_TTL_HOURS`      | no       | `24`          | Join code lifetime                                                         |
-| `DEMO_LOGIN_ENABLED`       | no       | `false`       | Enables `POST /v1/auth/demo` for reviewers                                 |
-| `TRUST_PROXY`              | no       | `0`           | Reverse proxies in front of the API (Railway: `1`), for correct client IPs |
-| `TEST_DATABASE_URL`        | tests    |               | Database the integration tests migrate and truncate                        |
-| `SEED_DEMO_DATA`           | no       |               | `true` makes the release step (re)seed demo data on each start             |
-| `SEED_CONFIRM`             | no       |               | Must be `yes` to run `db:seed:prod` by hand when `NODE_ENV=production`     |
+| Variable                   | Required | Default                            | Purpose                                                                         |
+| -------------------------- | -------- | ---------------------------------- | ------------------------------------------------------------------------------- |
+| `DATABASE_URL`             | yes      |                                    | PostgreSQL connection string                                                    |
+| `JWT_ACCESS_SECRET`        | yes      |                                    | HS256 key for access tokens, 32+ characters (`openssl rand -base64 48`)         |
+| `GOOGLE_WEB_CLIENT_ID`     | yes      |                                    | Google OAuth Web client ID (the ID token audience); comma-separate several      |
+| `PORT`                     | no       | `3000`                             | HTTP port                                                                       |
+| `NODE_ENV`                 | no       | `development`                      | `development`, `test` or `production`                                           |
+| `LOG_LEVEL`                | no       | `info`                             | pino level                                                                      |
+| `ACCESS_TOKEN_TTL_SECONDS` | no       | `900`                              | Access token lifetime (15 min)                                                  |
+| `REFRESH_TOKEN_TTL_DAYS`   | no       | `30`                               | Refresh token lifetime                                                          |
+| `JOIN_CODE_TTL_HOURS`      | no       | `24`                               | Join code lifetime                                                              |
+| `DEMO_LOGIN_ENABLED`       | no       | `false`                            | Enables `POST /v1/auth/demo` for reviewers                                      |
+| `TRUST_PROXY`              | no       | `0`                                | Reverse proxies in front of the API (Railway: `1`), for correct client IPs      |
+| `PUBLIC_URL`               | no       |                                    | Public https origin; QR codes then carry `<PUBLIC_URL>/join?code=` links        |
+| `ANDROID_CERT_SHA256`      | no       |                                    | App signing cert SHA-256 (comma list), served in `/.well-known/assetlinks.json` |
+| `ANDROID_PACKAGE`          | no       | `com.ammarelgml.joinly`            | Android package name for App Links                                              |
+| `APK_DOWNLOAD_URL`         | no       | latest GitHub release `joinly.apk` | Download link on the `/join` page                                               |
+| `TEST_DATABASE_URL`        | tests    |                                    | Database the integration tests migrate and truncate                             |
+| `SEED_DEMO_DATA`           | no       |                                    | `true` makes the release step (re)seed demo data on each start                  |
+| `SEED_CONFIRM`             | no       |                                    | Must be `yes` to run `db:seed:prod` by hand when `NODE_ENV=production`          |
 
 ## Running the tests
 
 ```bash
-pnpm test         # 50 tests: integration tests against TEST_DATABASE_URL, plus unit tests
+pnpm test         # 62 tests: integration tests against TEST_DATABASE_URL, plus unit tests
 pnpm lint && pnpm typecheck
 ```
 
@@ -188,7 +194,8 @@ In short:
 
 1. Phone A: sign in as a teacher (or **Teacher demo**), open a classroom, tap **Show QR code**.
 2. Phone B: sign in as a student, tap **Join a class**, then **Scan QR code**, and point it at phone A
-   (or scan with the phone's own camera app, which opens `joinly://join?code=…` in Joinly).
+   (or scan with the phone's own camera app: the https link opens Joinly directly; without the
+   app it opens the `/join` page with the code and a download link).
 3. Tap **Join class** on phone B. Phone A's student counter updates within seconds.
 
 **QR code, one device**: scan this QR (code `246810`) from another screen or a printout:
@@ -228,7 +235,8 @@ the release step first (`dist/scripts/release.js`: migrations, then the demo see
 
 1. New project, deploy from this GitHub repository. Add a PostgreSQL database to the project.
 2. Set the service variables: `DATABASE_URL=${{Postgres.DATABASE_URL}}`, `JWT_ACCESS_SECRET` (48 random
-   bytes), `GOOGLE_WEB_CLIENT_ID`, `NODE_ENV=production`, `PORT=3000`, `TRUST_PROXY=1`, `SUPPORT_EMAIL`, and for the
+   bytes), `GOOGLE_WEB_CLIENT_ID`, `NODE_ENV=production`, `PORT=3000`, `TRUST_PROXY=1`, `SUPPORT_EMAIL`,
+   `PUBLIC_URL=https://<your domain>`, `ANDROID_CERT_SHA256` (the APK signing cert SHA-256), and for the
    review deployment `DEMO_LOGIN_ENABLED=true` and `SEED_DEMO_DATA=true`.
 3. Generate a public domain for the service (port 3000).
 

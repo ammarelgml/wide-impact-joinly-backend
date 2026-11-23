@@ -5,17 +5,18 @@ import type { ClassroomRecord, RosterRecord } from './classroom.repository.js';
 
 export function toJoinCodeDto(
   c: Pick<JoinCodeRow, 'code' | 'created_at' | 'expires_at'>,
+  publicUrl?: string,
 ): JoinCode {
   return {
     code: c.code,
-    joinUrl: buildJoinUrl(c.code),
+    joinUrl: buildJoinUrl(c.code, publicUrl),
     createdAt: c.created_at.toISOString(),
     expiresAt: c.expires_at.toISOString(),
   };
 }
 
 /** An expired code is reported as no code: the teacher sees "Generate a new code". */
-export function toClassroomDto(r: ClassroomRecord, now: Date): Classroom {
+export function toClassroomDto(r: ClassroomRecord, now: Date, publicUrl?: string): Classroom {
   const live = r.code && r.codeCreatedAt && r.codeExpiresAt && r.codeExpiresAt > now;
   return {
     id: r.id,
@@ -24,7 +25,10 @@ export function toClassroomDto(r: ClassroomRecord, now: Date): Classroom {
     joiningOpen: r.joiningOpen,
     studentCount: r.studentCount,
     joinCode: live
-      ? toJoinCodeDto({ code: r.code!, created_at: r.codeCreatedAt!, expires_at: r.codeExpiresAt! })
+      ? toJoinCodeDto(
+          { code: r.code!, created_at: r.codeCreatedAt!, expires_at: r.codeExpiresAt! },
+          publicUrl,
+        )
       : null,
     createdAt: r.createdAt.toISOString(),
     updatedAt: r.updatedAt.toISOString(),

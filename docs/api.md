@@ -259,7 +259,7 @@ List the teacher's classrooms. Newest first, cursor paginated.
       "studentCount": 3,
       "joinCode": {
         "code": "482913",
-        "joinUrl": "joinly://join?code=482913",
+        "joinUrl": "https://wide-impact-joinly-backend-production.up.railway.app/join?code=482913",
         "expiresAt": "2026-11-22T19:30:00.000Z",
         "createdAt": "2026-11-22T19:30:00.000Z"
       },
@@ -304,7 +304,7 @@ Create a classroom. The classroom is created with its first join code. Limited t
   "studentCount": 3,
   "joinCode": {
     "code": "482913",
-    "joinUrl": "joinly://join?code=482913",
+    "joinUrl": "https://wide-impact-joinly-backend-production.up.railway.app/join?code=482913",
     "expiresAt": "2026-11-22T19:30:00.000Z",
     "createdAt": "2026-11-22T19:30:00.000Z"
   },
@@ -338,7 +338,7 @@ Get a classroom. Another teacher's classroom returns 404, not 403 (does not conf
   "studentCount": 3,
   "joinCode": {
     "code": "482913",
-    "joinUrl": "joinly://join?code=482913",
+    "joinUrl": "https://wide-impact-joinly-backend-production.up.railway.app/join?code=482913",
     "expiresAt": "2026-11-22T19:30:00.000Z",
     "createdAt": "2026-11-22T19:30:00.000Z"
   },
@@ -388,7 +388,7 @@ Rename, describe, or open/close joining.
   "studentCount": 3,
   "joinCode": {
     "code": "482913",
-    "joinUrl": "joinly://join?code=482913",
+    "joinUrl": "https://wide-impact-joinly-backend-production.up.railway.app/join?code=482913",
     "expiresAt": "2026-11-22T19:30:00.000Z",
     "createdAt": "2026-11-22T19:30:00.000Z"
   },
@@ -432,7 +432,7 @@ Get the live join code. Returns 404 NOT_FOUND if there is no live code (the last
 ```json
 {
   "code": "482913",
-  "joinUrl": "joinly://join?code=482913",
+  "joinUrl": "https://wide-impact-joinly-backend-production.up.railway.app/join?code=482913",
   "expiresAt": "2026-11-22T19:30:00.000Z",
   "createdAt": "2026-11-22T19:30:00.000Z"
 }
@@ -457,7 +457,7 @@ Regenerate the join code. Revokes the current code (and its QR) immediately and 
 ```json
 {
   "code": "482913",
-  "joinUrl": "joinly://join?code=482913",
+  "joinUrl": "https://wide-impact-joinly-backend-production.up.railway.app/join?code=482913",
   "expiresAt": "2026-11-22T19:30:00.000Z",
   "createdAt": "2026-11-22T19:30:00.000Z"
 }
