@@ -1,0 +1,2098 @@
+[
+  {
+    "coverage_id": "Dockerfile%23build%20and%20release%20pipeline::.github%2Fworkflows%2Fci.yml%23CI%20and%20container%20build::profile%2Fquick%2Fall-in-scope-subsystems::SUPPLY-CHAIN-AND-RELEASE.md%23Automation%20identity%20overreach",
+    "canonical_refs": {
+      "surface": "Dockerfile#build and release pipeline",
+      "boundary": ".github/workflows/ci.yml#CI and container build",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "SUPPLY-CHAIN-AND-RELEASE.md#Automation identity overreach"
+    },
+    "surface": "Dockerfile#build and release pipeline",
+    "boundary": ".github/workflows/ci.yml#CI and container build",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Automation identity overreach",
+    "starting_paths": [
+      "Dockerfile",
+      "railway.json",
+      ".github/workflows/ci.yml",
+      "package.json",
+      "pnpm-lock.yaml",
+      ".dockerignore"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "SUPPLY-CHAIN-AND-RELEASE.md#Automation identity overreach",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Core discipline",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Universal moves",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_covered_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "Dockerfile%23build%20and%20release%20pipeline::.github%2Fworkflows%2Fci.yml%23CI%20and%20container%20build::profile%2Fquick%2Fall-in-scope-subsystems::SUPPLY-CHAIN-AND-RELEASE.md%23Build-context%20inclusion",
+    "canonical_refs": {
+      "surface": "Dockerfile#build and release pipeline",
+      "boundary": ".github/workflows/ci.yml#CI and container build",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "SUPPLY-CHAIN-AND-RELEASE.md#Build-context inclusion"
+    },
+    "surface": "Dockerfile#build and release pipeline",
+    "boundary": ".github/workflows/ci.yml#CI and container build",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Build-context inclusion",
+    "starting_paths": [
+      "Dockerfile",
+      "railway.json",
+      ".github/workflows/ci.yml",
+      "package.json",
+      "pnpm-lock.yaml",
+      ".dockerignore"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "SUPPLY-CHAIN-AND-RELEASE.md#Build-context inclusion",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Core discipline",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Universal moves",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_covered_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "Dockerfile%23build%20and%20release%20pipeline::.github%2Fworkflows%2Fci.yml%23CI%20and%20container%20build::profile%2Fquick%2Fall-in-scope-subsystems::SUPPLY-CHAIN-AND-RELEASE.md%23Dependency%20source%20and%20namespace%20confusion",
+    "canonical_refs": {
+      "surface": "Dockerfile#build and release pipeline",
+      "boundary": ".github/workflows/ci.yml#CI and container build",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "SUPPLY-CHAIN-AND-RELEASE.md#Dependency source and namespace confusion"
+    },
+    "surface": "Dockerfile#build and release pipeline",
+    "boundary": ".github/workflows/ci.yml#CI and container build",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Dependency source and namespace confusion",
+    "starting_paths": [
+      "Dockerfile",
+      "railway.json",
+      ".github/workflows/ci.yml",
+      "package.json",
+      "pnpm-lock.yaml",
+      ".dockerignore"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "SUPPLY-CHAIN-AND-RELEASE.md#Dependency source and namespace confusion",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Core discipline",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Universal moves",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_covered_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "Dockerfile%23build%20and%20release%20pipeline::.github%2Fworkflows%2Fci.yml%23CI%20and%20container%20build::profile%2Fquick%2Fall-in-scope-subsystems::SUPPLY-CHAIN-AND-RELEASE.md%23Mutable%20and%20unbound%20build%20inputs",
+    "canonical_refs": {
+      "surface": "Dockerfile#build and release pipeline",
+      "boundary": ".github/workflows/ci.yml#CI and container build",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "SUPPLY-CHAIN-AND-RELEASE.md#Mutable and unbound build inputs"
+    },
+    "surface": "Dockerfile#build and release pipeline",
+    "boundary": ".github/workflows/ci.yml#CI and container build",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Mutable and unbound build inputs",
+    "starting_paths": [
+      "Dockerfile",
+      "railway.json",
+      ".github/workflows/ci.yml",
+      "package.json",
+      "pnpm-lock.yaml",
+      ".dockerignore"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "SUPPLY-CHAIN-AND-RELEASE.md#Mutable and unbound build inputs",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Core discipline",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Universal moves",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_covered_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "Dockerfile%23build%20and%20release%20pipeline::.github%2Fworkflows%2Fci.yml%23CI%20and%20container%20build::profile%2Fquick%2Fall-in-scope-subsystems::SUPPLY-CHAIN-AND-RELEASE.md%23Untrusted%20code%20in%20a%20privileged%20workflow",
+    "canonical_refs": {
+      "surface": "Dockerfile#build and release pipeline",
+      "boundary": ".github/workflows/ci.yml#CI and container build",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "SUPPLY-CHAIN-AND-RELEASE.md#Untrusted code in a privileged workflow"
+    },
+    "surface": "Dockerfile#build and release pipeline",
+    "boundary": ".github/workflows/ci.yml#CI and container build",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Untrusted code in a privileged workflow",
+    "starting_paths": [
+      "Dockerfile",
+      "railway.json",
+      ".github/workflows/ci.yml",
+      "package.json",
+      "pnpm-lock.yaml",
+      ".dockerignore"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "SUPPLY-CHAIN-AND-RELEASE.md#Untrusted code in a privileged workflow",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Core discipline",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Universal moves",
+      "SUPPLY-CHAIN-AND-RELEASE.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_covered_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fapp.ts%23createApp::src%2Fapp.ts%23middleware%20chain%20and%20process%20configuration::profile%2Fquick%2Fall-in-scope-subsystems::ATTACK-CLASSES.md%23Cryptography%20and%20secrets",
+    "canonical_refs": {
+      "surface": "src/app.ts#createApp",
+      "boundary": "src/app.ts#middleware chain and process configuration",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "ATTACK-CLASSES.md#Cryptography and secrets"
+    },
+    "surface": "src/app.ts#createApp",
+    "boundary": "src/app.ts#middleware chain and process configuration",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Cryptography and secrets",
+    "starting_paths": [
+      "src/app.ts",
+      "src/server.ts",
+      "src/http",
+      "src/lib",
+      "src/config",
+      "src/db",
+      "scripts"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Cryptography and secrets",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_covered_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fapp.ts%23createApp::src%2Fapp.ts%23middleware%20chain%20and%20process%20configuration::profile%2Fquick%2Fall-in-scope-subsystems::ATTACK-CLASSES.md%23Injection",
+    "canonical_refs": {
+      "surface": "src/app.ts#createApp",
+      "boundary": "src/app.ts#middleware chain and process configuration",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "ATTACK-CLASSES.md#Injection"
+    },
+    "surface": "src/app.ts#createApp",
+    "boundary": "src/app.ts#middleware chain and process configuration",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Injection",
+    "starting_paths": [
+      "src/app.ts",
+      "src/server.ts",
+      "src/http",
+      "src/lib",
+      "src/config",
+      "src/db",
+      "scripts"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Injection",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_covered_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fapp.ts%23createApp::src%2Fapp.ts%23middleware%20chain%20and%20process%20configuration::profile%2Fquick%2Fall-in-scope-subsystems::ATTACK-CLASSES.md%23Obvious%20things",
+    "canonical_refs": {
+      "surface": "src/app.ts#createApp",
+      "boundary": "src/app.ts#middleware chain and process configuration",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "ATTACK-CLASSES.md#Obvious things"
+    },
+    "surface": "src/app.ts#createApp",
+    "boundary": "src/app.ts#middleware chain and process configuration",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Obvious things",
+    "starting_paths": [
+      "src/app.ts",
+      "src/server.ts",
+      "src/http",
+      "src/lib",
+      "src/config",
+      "src/db",
+      "scripts"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Obvious things",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_covered_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fapp.ts%23createApp::src%2Fapp.ts%23middleware%20chain%20and%20process%20configuration::profile%2Fquick%2Fall-in-scope-subsystems::CLOUD-AND-DEPLOYMENT.md%23Security-control%20precedence%20drift",
+    "canonical_refs": {
+      "surface": "src/app.ts#createApp",
+      "boundary": "src/app.ts#middleware chain and process configuration",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "CLOUD-AND-DEPLOYMENT.md#Security-control precedence drift"
+    },
+    "surface": "src/app.ts#createApp",
+    "boundary": "src/app.ts#middleware chain and process configuration",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Security-control precedence drift",
+    "starting_paths": [
+      "src/app.ts",
+      "src/server.ts",
+      "src/http",
+      "src/lib",
+      "src/config",
+      "src/db",
+      "scripts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "CLOUD-AND-DEPLOYMENT.md#Security-control precedence drift",
+      "CLOUD-AND-DEPLOYMENT.md#Core discipline",
+      "CLOUD-AND-DEPLOYMENT.md#Universal moves",
+      "CLOUD-AND-DEPLOYMENT.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_covered_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fapp.ts%23createApp::src%2Fapp.ts%23middleware%20chain%20and%20process%20configuration::profile%2Fquick%2Fall-in-scope-subsystems::CLOUD-AND-DEPLOYMENT.md%23Trusted-proxy%20and%20mesh%20identity%20bypass",
+    "canonical_refs": {
+      "surface": "src/app.ts#createApp",
+      "boundary": "src/app.ts#middleware chain and process configuration",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "CLOUD-AND-DEPLOYMENT.md#Trusted-proxy and mesh identity bypass"
+    },
+    "surface": "src/app.ts#createApp",
+    "boundary": "src/app.ts#middleware chain and process configuration",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Trusted-proxy and mesh identity bypass",
+    "starting_paths": [
+      "src/app.ts",
+      "src/server.ts",
+      "src/http",
+      "src/lib",
+      "src/config",
+      "src/db",
+      "scripts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "CLOUD-AND-DEPLOYMENT.md#Trusted-proxy and mesh identity bypass",
+      "CLOUD-AND-DEPLOYMENT.md#Core discipline",
+      "CLOUD-AND-DEPLOYMENT.md#Universal moves",
+      "CLOUD-AND-DEPLOYMENT.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_confirmed_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fapp.ts%23createApp::src%2Fapp.ts%23middleware%20chain%20and%20process%20configuration::profile%2Fquick%2Fall-in-scope-subsystems::DATA-ISOLATION-AND-LIFECYCLE.md%23Analytics%2C%20logs%2C%20traces%2C%20and%20diagnostics%20as%20alternate%20readers",
+    "canonical_refs": {
+      "surface": "src/app.ts#createApp",
+      "boundary": "src/app.ts#middleware chain and process configuration",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "DATA-ISOLATION-AND-LIFECYCLE.md#Analytics, logs, traces, and diagnostics as alternate readers"
+    },
+    "surface": "src/app.ts#createApp",
+    "boundary": "src/app.ts#middleware chain and process configuration",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Analytics, logs, traces, and diagnostics as alternate readers",
+    "starting_paths": [
+      "src/app.ts",
+      "src/server.ts",
+      "src/http",
+      "src/lib",
+      "src/config",
+      "src/db",
+      "scripts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Analytics, logs, traces, and diagnostics as alternate readers",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Core discipline",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Universal moves",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_covered_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fapp.ts%23createApp::src%2Fapp.ts%23middleware%20chain%20and%20process%20configuration::profile%2Fquick%2Fall-in-scope-subsystems::RESOURCE-EXHAUSTION-AND-AVAILABILITY.md%23Unbounded%20buffering%20and%20cardinality",
+    "canonical_refs": {
+      "surface": "src/app.ts#createApp",
+      "boundary": "src/app.ts#middleware chain and process configuration",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Unbounded buffering and cardinality"
+    },
+    "surface": "src/app.ts#createApp",
+    "boundary": "src/app.ts#middleware chain and process configuration",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Unbounded buffering and cardinality",
+    "starting_paths": [
+      "src/app.ts",
+      "src/server.ts",
+      "src/http",
+      "src/lib",
+      "src/config",
+      "src/db",
+      "scripts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Unbounded buffering and cardinality",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Core discipline",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Universal moves",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_covered_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fapp.ts%23createApp::src%2Fapp.ts%23middleware%20chain%20and%20process%20configuration::profile%2Fquick%2Fall-in-scope-subsystems::WEB-PROTOCOL-AND-AUTH.md%23Host%20and%20forwarded-header%20trust",
+    "canonical_refs": {
+      "surface": "src/app.ts#createApp",
+      "boundary": "src/app.ts#middleware chain and process configuration",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "WEB-PROTOCOL-AND-AUTH.md#Host and forwarded-header trust"
+    },
+    "surface": "src/app.ts#createApp",
+    "boundary": "src/app.ts#middleware chain and process configuration",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Host and forwarded-header trust",
+    "starting_paths": [
+      "src/app.ts",
+      "src/server.ts",
+      "src/http",
+      "src/lib",
+      "src/config",
+      "src/db",
+      "scripts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "WEB-PROTOCOL-AND-AUTH.md#Host and forwarded-header trust",
+      "WEB-PROTOCOL-AND-AUTH.md#Core discipline",
+      "WEB-PROTOCOL-AND-AUTH.md#Universal moves",
+      "WEB-PROTOCOL-AND-AUTH.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_confirmed_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fauth%2Fendpoints.ts%23%2Fv1%2Fauth%2F%2A%20and%20GET%20%2Fv1%2Fme::src%2Fhttp%2Froute.ts%23authenticate::profile%2Fquick%2Fall-in-scope-subsystems::ATTACK-CLASSES.md%23Access%20control",
+    "canonical_refs": {
+      "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+      "boundary": "src/http/route.ts#authenticate",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "ATTACK-CLASSES.md#Access control"
+    },
+    "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+    "boundary": "src/http/route.ts#authenticate",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Access control",
+    "starting_paths": [
+      "src/modules/auth",
+      "src/modules/users",
+      "src/http/route.ts",
+      "src/config/config.ts"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Access control",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_confirmed_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fauth%2Fendpoints.ts%23%2Fv1%2Fauth%2F%2A%20and%20GET%20%2Fv1%2Fme::src%2Fhttp%2Froute.ts%23authenticate::profile%2Fquick%2Fall-in-scope-subsystems::ATTACK-CLASSES.md%23Business%20logic",
+    "canonical_refs": {
+      "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+      "boundary": "src/http/route.ts#authenticate",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "ATTACK-CLASSES.md#Business logic"
+    },
+    "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+    "boundary": "src/http/route.ts#authenticate",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Business logic",
+    "starting_paths": [
+      "src/modules/auth",
+      "src/modules/users",
+      "src/http/route.ts",
+      "src/config/config.ts"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Business logic",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_covered_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fauth%2Fendpoints.ts%23%2Fv1%2Fauth%2F%2A%20and%20GET%20%2Fv1%2Fme::src%2Fhttp%2Froute.ts%23authenticate::profile%2Fquick%2Fall-in-scope-subsystems::ATTACK-CLASSES.md%23Cryptography%20and%20secrets",
+    "canonical_refs": {
+      "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+      "boundary": "src/http/route.ts#authenticate",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "ATTACK-CLASSES.md#Cryptography and secrets"
+    },
+    "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+    "boundary": "src/http/route.ts#authenticate",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Cryptography and secrets",
+    "starting_paths": [
+      "src/modules/auth",
+      "src/modules/users",
+      "src/http/route.ts",
+      "src/config/config.ts"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Cryptography and secrets",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_covered_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fauth%2Fendpoints.ts%23%2Fv1%2Fauth%2F%2A%20and%20GET%20%2Fv1%2Fme::src%2Fhttp%2Froute.ts%23authenticate::profile%2Fquick%2Fall-in-scope-subsystems::WEB-PROTOCOL-AND-AUTH.md%23Account%20linking%20and%20identity%20collision",
+    "canonical_refs": {
+      "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+      "boundary": "src/http/route.ts#authenticate",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "WEB-PROTOCOL-AND-AUTH.md#Account linking and identity collision"
+    },
+    "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+    "boundary": "src/http/route.ts#authenticate",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Account linking and identity collision",
+    "starting_paths": [
+      "src/modules/auth",
+      "src/modules/users",
+      "src/http/route.ts",
+      "src/config/config.ts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "WEB-PROTOCOL-AND-AUTH.md#Account linking and identity collision",
+      "WEB-PROTOCOL-AND-AUTH.md#Core discipline",
+      "WEB-PROTOCOL-AND-AUTH.md#Universal moves",
+      "WEB-PROTOCOL-AND-AUTH.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_confirmed_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fauth%2Fendpoints.ts%23%2Fv1%2Fauth%2F%2A%20and%20GET%20%2Fv1%2Fme::src%2Fhttp%2Froute.ts%23authenticate::profile%2Fquick%2Fall-in-scope-subsystems::WEB-PROTOCOL-AND-AUTH.md%23JWT%20verification%20and%20claim%20binding",
+    "canonical_refs": {
+      "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+      "boundary": "src/http/route.ts#authenticate",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "WEB-PROTOCOL-AND-AUTH.md#JWT verification and claim binding"
+    },
+    "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+    "boundary": "src/http/route.ts#authenticate",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "JWT verification and claim binding",
+    "starting_paths": [
+      "src/modules/auth",
+      "src/modules/users",
+      "src/http/route.ts",
+      "src/config/config.ts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "WEB-PROTOCOL-AND-AUTH.md#JWT verification and claim binding",
+      "WEB-PROTOCOL-AND-AUTH.md#Core discipline",
+      "WEB-PROTOCOL-AND-AUTH.md#Universal moves",
+      "WEB-PROTOCOL-AND-AUTH.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_covered_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fauth%2Fendpoints.ts%23%2Fv1%2Fauth%2F%2A%20and%20GET%20%2Fv1%2Fme::src%2Fhttp%2Froute.ts%23authenticate::profile%2Fquick%2Fall-in-scope-subsystems::WEB-PROTOCOL-AND-AUTH.md%23OAuth%2FOIDC%20request%20and%20callback%20binding",
+    "canonical_refs": {
+      "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+      "boundary": "src/http/route.ts#authenticate",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "WEB-PROTOCOL-AND-AUTH.md#OAuth/OIDC request and callback binding"
+    },
+    "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+    "boundary": "src/http/route.ts#authenticate",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "OAuth/OIDC request and callback binding",
+    "starting_paths": [
+      "src/modules/auth",
+      "src/modules/users",
+      "src/http/route.ts",
+      "src/config/config.ts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "WEB-PROTOCOL-AND-AUTH.md#OAuth/OIDC request and callback binding",
+      "WEB-PROTOCOL-AND-AUTH.md#Core discipline",
+      "WEB-PROTOCOL-AND-AUTH.md#Universal moves",
+      "WEB-PROTOCOL-AND-AUTH.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_covered_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fauth%2Fendpoints.ts%23%2Fv1%2Fauth%2F%2A%20and%20GET%20%2Fv1%2Fme::src%2Fhttp%2Froute.ts%23authenticate::profile%2Fquick%2Fall-in-scope-subsystems::WEB-PROTOCOL-AND-AUTH.md%23Session%20fixation%20and%20invalidation",
+    "canonical_refs": {
+      "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+      "boundary": "src/http/route.ts#authenticate",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "WEB-PROTOCOL-AND-AUTH.md#Session fixation and invalidation"
+    },
+    "surface": "src/modules/auth/endpoints.ts#/v1/auth/* and GET /v1/me",
+    "boundary": "src/http/route.ts#authenticate",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Session fixation and invalidation",
+    "starting_paths": [
+      "src/modules/auth",
+      "src/modules/users",
+      "src/http/route.ts",
+      "src/config/config.ts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "WEB-PROTOCOL-AND-AUTH.md#Session fixation and invalidation",
+      "WEB-PROTOCOL-AND-AUTH.md#Core discipline",
+      "WEB-PROTOCOL-AND-AUTH.md#Universal moves",
+      "WEB-PROTOCOL-AND-AUTH.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_covered_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fauth%2Fendpoints.ts%23%2Fv1%2Fauth%2Fdemo%20%28demo%20teacher%20principal%29%20and%20src%2Fmodules%2Fclassrooms%2Fendpoints.ts%23%2Fv1%2Fclassrooms%2A%20reached%20as%20demo%20teacher::scripts%2Fseed.ts%23seedDemoData%20%2B%20scripts%2Frelease.ts%23SEED_DEMO_DATA%3A%20shared%20seeded%20demo%20identities%20on%20a%20deployment%20that%20also%20serves%20real%20Google%20users::profile%2Fquick%2Fall-in-scope-subsystems::DATA-ISOLATION-AND-LIFECYCLE.md%23Missing%20tenant%20or%20owner%20enforcement",
+    "canonical_refs": {
+      "surface": "src/modules/auth/endpoints.ts#/v1/auth/demo (demo teacher principal) and src/modules/classrooms/endpoints.ts#/v1/classrooms* reached as demo teacher",
+      "boundary": "scripts/seed.ts#seedDemoData + scripts/release.ts#SEED_DEMO_DATA: shared seeded demo identities on a deployment that also serves real Google users",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "DATA-ISOLATION-AND-LIFECYCLE.md#Missing tenant or owner enforcement"
+    },
+    "surface": "src/modules/auth/endpoints.ts#/v1/auth/demo (demo teacher principal) and src/modules/classrooms/endpoints.ts#/v1/classrooms* reached as demo teacher",
+    "boundary": "scripts/seed.ts#seedDemoData + scripts/release.ts#SEED_DEMO_DATA: shared seeded demo identities on a deployment that also serves real Google users",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Missing tenant or owner enforcement",
+    "starting_paths": [
+      "src/modules/auth/auth.service.ts",
+      "src/modules/auth/auth.controller.ts",
+      "scripts/seed.ts",
+      "scripts/release.ts",
+      "src/modules/classrooms/classroom.service.ts",
+      "src/modules/classrooms/classroom.repository.ts",
+      "src/modules/classrooms/classroom.mapper.ts",
+      "README.md"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Core discipline",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Deletion, revocation, and lifecycle attack classes",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Missing tenant or owner enforcement",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Tenant and object-isolation attack classes",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Universal moves",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Validation rules",
+      "WEB-PROTOCOL-AND-AUTH.md#Core discipline",
+      "WEB-PROTOCOL-AND-AUTH.md#Federated-identity attack classes",
+      "WEB-PROTOCOL-AND-AUTH.md#Universal moves",
+      "WEB-PROTOCOL-AND-AUTH.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons."
+      }
+    ],
+    "prior_status": "prior_deferred",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h5-demo-isolation",
+    "reviewed_paths": [
+      "README.md",
+      "migrations/1763838000000_initial-schema.sql",
+      "scripts/release.ts",
+      "scripts/seed.ts",
+      "src/http/route.ts",
+      "src/modules/auth/auth.controller.ts",
+      "src/modules/auth/auth.service.ts",
+      "src/modules/auth/endpoints.ts",
+      "src/modules/auth/schemas.ts",
+      "src/modules/classrooms/classroom.mapper.ts",
+      "src/modules/classrooms/classroom.repository.ts",
+      "src/modules/classrooms/classroom.service.ts",
+      "src/modules/classrooms/endpoints.ts",
+      "src/modules/classrooms/join-code.repository.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h5-demo-isolation",
+        "reviewed_paths": [
+          "src/modules/auth/auth.service.ts",
+          "src/modules/auth/auth.controller.ts",
+          "src/modules/auth/endpoints.ts",
+          "src/modules/auth/schemas.ts",
+          "src/http/route.ts",
+          "src/modules/classrooms/endpoints.ts"
+        ],
+        "invariant": "The demo-teacher session is a fixed principal that cannot be widened to any non-demo identity or role.",
+        "method": "source",
+        "result": "signInDemo (auth.service.ts:47-53) looks up only DEMO_ACCOUNTS[account].googleSub ('demo:teacher' / 'demo:student'). DemoSignInBody is a strictObject over the DemoAccount enum (schemas.ts:20-22). The role comes from the stored user row. Every /v1/classrooms* endpoint is access 'teacher', enforced in route.ts:82. No input lets a demo caller pick another user or role. Anonymous access to the shared identity is the prior fingerprint src/modules/auth/auth.service.ts:signInDemo:shared-demo-identity-anonymous-takeover and the documented owner decision, so it is not re-reported.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h5-demo-isolation",
+        "reviewed_paths": [
+          "src/modules/classrooms/classroom.service.ts",
+          "src/modules/classrooms/classroom.repository.ts",
+          "src/modules/classrooms/classroom.mapper.ts",
+          "src/modules/classrooms/join-code.repository.ts"
+        ],
+        "invariant": "Every classroom read/write reached as the demo teacher is bound to teacher_id = demo teacher id, so demo callers cannot read or mutate classrooms, codes, or rosters owned by real teachers.",
+        "method": "source",
+        "result": "findOwned, listOwned, and baseQuery filter on c.teacher_id (repository.ts:190-192, 206-222, 318). update, delete, and lockOwned include teacher_id (repository.ts:195-249). listStudents and removeStudent call findOwned before the classroom-scoped roster, rosterTotal, and removeStudent queries (service.ts:103-123). regenerateJoinCode locks the owned row before revokeLive (service.ts:94-101). Only issueCode's sweepExpired is global, and it only revokes codes that have already expired, which is the same for every teacher. No path lets the demo teacher reach a non-demo classroom. Harm to real students who chose to join demo-owned classes (roster PII, removal, rename, delete) is the prior takeover fingerprint and the README Known limitations entry.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h5-demo-isolation",
+        "reviewed_paths": [
+          "scripts/seed.ts",
+          "scripts/release.ts",
+          "migrations/1763838000000_initial-schema.sql",
+          "README.md"
+        ],
+        "invariant": "The release-time reseed (SEED_DEMO_DATA=true) changes only demo-owned data, and its effect on real users stays within the documented limitation.",
+        "method": "source",
+        "result": "The seed's user upserts key on google_sub values 'demo:*' and 'seed:*', which cannot collide with numeric Google subs (seed.ts:23-65), and the upsert never changes role. The reset deletes classrooms only where teacher_id is in [demo teacher, seed:teacher-2] (seed.ts:68-71). That cascades to real students' enrollments in demo classes only (schema.sql:72), which README Known limitations documents as lasting 'until the next deploy reseeds it'. The one write outside demo-owned rows is the global revoke of live code 246810 (seed.ts:73-78). A non-demo classroom can hold that code only if (a) the Arabic Literature code expired (after 30 days with no redeploy), was swept, and a random issuance then landed on 246810 (about 1e-6 per issued code), or (b) a real issuance hits the gap between the delete and the re-insert while the old container is still serving. Either way the impact is that a real teacher's code is revoked early, and findLatestByCode then sends that code to Arabic Literature, whose owner has no login. That is negligible likelihood with low, recoverable impact, so it is recorded as hardening, not a candidate.",
+        "artifact": null
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "scripts/seed.ts:73-78 revokes live code 246810 on any classroom, not just the seeded Arabic Literature one, and labels it 'regenerated'. If a real classroom ever draws 246810 (possible only after the 30-day demo code expires and is swept, or in the delete/re-insert gap during an overlapping deploy), the next reseed silently kills that teacher's code/QR, and findLatestByCode (join-code.repository.ts:68-84) then sends students holding it to the demo class. Fix: limit the revoke to classrooms owned by the seeded teachers, or reserve 246810 in generateJoinCode/issueCode so real classrooms never draw it.",
+      "scripts/seed.ts:111-116 ignores an undefined result from insertIfFree. If the fixed code is taken, the reseed succeeds silently with no demo code. Check the return value and fail the release step instead.",
+      "README advertises code 246810 and a permanent QR for it (README.md:166, 194-196). Once the 30-day demo code lapses without a redeploy, that public number can be issued to a real classroom, which anyone with the published QR could then join. Reserving the number (as above) closes this too."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fauth%2Fendpoints.ts%23POST%20%2Fv1%2Fauth%2Fdemo%20%7Baccount%3A%27teacher%27%7D%20-%3E%20src%2Fmodules%2Fclassrooms%2Fendpoints.ts%23POST%20%2Fv1%2Fclassrooms%20and%20POST%20%2Fv1%2Fclassrooms%2F%3Aid%2Fjoin-code::src%2Fmodules%2Fauth%2Fauth.controller.ts%23demoSignIn%20%28anonymous%2C%20authIp%2030%2Fmin%20only%20on%20token%20issuance%29%20granting%20the%20shared%20demo-teacher%20principal%20unbounded%20access%20to%20classroom.service.ts%23issueCode%20global%20live-code%20namespace::profile%2Fstandard%2Fauth%20%28demo%20login%29%20x%20classrooms%20%28join-code%20issuance%29::RESOURCE-EXHAUSTION-AND-AVAILABILITY.md%23Pre-authentication%20work%20imbalance",
+    "canonical_refs": {
+      "surface": "src/modules/auth/endpoints.ts#POST /v1/auth/demo {account:'teacher'} -> src/modules/classrooms/endpoints.ts#POST /v1/classrooms and POST /v1/classrooms/:id/join-code",
+      "boundary": "src/modules/auth/auth.controller.ts#demoSignIn (anonymous, authIp 30/min only on token issuance) granting the shared demo-teacher principal unbounded access to classroom.service.ts#issueCode global live-code namespace",
+      "subsystem": "profile/standard/auth (demo login) x classrooms (join-code issuance)",
+      "attack_class": "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Pre-authentication work imbalance"
+    },
+    "surface": "src/modules/auth/endpoints.ts#POST /v1/auth/demo {account:'teacher'} -> src/modules/classrooms/endpoints.ts#POST /v1/classrooms and POST /v1/classrooms/:id/join-code",
+    "boundary": "src/modules/auth/auth.controller.ts#demoSignIn (anonymous, authIp 30/min only on token issuance) granting the shared demo-teacher principal unbounded access to classroom.service.ts#issueCode global live-code namespace",
+    "subsystem": "profile/standard/auth (demo login) x classrooms (join-code issuance)",
+    "attack_class": "Pre-authentication work imbalance",
+    "starting_paths": [
+      "src/modules/auth/auth.controller.ts",
+      "src/modules/auth/auth.service.ts",
+      "src/modules/classrooms/classroom.controller.ts",
+      "src/modules/classrooms/classroom.service.ts",
+      "src/modules/classrooms/join-code.repository.ts",
+      "scripts/seed.ts",
+      "README.md"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Pre-authentication work imbalance",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Quota-accounting scope and reset gaps",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Core discipline",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "DATA-ISOLATION-AND-LIFECYCLE.md#Missing tenant or owner enforcement",
+        "reason": "Owner enforcement for the demo teacher was covered by h5-demo-isolation; this unit concerns only the unauthenticated cost path into the shared namespace."
+      },
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons."
+      }
+    ],
+    "prior_status": "new",
+    "attempts": [],
+    "wave": 2,
+    "status": "deferred",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "early_stop_owner_deadline: accepted from final-clean critic-3; treated as a variant (anonymous demo-teacher precondition) of fingerprint src/modules/classrooms/classroom.service.ts:issueCode:no-per-teacher-live-code-quota-global-namespace-exhaustion, whose remediation keys the new limiter per user and address so it also bounds the demo path. Not independently hunted. Unchecked parallel entry path between two in-scope units. h7-classroom-quota's checks assume that a namespace-claiming teacher needs a real Google account ('Any Google account can become a teacher on first sign-in', auth.service.ts:40-43). h5-demo-isolation checked the demo teacher only for owner enforcement. Neither unit checked that with DEMO_LOGIN_ENABLED=true, which README.md:157-158 and 232 say is on for the hosted review deployment, an anonymous client gets a teacher access token from POST /v1/auth/demo (auth.controller.ts:34-40, auth.service.ts:47-53). The only cost gate is authIp 30/min, which applies to token issuance and not to use. classroom.controller.ts mounts create and regenerate with no limiter, so a single 15-minute demo access token can claim live codes without bound and with no Google identity. scripts/seed.ts:68-71 deletes demo-teacher classrooms only on the next deploy that reseeds, which bounds how long the effect lasts. That reset changes the severity and precondition assessment of the open candidate src/modules/classrooms/classroom.service.ts:issueCode:no-per-teacher-live-code-quota-global-namespace-exhaustion (anonymous rather than Google-authenticated attacker, plus a reset window), and v4-code-quota's prompt does not raise it. The unit should decide whether this is the same fingerprint with an added anonymous precondition or a separate demo-path variant."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fauth%2Fendpoints.ts%23POST%20%2Fv1%2Fauth%2Fgoogle%2C%20%2Fv1%2Fauth%2Fdemo%2C%20%2Fv1%2Fauth%2Frefresh%2C%20%2Fv1%2Fauth%2Flogout::src%2Fmodules%2Fauth%2Fauth.controller.ts%23limitByIp%28authIp%2030%2Fmin%29%20before%20Google%20verification%2C%20user%20creation%20and%20refresh-token%20issuance::profile%2Fquick%2Fall-in-scope-subsystems::RESOURCE-EXHAUSTION-AND-AVAILABILITY.md%23Pre-authentication%20work%20imbalance",
+    "canonical_refs": {
+      "surface": "src/modules/auth/endpoints.ts#POST /v1/auth/google, /v1/auth/demo, /v1/auth/refresh, /v1/auth/logout",
+      "boundary": "src/modules/auth/auth.controller.ts#limitByIp(authIp 30/min) before Google verification, user creation and refresh-token issuance",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Pre-authentication work imbalance"
+    },
+    "surface": "src/modules/auth/endpoints.ts#POST /v1/auth/google, /v1/auth/demo, /v1/auth/refresh, /v1/auth/logout",
+    "boundary": "src/modules/auth/auth.controller.ts#limitByIp(authIp 30/min) before Google verification, user creation and refresh-token issuance",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Pre-authentication work imbalance",
+    "starting_paths": [
+      "src/modules/auth/auth.controller.ts",
+      "src/modules/auth/auth.service.ts",
+      "src/modules/auth/google-verifier.ts",
+      "src/modules/auth/token.service.ts",
+      "src/modules/auth/refresh-token.repository.ts",
+      "src/modules/users/user.repository.ts",
+      "src/http/middleware/rate-limit.ts",
+      "src/lib/rate-limiter.ts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Computational amplification attack classes",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Core discipline",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Pre-authentication work imbalance",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Quota and scheduling attack classes",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Resource accumulation attack classes",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Universal moves",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons."
+      }
+    ],
+    "prior_status": "prior_deferred",
+    "attempts": [],
+    "wave": 1,
+    "status": "candidate",
+    "agent_id": "h8-auth-preauth",
+    "reviewed_paths": [
+      "README.md",
+      "migrations/1763838000000_initial-schema.sql",
+      "scripts/release.ts",
+      "scripts/seed.ts",
+      "src/app.ts",
+      "src/config/config.ts",
+      "src/http/middleware/rate-limit.ts",
+      "src/http/route.ts",
+      "src/lib/rate-limiter.ts",
+      "src/modules/auth/auth.controller.ts",
+      "src/modules/auth/auth.service.ts",
+      "src/modules/auth/google-verifier.ts",
+      "src/modules/auth/refresh-token.repository.ts",
+      "src/modules/auth/schemas.ts",
+      "src/modules/auth/token.service.ts",
+      "src/modules/users/user.repository.ts",
+      "test/helpers.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h8-auth-preauth",
+        "reviewed_paths": [
+          "src/app.ts",
+          "src/http/route.ts",
+          "src/modules/auth/auth.controller.ts",
+          "src/modules/auth/schemas.ts",
+          "src/http/middleware/rate-limit.ts"
+        ],
+        "invariant": "The earliest size and rate gates run before any expensive pre-auth work on google, demo and refresh.",
+        "method": "source",
+        "result": "express.json caps every body at 10 kB (app.ts:97). limitByIp is the first route middleware, ahead of mount()'s handler (route.ts:46). It hits the authIp limiter (30/min) before body validation, Google verification, DB lookups or token issuance. The schemas bound idToken to 4096 chars and refreshToken to 200, so there is no pre-limiter work imbalance on these three routes. Logout is access:'authenticated' and not IP-limited, but it needs a valid HS256 access token, which is checked with no DB hit, and then does at most one indexed select plus one update (token.service.ts:81-85). No amplification.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h8-auth-preauth",
+        "reviewed_paths": [
+          "src/modules/auth/google-verifier.ts",
+          "src/modules/auth/auth.service.ts",
+          "src/modules/users/user.repository.ts"
+        ],
+        "invariant": "Google ID-token verification cannot be driven into repeated outbound certificate fetches or user creation without a real Google identity.",
+        "method": "source",
+        "result": "OAuth2Client.verifyIdToken uses certs cached until the Cache-Control max-age (node_modules google-auth-library oauth2client.js getFederatedSignonCertsAsync, around lines 577-637). An unknown kid throws 'No pem found' with no refetch, so forged tokens cost one local parse plus at most one RSA verify. User rows are only created after a valid Google token for a configured audience with email_verified (google-verifier.ts:24-31, auth.service.ts:40-43), and createOrGet is ON CONFLICT DO NOTHING on google_sub. Growth of the users table therefore needs real Google accounts, one row each. No finding.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h8-auth-preauth",
+        "reviewed_paths": [
+          "src/modules/auth/token.service.ts",
+          "src/modules/auth/refresh-token.repository.ts",
+          "migrations/1763838000000_initial-schema.sql",
+          "scripts/seed.ts"
+        ],
+        "invariant": "refresh_tokens rows created by pre-auth sign-in and rotation are bounded per user or pruned after expiry or revocation.",
+        "method": "source",
+        "result": "Every demo or Google sign-in calls issueForNewSession, which inserts a new family row (auth.service.ts:59, token.service.ts:42-46, 121-128). Every rotation inserts one more row and only marks the old one revoked (token.service.ts:70-71). No code path in src/ or scripts/ ever deletes from refresh_tokens; the grep found deletes only on classrooms and enrollments. There is no per-user session cap. The seed resets classrooms but not the demo users' refresh tokens (seed.ts:67-71). Rows go away only through ON DELETE CASCADE from users, and users are never deleted (migration line 88).",
+        "artifact": null
+      },
+      {
+        "agent_id": "h8-auth-preauth",
+        "reviewed_paths": [
+          "src/modules/auth/auth.controller.ts",
+          "src/http/middleware/rate-limit.ts",
+          "src/lib/rate-limiter.ts",
+          "src/modules/auth/token.service.ts"
+        ],
+        "invariant": "The per-IP authIp limiter is the only bound on anonymous demo sign-in row creation, and it bounds aggregate growth.",
+        "method": "local",
+        "result": "The test used trustProxy=1, demo login enabled and a seeded demo:teacher. From one edge-reported address, 30 demo sign-ins returned 200 and the 31st returned 429, leaving 30 refresh_tokens rows. Ten more addresses in the same IPv6 /64 (2001:db8:1:1::2..b) each got 200, because the limiter keys on the full req.ip string (rate-limit.ts:8), giving 40 rows. After the clock moved forward 31 days, all 40 rows were still present and all were expired. One further sign-in made 41. No pruning happened and the budget is per /128 address. Bounded run: 42 requests on a disposable loopback Postgres.",
+        "artifact": "agents/h8-auth-preauth/artifacts/h8-refresh-accumulation-output.txt"
+      },
+      {
+        "agent_id": "v5-refresh-prune",
+        "reviewed_paths": [
+          "src/modules/auth/auth.controller.ts",
+          "src/modules/auth/auth.service.ts",
+          "src/modules/auth/token.service.ts",
+          "src/modules/auth/refresh-token.repository.ts",
+          "src/http/middleware/rate-limit.ts",
+          "src/lib/rate-limiter.ts",
+          "src/app.ts",
+          "src/config/config.ts",
+          "migrations/1763838000000_initial-schema.sql",
+          "scripts/seed.ts",
+          "scripts/release.ts",
+          "README.md"
+        ],
+        "invariant": "refresh_tokens rows created by pre-auth sign-in, rotation and logout are pruned after expiry or revocation, or bounded per user.",
+        "method": "source",
+        "result": "All trace and evidence lines were checked at 14a697f. A grep over src/, scripts/ and migrations/ for delete, truncate and prune found deletes only on classrooms and enrollments, with nothing on refresh_tokens or users. The repository exposes only insert, select, markRotated and revokeFamily (UPDATE). There is no family cap. The /demo, /google and /refresh routes share one limiter key, auth:<req.ip>, at 30/min. Its state is in memory and resets on restart. The only migration has no TTL mechanism. Correction to the hunter: the per-address budget is shared across sign-in and refresh rather than per route, and the same retention gap is reachable without demo login by any Google account holder.",
+        "artifact": null
+      },
+      {
+        "agent_id": "v5-refresh-prune",
+        "reviewed_paths": [
+          "src/modules/auth/token.service.ts",
+          "src/modules/auth/refresh-token.repository.ts",
+          "src/lib/rate-limiter.ts",
+          "test/helpers.ts"
+        ],
+        "invariant": "Rotated, logged-out and expired refresh_tokens rows are retained indefinitely, and limiter state does not survive a restart.",
+        "method": "local",
+        "result": "Ran under env -i with timeout 120 against loopback Postgres, using trustProxy=1, demo login on and a seeded demo:teacher. 1 demo sign-in plus 3 rotations left 4 rows. Logout returned 204 and left 4 rows. After the clock moved 31 days forward and the app was rebuilt to simulate a restart, the same address got 30 x 200 and then a 429, leaving 34 rows with all 4 expired rows still present. Bounded run of 36 requests. The test passed.",
+        "artifact": "agents/v5-refresh-prune/artifacts/v5-refresh-prune-output.txt"
+      }
+    ],
+    "result_fingerprints": [
+      "src/modules/auth/token.service.ts:issueForNewSession:refresh-tokens-unpruned-accumulation"
+    ],
+    "unresolved": [],
+    "x_hardening": [
+      "authIp is one 30/min bucket shared by /v1/auth/google and /v1/auth/refresh for each client IP. A first sign-in takes two requests (422 ROLE_REQUIRED, then a resend with role), and every active session refreshes about every 15 minutes. A school NAT IP can therefore admit only about 15 new students per minute, or support roughly 450 concurrently active sessions, before legitimate 429s. Anyone else on the same NAT can also exhaust the bucket with garbage tokens. Consider separate limiters for refresh and sign-in, and keying refresh by token family rather than by IP.",
+      "MemoryRateLimiter sweeps expired windows at most once per 60 s, so the in-memory map holds one entry per distinct key seen in the last minute. That is bounded by request throughput and self-limiting, but keying IPv6 by /64 would reduce both map cardinality and budget evasion.",
+      "Logout (access: authenticated) is not IP-limited. It needs a valid access token and does one indexed select plus one update, so it adds no pre-auth work. A limiter is optional."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fclassrooms%2Fendpoints.ts%23%2Fv1%2Fclassrooms%2A::src%2Fmodules%2Fclassrooms%2Fclassroom.repository.ts%23teacher%20ownership%20predicate::profile%2Fquick%2Fall-in-scope-subsystems::ATTACK-CLASSES.md%23Access%20control",
+    "canonical_refs": {
+      "surface": "src/modules/classrooms/endpoints.ts#/v1/classrooms*",
+      "boundary": "src/modules/classrooms/classroom.repository.ts#teacher ownership predicate",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "ATTACK-CLASSES.md#Access control"
+    },
+    "surface": "src/modules/classrooms/endpoints.ts#/v1/classrooms*",
+    "boundary": "src/modules/classrooms/classroom.repository.ts#teacher ownership predicate",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Access control",
+    "starting_paths": [
+      "src/modules/classrooms",
+      "src/http/route.ts",
+      "migrations/1763838000000_initial-schema.sql"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Access control",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_covered_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fclassrooms%2Fendpoints.ts%23%2Fv1%2Fclassrooms%2A::src%2Fmodules%2Fclassrooms%2Fclassroom.repository.ts%23teacher%20ownership%20predicate::profile%2Fquick%2Fall-in-scope-subsystems::ATTACK-CLASSES.md%23Business%20logic",
+    "canonical_refs": {
+      "surface": "src/modules/classrooms/endpoints.ts#/v1/classrooms*",
+      "boundary": "src/modules/classrooms/classroom.repository.ts#teacher ownership predicate",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "ATTACK-CLASSES.md#Business logic"
+    },
+    "surface": "src/modules/classrooms/endpoints.ts#/v1/classrooms*",
+    "boundary": "src/modules/classrooms/classroom.repository.ts#teacher ownership predicate",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Business logic",
+    "starting_paths": [
+      "src/modules/classrooms",
+      "src/http/route.ts",
+      "migrations/1763838000000_initial-schema.sql"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Business logic",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_covered_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fclassrooms%2Fendpoints.ts%23%2Fv1%2Fclassrooms%2A::src%2Fmodules%2Fclassrooms%2Fclassroom.repository.ts%23teacher%20ownership%20predicate::profile%2Fquick%2Fall-in-scope-subsystems::ATTACK-CLASSES.md%23Injection",
+    "canonical_refs": {
+      "surface": "src/modules/classrooms/endpoints.ts#/v1/classrooms*",
+      "boundary": "src/modules/classrooms/classroom.repository.ts#teacher ownership predicate",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "ATTACK-CLASSES.md#Injection"
+    },
+    "surface": "src/modules/classrooms/endpoints.ts#/v1/classrooms*",
+    "boundary": "src/modules/classrooms/classroom.repository.ts#teacher ownership predicate",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Injection",
+    "starting_paths": [
+      "src/modules/classrooms",
+      "src/http/route.ts",
+      "migrations/1763838000000_initial-schema.sql"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Injection",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_covered_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fclassrooms%2Fendpoints.ts%23%2Fv1%2Fclassrooms%2A::src%2Fmodules%2Fclassrooms%2Fclassroom.repository.ts%23teacher%20ownership%20predicate::profile%2Fquick%2Fall-in-scope-subsystems::DATA-ISOLATION-AND-LIFECYCLE.md%23Missing%20tenant%20or%20owner%20enforcement",
+    "canonical_refs": {
+      "surface": "src/modules/classrooms/endpoints.ts#/v1/classrooms*",
+      "boundary": "src/modules/classrooms/classroom.repository.ts#teacher ownership predicate",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "DATA-ISOLATION-AND-LIFECYCLE.md#Missing tenant or owner enforcement"
+    },
+    "surface": "src/modules/classrooms/endpoints.ts#/v1/classrooms*",
+    "boundary": "src/modules/classrooms/classroom.repository.ts#teacher ownership predicate",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Missing tenant or owner enforcement",
+    "starting_paths": [
+      "src/modules/classrooms",
+      "src/http/route.ts",
+      "migrations/1763838000000_initial-schema.sql"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Missing tenant or owner enforcement",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Core discipline",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Universal moves",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_covered_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fclassrooms%2Fendpoints.ts%23%2Fv1%2Fclassrooms%2A::src%2Fmodules%2Fclassrooms%2Fclassroom.repository.ts%23teacher%20ownership%20predicate::profile%2Fquick%2Fall-in-scope-subsystems::DATA-ISOLATION-AND-LIFECYCLE.md%23Policy%20and%20query%20disagreement",
+    "canonical_refs": {
+      "surface": "src/modules/classrooms/endpoints.ts#/v1/classrooms*",
+      "boundary": "src/modules/classrooms/classroom.repository.ts#teacher ownership predicate",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "DATA-ISOLATION-AND-LIFECYCLE.md#Policy and query disagreement"
+    },
+    "surface": "src/modules/classrooms/endpoints.ts#/v1/classrooms*",
+    "boundary": "src/modules/classrooms/classroom.repository.ts#teacher ownership predicate",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Policy and query disagreement",
+    "starting_paths": [
+      "src/modules/classrooms",
+      "src/http/route.ts",
+      "migrations/1763838000000_initial-schema.sql"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Policy and query disagreement",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Core discipline",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Universal moves",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_covered_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fclassrooms%2Fendpoints.ts%23%2Fv1%2Fclassrooms%2A::src%2Fmodules%2Fclassrooms%2Fclassroom.repository.ts%23teacher%20ownership%20predicate::profile%2Fquick%2Fall-in-scope-subsystems::DATA-ISOLATION-AND-LIFECYCLE.md%23Stale%20authorization%20and%20derived%20copy%20use",
+    "canonical_refs": {
+      "surface": "src/modules/classrooms/endpoints.ts#/v1/classrooms*",
+      "boundary": "src/modules/classrooms/classroom.repository.ts#teacher ownership predicate",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "DATA-ISOLATION-AND-LIFECYCLE.md#Stale authorization and derived copy use"
+    },
+    "surface": "src/modules/classrooms/endpoints.ts#/v1/classrooms*",
+    "boundary": "src/modules/classrooms/classroom.repository.ts#teacher ownership predicate",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Stale authorization and derived copy use",
+    "starting_paths": [
+      "src/modules/classrooms",
+      "src/http/route.ts",
+      "migrations/1763838000000_initial-schema.sql"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Stale authorization and derived copy use",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Core discipline",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Universal moves",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_covered_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fclassrooms%2Fendpoints.ts%23POST%20%2Fv1%2Fclassrooms%20and%20POST%20%2Fv1%2Fclassrooms%2F%3Aid%2Fjoin-code::src%2Fmodules%2Fclassrooms%2Fclassroom.service.ts%23issueCode%20global%20live-code%20namespace%20%2810%5E6%20six-digit%20codes%2C%20MAX_CODE_ATTEMPTS%3D5%2C%20global%20sweepExpired%20per%20issue%29::profile%2Fquick%2Fall-in-scope-subsystems::RESOURCE-EXHAUSTION-AND-AVAILABILITY.md%23Quota-accounting%20scope%20and%20reset%20gaps",
+    "canonical_refs": {
+      "surface": "src/modules/classrooms/endpoints.ts#POST /v1/classrooms and POST /v1/classrooms/:id/join-code",
+      "boundary": "src/modules/classrooms/classroom.service.ts#issueCode global live-code namespace (10^6 six-digit codes, MAX_CODE_ATTEMPTS=5, global sweepExpired per issue)",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Quota-accounting scope and reset gaps"
+    },
+    "surface": "src/modules/classrooms/endpoints.ts#POST /v1/classrooms and POST /v1/classrooms/:id/join-code",
+    "boundary": "src/modules/classrooms/classroom.service.ts#issueCode global live-code namespace (10^6 six-digit codes, MAX_CODE_ATTEMPTS=5, global sweepExpired per issue)",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Quota-accounting scope and reset gaps",
+    "starting_paths": [
+      "src/modules/classrooms/classroom.service.ts",
+      "src/modules/classrooms/join-code.ts",
+      "src/modules/classrooms/join-code.repository.ts",
+      "src/modules/classrooms/classroom.controller.ts",
+      "src/modules/auth/auth.service.ts",
+      "migrations/1763838000000_initial-schema.sql",
+      "docs/decisions.md"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Core discipline",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Enumeration and aggregate oracles",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Universal moves",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Validation rules",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Computational amplification attack classes",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Core discipline",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Quota and scheduling attack classes",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Quota-accounting scope and reset gaps",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Resource accumulation attack classes",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Universal moves",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons."
+      }
+    ],
+    "prior_status": "prior_deferred",
+    "attempts": [],
+    "wave": 1,
+    "status": "candidate",
+    "agent_id": "h7-classroom-quota",
+    "reviewed_paths": [
+      "docs/decisions.md",
+      "migrations/1763838000000_initial-schema.sql",
+      "src/app.ts",
+      "src/http/middleware/error-handler.ts",
+      "src/lib/app-error.ts",
+      "src/modules/auth/auth.service.ts",
+      "src/modules/classrooms/classroom.controller.ts",
+      "src/modules/classrooms/classroom.service.ts",
+      "src/modules/classrooms/endpoints.ts",
+      "src/modules/classrooms/join-code.repository.ts",
+      "src/modules/classrooms/join-code.ts",
+      "src/modules/classrooms/schemas.ts",
+      "src/modules/enrollments/enrollment.service.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h7-classroom-quota",
+        "reviewed_paths": [
+          "src/modules/classrooms/endpoints.ts",
+          "src/modules/classrooms/classroom.controller.ts",
+          "src/app.ts",
+          "src/modules/auth/auth.service.ts",
+          "src/modules/classrooms/schemas.ts"
+        ],
+        "invariant": "Creating classrooms and regenerating codes, each of which claims a live number in the global namespace, is bounded per teacher by a rate limit, quota, or count cap.",
+        "method": "source",
+        "result": "There is no bound. app.ts:117 mounts classroomController with only routeDeps; the only limiters (app.ts:47-52) are joinFailures, joinIp and authIp, used by the enrollment and auth controllers. classroom.controller.ts:14 and :35 mount create and regenerate with no middleware. CreateClassroomBody limits only name/description length, and the schema has no per-teacher count constraint. Any Google account can become a teacher on first sign-in (auth.service.ts:40-43, D2).",
+        "artifact": null
+      },
+      {
+        "agent_id": "h7-classroom-quota",
+        "reviewed_paths": [
+          "src/modules/classrooms/classroom.service.ts",
+          "src/modules/classrooms/join-code.ts",
+          "src/modules/classrooms/join-code.repository.ts",
+          "migrations/1763838000000_initial-schema.sql",
+          "src/lib/app-error.ts",
+          "src/http/middleware/error-handler.ts"
+        ],
+        "invariant": "Code allocation for one teacher cannot be starved by another teacher's live codes. Allocation failure degrades gracefully.",
+        "method": "source",
+        "result": "Codes are drawn uniformly from 10^6 numbers (join-code.ts:155). A partial unique index makes live numbers global (migration:63). insertIfFree uses ON CONFLICT DO NOTHING (join-code.repository.ts:194), and issueCode retries only MAX_CODE_ATTEMPTS=5 times (classroom.service.ts:134) before throwing a plain Error (line 143). The error handler turns that into 500 INTERNAL. At live-code density d, an honest allocation fails with probability d^5. sweepExpired (classroom.service.ts:133, repo:214-221) frees only expired codes. It uses the partial expiry index and is bounded by the number of expired rows, so it is not an amplification. Within one classroom, the classroom-scoped unique index (migration:65) and lockOwned bound live codes to one per classroom, so namespace occupancy scales with the number of classrooms.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h7-classroom-quota",
+        "reviewed_paths": ["src/modules/enrollments/enrollment.service.ts", "docs/decisions.md"],
+        "invariant": "The D7 brute-force budget (about 2%/hour per account at 1,000 live codes) holds regardless of how many live codes exist.",
+        "method": "source",
+        "result": "D7 assumes a sparse namespace (decisions.md:14). resolveCodeNow (enrollment.service.ts:113-118) charges the failure budget only for unknown or regenerated numbers. An attacker who holds A live codes knows them and guesses only the other 10^6-A numbers, so each guess hits a victim's live code with probability V/(10^6-A). Expected victim hits per 5-failure window are about 5V/(10^6-A-V): 0.005 at A=0 (matching D7), about 0.05 at A=900k, and about 0.55 at A=990k.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h7-classroom-quota",
+        "reviewed_paths": [
+          "src/modules/classrooms/classroom.service.ts",
+          "src/modules/classrooms/classroom.controller.ts",
+          "src/modules/enrollments/enrollment.service.ts"
+        ],
+        "invariant": "Bounded local check: one teacher can claim live codes without limit, and a saturated namespace denies other teachers and exposes the victim code.",
+        "method": "local",
+        "result": "Test 1: 50 back-to-back POST /v1/classrooms by one teacher all returned 201, and the teacher then held 50 live codes, with no 429. Test 2: the victim created a classroom, and a fixture then gave the attacker teacher a classroom with a live code for every other number (1,000,000 live codes in total). The victim's POST /v1/classrooms returned 500 INTERNAL, and so did the victim's POST /v1/classrooms/:id/join-code and a third teacher's create. After excluding its own codes, the attacker had exactly one unknown number left. A student's first preview guess at it returned 200 with the victim's classroom.",
+        "artifact": "agents/h7-classroom-quota/artifacts/h7-run.txt"
+      },
+      {
+        "agent_id": "h7-classroom-quota",
+        "reviewed_paths": [
+          "src/modules/classrooms/classroom.service.ts",
+          "src/modules/classrooms/join-code.repository.ts"
+        ],
+        "invariant": "Test source for the bounded local check (fixture, inputs and assertions).",
+        "method": "local",
+        "result": "The vitest file records the 50-request quota probe, the SQL fixture used in place of repeated create calls (statement_timeout lifted only for the fixture transaction), and the assertions on the 500s and the single remaining unknown number.",
+        "artifact": "agents/h7-classroom-quota/artifacts/h7-code-space.test.ts"
+      },
+      {
+        "agent_id": "v4-code-quota",
+        "reviewed_paths": [
+          "src/app.ts",
+          "src/modules/classrooms/endpoints.ts",
+          "src/modules/classrooms/classroom.controller.ts",
+          "src/modules/classrooms/classroom.service.ts",
+          "src/modules/classrooms/join-code.ts",
+          "src/modules/classrooms/join-code.repository.ts",
+          "migrations/1763838000000_initial-schema.sql",
+          "src/http/middleware/error-handler.ts",
+          "src/modules/auth/auth.service.ts"
+        ],
+        "invariant": "Each teacher's share of the global live-code namespace is bounded, and allocation failure degrades gracefully.",
+        "method": "source",
+        "result": "Confirmed unbounded: no limiter on the classroom routes (app.ts:117 vs 47-52), no per-teacher count, global unique index (migration:63), 5 attempts (join-code.ts:12), plain Error (classroom.service.ts:143) mapped to 500 (error-handler.ts:67). Corrected the hunter's line numbers: join-code.ts:159 -> 12, join-code.repository.ts:194 -> 26-38 (onConflict at 35), sweepExpired repo:214-221 -> 55-62. The first trace entry was changed to the createClassroom endpoint (endpoints.ts:26). regenerate revokes and issues in one transaction, so a failed allocation rolls back and keeps the old code.",
+        "artifact": null
+      },
+      {
+        "agent_id": "v4-code-quota",
+        "reviewed_paths": ["src/modules/enrollments/enrollment.service.ts", "docs/decisions.md"],
+        "invariant": "D7's brute-force budget holds regardless of how many live codes one principal holds.",
+        "method": "source",
+        "result": "Holds only under sparse occupancy. The budget is charged only for unknown or regenerated numbers (enrollment.service.ts:116-117), so the attacker's known codes shrink the guess space, giving about a 10x per-account rate at A=900k. Students are also self-service, so D7's per-account model was already weak against many accounts.",
+        "artifact": null
+      },
+      {
+        "agent_id": "v4-code-quota",
+        "reviewed_paths": [
+          "src/modules/classrooms/classroom.service.ts",
+          "src/modules/classrooms/classroom.controller.ts"
+        ],
+        "invariant": "Bounded local check: no per-teacher quota, cross-tenant failure rate at 90% density, and rollback on a failed regenerate.",
+        "method": "local",
+        "result": "60 creates and 20 regenerates by one teacher all returned 201, leaving 60 live codes. With a 900k-code attacker fixture, a third teacher's 200 real-generator creates gave 83 x 201 and 117 x 500 INTERNAL (58.5% vs 0.9^5 = 59%). A forced-collision regenerate returned 500, and the old code stayed live. The test DB was truncated afterwards. Note: there is no OS sandbox. The parent-approved substitute was used (scratch copy, env -i, timeout, loopback test DB only).",
+        "artifact": "agents/v4-code-quota/artifacts/v4-run.txt"
+      },
+      {
+        "agent_id": "v4-code-quota",
+        "reviewed_paths": ["src/modules/classrooms/classroom.service.ts"],
+        "invariant": "Test source for the bounded local check.",
+        "method": "local",
+        "result": "The vitest file records the inputs, the 90%-density fixture (statement_timeout lifted only in the fixture transaction), the forced-collision generator, and the assertions.",
+        "artifact": "agents/v4-code-quota/artifacts/v4-code-quota.test.ts"
+      }
+    ],
+    "result_fingerprints": [
+      "src/modules/classrooms/classroom.service.ts:issueCode:no-per-teacher-live-code-quota-global-namespace-exhaustion"
+    ],
+    "unresolved": [],
+    "x_hardening": [
+      "join_codes keeps full history (D16), and each regenerate adds a row that is never pruned, so one teacher can grow join_codes without bound through repeated POST /v1/classrooms/:id/join-code. This is persistent storage growth with no per-teacher cap. No shared-impact threshold was demonstrated, so it is hardening here; the per-user limiter in the remediation above also bounds it.",
+      "issueCode reports namespace exhaustion as a generic Error, which becomes 500 and is logged as error. A typed AppError (503 with Retry-After) plus a density metric would let operators detect saturation before teachers do."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fenrollments%2Fendpoints.ts%23%2Fv1%2Fenrollments%2A%20reached%20as%20demo%20student::src%2Fmodules%2Fenrollments%2Fenrollment.service.ts%23resolveCode%20join-fail%3A%3CstudentId%3E%20key%20shared%20by%20every%20anonymous%20demo-student%20session::profile%2Fquick%2Fall-in-scope-subsystems::RESOURCE-EXHAUSTION-AND-AVAILABILITY.md%23Quota-accounting%20scope%20and%20reset%20gaps",
+    "canonical_refs": {
+      "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments* reached as demo student",
+      "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode join-fail:<studentId> key shared by every anonymous demo-student session",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Quota-accounting scope and reset gaps"
+    },
+    "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments* reached as demo student",
+    "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode join-fail:<studentId> key shared by every anonymous demo-student session",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Quota-accounting scope and reset gaps",
+    "starting_paths": [
+      "src/modules/auth/auth.service.ts",
+      "src/modules/enrollments/enrollment.service.ts",
+      "src/modules/enrollments/enrollment.repository.ts",
+      "src/lib/rate-limiter.ts",
+      "src/app.ts",
+      "scripts/seed.ts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Core discipline",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Tenant and object-isolation attack classes",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Universal moves",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Validation rules",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Core discipline",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Quota and scheduling attack classes",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Quota-accounting scope and reset gaps",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Universal moves",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons."
+      }
+    ],
+    "prior_status": "prior_deferred",
+    "attempts": [],
+    "wave": 1,
+    "status": "covered",
+    "agent_id": "h6-demo-budget",
+    "reviewed_paths": [
+      "scripts/seed.ts",
+      "src/app.ts",
+      "src/lib/keyed-mutex.ts",
+      "src/lib/rate-limiter.ts",
+      "src/modules/auth/auth.controller.ts",
+      "src/modules/auth/auth.service.ts",
+      "src/modules/enrollments/endpoints.ts",
+      "src/modules/enrollments/enrollment.controller.ts",
+      "src/modules/enrollments/enrollment.repository.ts",
+      "src/modules/enrollments/enrollment.service.ts"
+    ],
+    "local_checks": [
+      {
+        "agent_id": "h6-demo-budget",
+        "reviewed_paths": [
+          "src/modules/auth/auth.service.ts",
+          "src/modules/auth/auth.controller.ts",
+          "src/modules/enrollments/enrollment.service.ts",
+          "src/lib/rate-limiter.ts",
+          "src/lib/keyed-mutex.ts",
+          "src/app.ts"
+        ],
+        "invariant": "The per-student failed-join budget (D7, 5/15 min) is keyed only on the authenticated user id, so its scope must not let one principal consume a different (non-demo) principal's budget or serialize another principal's lookups.",
+        "method": "source",
+        "result": "signInDemo (auth.service.ts:47-53) issues tokens for the single seeded user found by google_sub 'demo:student', so every anonymous demo-student session carries the same user.id. resolveCode (enrollment.service.ts:100-102) builds key `join-fail:${studentId}` from that id; the MemoryRateLimiter (app.ts:210, rate-limiter.ts:33-46) and the KeyedMutex (keyed-mutex.ts) are both keyed solely on that string. Consequently all demo-student callers share one 5-failure budget and one serialization queue, but no non-demo principal's key can be touched: real students have distinct user ids and Google subs cannot be 'demo:*' (auth.service.ts:10). Only failures (not found / regenerated) call hit() (line 117); expired and closed outcomes do not count. Effect is confined to the shared demo principal.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h6-demo-budget",
+        "reviewed_paths": [
+          "src/modules/enrollments/enrollment.service.ts",
+          "src/modules/enrollments/enrollment.repository.ts",
+          "src/modules/enrollments/enrollment.controller.ts",
+          "src/modules/enrollments/endpoints.ts"
+        ],
+        "invariant": "Shared demo-student enrollment state must not let an anonymous demo caller mutate or read non-demo principals' enrollments beyond what any student holding a code can do.",
+        "method": "source",
+        "result": "join/leave/list all bind student_id to the authenticated user id (enrollment.repository.ts:27-48, 55-83). A demo caller can only join a classroom with a valid live code (the same capability any self-registered Google student has) and can only leave or list the demo student's own enrollments. Joining or leaving 'for all reviewers' mutates only the shared demo principal's rows, which README Known limitations (README.md:243-246) documents as accepted ('anyone using them sees and can change the same data'). No path reaches another student's enrollment.",
+        "artifact": null
+      },
+      {
+        "agent_id": "h6-demo-budget",
+        "reviewed_paths": [
+          "src/modules/enrollments/enrollment.service.ts",
+          "src/app.ts",
+          "scripts/seed.ts"
+        ],
+        "invariant": "Local confirmation of budget scope: demo-session lockout must not extend to a real student.",
+        "method": "local",
+        "result": "Against seeded demo data on disposable loopback Postgres, demo session A sent 5 wrong codes (404 JOIN_CODE_INVALID each); independent demo session B was then refused the valid seeded code 246810 with 429 RATE_LIMITED, while a real fake-Google student previewing the same code got 200. 3 sign-ins + 8 previews total. Confirms the shared lockout exists but is confined to the documented shared demo account.",
+        "artifact": "agents/h6-demo-budget/artifacts/demo-budget-output.txt"
+      }
+    ],
+    "result_fingerprints": [],
+    "unresolved": [],
+    "x_hardening": [
+      "Any anonymous caller can lock every reviewer's demo-student session out of join-code lookups for 15 minutes with 5 wrong codes (re-armable indefinitely), because resolveCode keys join-fail:<studentId> and all /v1/auth/demo student sessions share one user id (auth.service.ts:47-53, enrollment.service.ts:100-102). Impact is confined to the shared demo principal that README Known limitations accepts; real students are unaffected (verified locally). If reviewer availability matters, key the demo student's failure budget per session (e.g. include the refresh-token family id or a per-session jti in the key when user.google_sub starts with 'demo:'), or issue a per-session ephemeral demo student instead of one shared row.",
+      "All demo-student join/preview lookups are serialized through one KeyedMutex queue (keyed-mutex.ts, enrollment.service.ts:102), so a slow or flooded demo caller delays other demo sessions; bounded by the 60/min per-IP join limiter and pg timeouts and confined to the demo principal."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fenrollments%2Fendpoints.ts%23%2Fv1%2Fenrollments%2A::src%2Fmodules%2Fenrollments%2Fenrollment.service.ts%23resolveCode::profile%2Fquick%2Fall-in-scope-subsystems::ATTACK-CLASSES.md%23Access%20control",
+    "canonical_refs": {
+      "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments*",
+      "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "ATTACK-CLASSES.md#Access control"
+    },
+    "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments*",
+    "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Access control",
+    "starting_paths": [
+      "src/modules/enrollments",
+      "src/modules/classrooms/join-code.repository.ts",
+      "src/lib/rate-limiter.ts",
+      "src/app.ts"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Access control",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_covered_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fenrollments%2Fendpoints.ts%23%2Fv1%2Fenrollments%2A::src%2Fmodules%2Fenrollments%2Fenrollment.service.ts%23resolveCode::profile%2Fquick%2Fall-in-scope-subsystems::ATTACK-CLASSES.md%23Business%20logic",
+    "canonical_refs": {
+      "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments*",
+      "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "ATTACK-CLASSES.md#Business logic"
+    },
+    "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments*",
+    "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Business logic",
+    "starting_paths": [
+      "src/modules/enrollments",
+      "src/modules/classrooms/join-code.repository.ts",
+      "src/lib/rate-limiter.ts",
+      "src/app.ts"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Business logic",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_confirmed_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fenrollments%2Fendpoints.ts%23%2Fv1%2Fenrollments%2A::src%2Fmodules%2Fenrollments%2Fenrollment.service.ts%23resolveCode::profile%2Fquick%2Fall-in-scope-subsystems::ATTACK-CLASSES.md%23Feature%20abuse%20and%20data%20leakage",
+    "canonical_refs": {
+      "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments*",
+      "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "ATTACK-CLASSES.md#Feature abuse and data leakage"
+    },
+    "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments*",
+    "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Feature abuse and data leakage",
+    "starting_paths": [
+      "src/modules/enrollments",
+      "src/modules/classrooms/join-code.repository.ts",
+      "src/lib/rate-limiter.ts",
+      "src/app.ts"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Feature abuse and data leakage",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_covered_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fenrollments%2Fendpoints.ts%23%2Fv1%2Fenrollments%2A::src%2Fmodules%2Fenrollments%2Fenrollment.service.ts%23resolveCode::profile%2Fquick%2Fall-in-scope-subsystems::DATA-ISOLATION-AND-LIFECYCLE.md%23Enumeration%20and%20aggregate%20oracles",
+    "canonical_refs": {
+      "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments*",
+      "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "DATA-ISOLATION-AND-LIFECYCLE.md#Enumeration and aggregate oracles"
+    },
+    "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments*",
+    "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Enumeration and aggregate oracles",
+    "starting_paths": [
+      "src/modules/enrollments",
+      "src/modules/classrooms/join-code.repository.ts",
+      "src/lib/rate-limiter.ts",
+      "src/app.ts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Enumeration and aggregate oracles",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Core discipline",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Universal moves",
+      "DATA-ISOLATION-AND-LIFECYCLE.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_covered_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fenrollments%2Fendpoints.ts%23%2Fv1%2Fenrollments%2A::src%2Fmodules%2Fenrollments%2Fenrollment.service.ts%23resolveCode::profile%2Fquick%2Fall-in-scope-subsystems::RESOURCE-EXHAUSTION-AND-AVAILABILITY.md%23Pre-authentication%20work%20imbalance",
+    "canonical_refs": {
+      "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments*",
+      "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Pre-authentication work imbalance"
+    },
+    "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments*",
+    "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Pre-authentication work imbalance",
+    "starting_paths": [
+      "src/modules/enrollments",
+      "src/modules/classrooms/join-code.repository.ts",
+      "src/lib/rate-limiter.ts",
+      "src/app.ts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Pre-authentication work imbalance",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Core discipline",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Universal moves",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_covered_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  },
+  {
+    "coverage_id": "src%2Fmodules%2Fenrollments%2Fendpoints.ts%23%2Fv1%2Fenrollments%2A::src%2Fmodules%2Fenrollments%2Fenrollment.service.ts%23resolveCode::profile%2Fquick%2Fall-in-scope-subsystems::RESOURCE-EXHAUSTION-AND-AVAILABILITY.md%23Quota-accounting%20scope%20and%20reset%20gaps",
+    "canonical_refs": {
+      "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments*",
+      "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode",
+      "subsystem": "profile/quick/all-in-scope-subsystems",
+      "attack_class": "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Quota-accounting scope and reset gaps"
+    },
+    "surface": "src/modules/enrollments/endpoints.ts#/v1/enrollments*",
+    "boundary": "src/modules/enrollments/enrollment.service.ts#resolveCode",
+    "subsystem": "profile/quick/all-in-scope-subsystems",
+    "attack_class": "Quota-accounting scope and reset gaps",
+    "starting_paths": [
+      "src/modules/enrollments",
+      "src/modules/classrooms/join-code.repository.ts",
+      "src/lib/rate-limiter.ts",
+      "src/app.ts"
+    ],
+    "ordinary_attack_class_block": null,
+    "selected_companion_blocks": [
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Quota-accounting scope and reset gaps",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Core discipline",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Universal moves",
+      "RESOURCE-EXHAUSTION-AND-AVAILABILITY.md#Validation rules"
+    ],
+    "excluded_blocks": [
+      {
+        "block": "AI-AND-LLM.md#Core discipline",
+        "reason": "No model, prompt, or agent integration exists in the backend source."
+      },
+      {
+        "block": "MEMORY-SAFETY-AND-BINARY.md#Core discipline",
+        "reason": "TypeScript on Node.js with no native addons in the dependency tree under audit."
+      }
+    ],
+    "prior_status": "prior_confirmed_changed_source",
+    "attempts": [],
+    "wave": 1,
+    "status": "out_of_scope",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": [
+      "Scoped run-2 targets only run-1 deferred units; this unit was reviewed in run-1 at e8d61d6 (see run-1 ledger)."
+    ]
+  }
+]

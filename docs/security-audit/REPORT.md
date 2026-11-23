@@ -1,5 +1,7 @@
 # Joinly backend security audit, run 1
 
+> A deeper follow-up pass (run 2, standard profile) on the areas this run deferred is in [run-2/REPORT.md](run-2/REPORT.md).
+
 ## 1. Run facts
 
 - **Method:** Cloudflare `security-audit` skill (github.com/cloudflare/security-audit-skill), full-audit mode, **`quick` profile**. This is a partial pass by design: one hunter wave, one coverage critic, one independent verifier per candidate. It does not claim exhaustive coverage.

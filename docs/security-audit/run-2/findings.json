@@ -1,0 +1,248 @@
+[
+  {
+    "verdict": "needs_validation",
+    "fingerprint": "src/modules/auth/token.service.ts:issueForNewSession:refresh-tokens-unpruned-accumulation",
+    "title": "Anonymous demo sign-ins add refresh_tokens rows that are never deleted. The only bound is an in-memory per-address limiter.",
+    "description": "README.md:232 documents DEMO_LOGIN_ENABLED=true for the hosted review deployment. There, any anonymous client can POST /v1/auth/demo with no credential (auth.controller.ts:34-41). Each call inserts a new refresh-token family row for the shared demo user (auth.service.ts:47-59, token.service.ts:42-46, 121-128). Each refresh inserts another row and only marks the old one revoked (token.service.ts:70-71). Logout only sets revoked_at (refresh-token.repository.ts:53-59). No code path in src/, scripts/ or migrations/ deletes refresh_tokens rows: not after expiry (30 days by default, at most 90), not after revocation, and not at the demo reseed (seed.ts:67-71). There is no per-user cap on families. The only control is limitByIp(authIp, 30/min): an in-memory fixed window keyed on the exact req.ip string. The demo, google and refresh routes share it under one 'auth:<ip>' key, and it resets on every restart or deploy. That allows about 43,200 permanent rows per day from each distinct client address. Each address in an IPv6 /64 is a separate key, and a TRUST_PROXY mismatch (prior record) can make the key spoofable. The same retention gap applies without demo login to any holder of a free Google account, at the same per-address rate, so the demo flag only removes the credential requirement. The rows are about 300 bytes each including the four indexes, so roughly 13 MB per day per address. The shared Postgres volume grows with no recovery short of manual SQL. Whether that reaches disk exhaustion or meaningful cost depends on deployment facts the repository does not show: IPv6 ingress and forwarding, the volume quota, the TRUST_PROXY hop count, and which deployment has demo login enabled.",
+    "claimed_root_cause": "TokenService.issueForNewSession / issuePair (token.service.ts:42-46, 121-128) inserts one refresh_tokens row per sign-in, and rotate (token.service.ts:70-71) inserts one row per refresh. RefreshTokenRepository has only insert, select and UPDATE (revoked_at) methods. No retention job, expiry delete or per-user family cap exists anywhere in the repository. So a credential-free route (auth.service.ts:47-53) turns request volume into permanent rows. The only bound is the per-process, per-exact-address limiter (rate-limit.ts:8, rate-limiter.ts:33-40). It caps the rate per address but not the total number of rows.",
+    "trace": [
+      {
+        "kind": "entrypoint",
+        "file": "src/modules/auth/auth.controller.ts",
+        "line": 34,
+        "scope": "authController demoSignIn mount",
+        "description": "When demoLoginEnabled is set, POST /v1/auth/demo is mounted as a public route. Its only pre-handler middleware is the shared per-IP limiter defined at line 23. That limiter is also used by /google and /refresh."
+      },
+      {
+        "kind": "propagation",
+        "file": "src/http/middleware/rate-limit.ts",
+        "line": 8,
+        "scope": "limitByIp",
+        "description": "Keys the counter on `auth:${req.ip}`, the full address string. Each distinct IPv6 /128 gets a fresh 30/min budget, and so does a spoofed X-Forwarded-For value under a TRUST_PROXY mismatch."
+      },
+      {
+        "kind": "propagation",
+        "file": "src/lib/rate-limiter.ts",
+        "line": 33,
+        "scope": "MemoryRateLimiter.hit",
+        "description": "An in-memory fixed window that limits only the rate per key. It has no aggregate or global bound and resets on every restart or deploy."
+      },
+      {
+        "kind": "propagation",
+        "file": "src/modules/auth/auth.service.ts",
+        "line": 47,
+        "scope": "AuthService.signInDemo",
+        "description": "Looks up the shared demo user with no credential, then session() calls tokens.issueForNewSession (line 59)."
+      },
+      {
+        "kind": "propagation",
+        "file": "src/modules/auth/token.service.ts",
+        "line": 42,
+        "scope": "TokenService.issueForNewSession",
+        "description": "Starts a new family (randomUUID) on every call, with no cap on families per user."
+      },
+      {
+        "kind": "sink",
+        "file": "src/modules/auth/refresh-token.repository.ts",
+        "line": 14,
+        "scope": "RefreshTokenRepository.insert",
+        "description": "Inserts a permanent refresh_tokens row, indexed by the pkey, the unique token_hash, family and user. No delete method exists in this repository or anywhere else in the codebase."
+      }
+    ],
+    "evidence": [
+      {
+        "file": "src/modules/auth/token.service.ts",
+        "line": 122,
+        "description": "issuePair inserts a row on every sign-in and every rotation. rotate (line 71) only marks the old row rotated or revoked and never deletes it."
+      },
+      {
+        "file": "src/modules/auth/refresh-token.repository.ts",
+        "line": 53,
+        "description": "Revocation, used by reuse detection and logout, is an UPDATE that sets revoked_at. The repository has no delete or prune method."
+      },
+      {
+        "file": "migrations/1763838000000_initial-schema.sql",
+        "line": 86,
+        "description": "refresh_tokens has no TTL or partition mechanism and is the only migration. Rows go away only through ON DELETE CASCADE from users (line 88), and no code path deletes users."
+      },
+      {
+        "file": "scripts/seed.ts",
+        "line": 68,
+        "description": "The demo reseed deletes classrooms only and leaves the demo users' refresh_tokens rows in place."
+      },
+      {
+        "file": "src/app.ts",
+        "line": 50,
+        "description": "authIp = MemoryRateLimiter(30, MINUTE): the only bound, per address and per process."
+      },
+      {
+        "file": "src/http/middleware/rate-limit.ts",
+        "line": 8,
+        "description": "The limiter key is the exact req.ip string, with no IPv6 prefix aggregation."
+      },
+      {
+        "file": "README.md",
+        "line": 232,
+        "description": "The review deployment is documented with DEMO_LOGIN_ENABLED=true, so the credential-free route that creates rows is live there. README.md:246-247 recommends turning it off on deployments that serve real users."
+      }
+    ],
+    "blockers": [
+      "Whether Railway's public edge accepts IPv6 client connections and reports the client's full IPv6 address as the X-Forwarded-For hop that req.ip resolves to under TRUST_PROXY=1. This decides whether one /64 yields effectively unlimited limiter keys, and it is not visible in source.",
+      "The deployed Postgres volume size, quota and billing for the Railway service. These decide whether permanent row growth reaches disk exhaustion or meaningful cost. Growth is about 300 bytes per row including indexes, or about 13 MB per day per client address at 30/min.",
+      "Whether the database behind the hosted review deployment, which has DEMO_LOGIN_ENABLED=true, is also the database real users rely on. Without demo login, rows still accumulate at the same per-address rate, but each attacker needs a Google account.",
+      "The deployed TRUST_PROXY value relative to Railway's hop count. A mismatch makes the limiter key client-spoofable (prior record src/http/middleware/rate-limit.ts:limitByIp:trust-proxy-hop-count) and removes the per-address bound."
+    ],
+    "validation_plan": {
+      "local": "Run agents/v5-refresh-prune/scratch/v5-refresh-prune.test.ts (output in agents/v5-refresh-prune/artifacts/v5-refresh-prune-output.txt) and agents/h8-auth-preauth/scratch/h8-refresh-accumulation.test.ts (output in agents/h8-auth-preauth/artifacts/h8-refresh-accumulation-output.txt) against disposable loopback Postgres. Observed: 1 demo sign-in plus 3 rotations leaves 4 rows. Logout returns 204 and still leaves 4 rows. After the clock moves 31 days forward and the app is rebuilt (limiter reset), the same address gets 30 more 200 responses before a 429. The result is 34 rows, and all 4 expired rows are still present. h8 adds that each further address in the same /64 gets a fresh budget. To confirm a fix, add a retention delete (DELETE FROM refresh_tokens WHERE expires_at < now() - interval 'grace' OR (revoked_at IS NOT NULL AND revoked_at < now() - interval 'grace')), run from the release step or a periodic in-process timer, plus a per-user cap on live families (revoke and delete the oldest beyond N). Then assert the row count stays bounded after the clock advances and after repeated sign-ins.",
+      "deployment": "Owner checks, with no load testing: (1) whether the public Railway domain resolves to an AAAA record and accepts IPv6. Make a single request from an owner-controlled IPv6 host and read req.ip in the logs to see whether the full /128 reaches the app. (2) Run SELECT count(*), count(*) FILTER (WHERE expires_at < now() OR revoked_at IS NOT NULL), pg_size_pretty(pg_total_relation_size('refresh_tokens')) FROM refresh_tokens; on the deployed database and compare the result with the volume's capacity and plan quota. (3) Check whether any deployment that serves real users has DEMO_LOGIN_ENABLED=true or shares the review deployment's database. (4) Check the deployed TRUST_PROXY value against Railway's proxy hop count."
+    }
+  },
+  {
+    "verdict": "confirmed",
+    "fingerprint": "src/modules/classrooms/classroom.service.ts:issueCode:no-per-teacher-live-code-quota-global-namespace-exhaustion",
+    "title": "No per-teacher quota on live join codes: one self-registered teacher can fill much of the shared 10^6 code space, so other teachers' create/regenerate fail with 500 and D7's guessing odds rise",
+    "description": "All live join codes share one 1,000,000-number namespace (6 digits) across every teacher. Each classroom holds one live code. POST /v1/classrooms and POST /v1/classrooms/:id/join-code have no rate limit, quota, or count cap, and any Google account can choose the teacher role at first sign-in. So one teacher can hold a large share of the namespace by creating classrooms, and can keep that share by creating or regenerating before the 24h expiry. issueCode tries only 5 uniformly random numbers and then throws a plain Error, which the error handler maps to 500 INTERNAL. At attacker density d, another teacher's create or regenerate fails with probability about d^5. Local measurement at d=0.9: 117 of 200 creates failed (58.5%; predicted 59%). A failed regenerate rolls back and keeps the old code live, and retries do eventually succeed, so at reachable densities this degrades service rather than fully denying it. Near-total saturation (full denial) was shown only with a DB fixture. It is not realistically reachable through the API, because the attacker's own allocations fail at the same d^5 rate: at d=0.999 each new code costs about 200 calls. Second effect: an attacker who holds A live codes knows those numbers and guesses only the rest. The per-student failure budget is charged only for unknown or regenerated numbers, so each guess hits a victim code with probability V/(10^6-A) instead of V/10^6. That is about 10x D7's assumed rate at A=900k. Since any Google account can also become a student, D7's per-account budget was already weak against many accounts; this multiplies the per-account rate.",
+    "root_cause": "ClassroomService.create (classroom.service.ts:35-46) and regenerateJoinCode (94-101) call issueCode (130-144). issueCode claims a number in a namespace shared by all tenants (partial unique index join_codes_live_code_key, migrations/1763838000000_initial-schema.sql:63) through insertIfFree's ON CONFLICT DO NOTHING (join-code.repository.ts:26-38). It gives up after MAX_CODE_ATTEMPTS=5 (join-code.ts:12, whose comment assumes about 1,000 live codes) with a plain Error (classroom.service.ts:143). The classroom controller is mounted without any limiter (app.ts:117; the only limiters, app.ts:47-52, go to the auth and enrollment controllers), and nothing caps classrooms or live codes per teacher. Occupancy is therefore unbounded per principal, so one principal's allocations lower every other principal's allocation success rate and brute-force margin.",
+    "intended_behavior": "One teacher's live codes should be a small, bounded share of the namespace, through a per-teacher cap on classrooms or live codes plus a per-user rate limit on create and regenerate. Allocation failure should be rare at the highest occupancy that is reachable, and should surface as a typed, retryable 503 rather than a generic 500. D7's sparse-namespace assumption should hold under adversarial use.",
+    "trace": [
+      {
+        "kind": "entrypoint",
+        "file": "src/modules/classrooms/endpoints.ts",
+        "line": 26,
+        "scope": "classroomsEndpoints.createClassroom (POST /v1/classrooms, access: teacher); regenerateJoinCode at line 81",
+        "description": "Lower-trust entrypoint: any authenticated teacher. Teacher accounts are self-service: any Google account picks role=teacher at first sign-in (auth.service.ts:40-43, D2)."
+      },
+      {
+        "kind": "propagation",
+        "file": "src/app.ts",
+        "line": 117,
+        "scope": "createApp",
+        "description": "classroomController is mounted with routeDeps only. The limiters at lines 47-52 (joinFailures, joinIp, authIp) are not passed to it."
+      },
+      {
+        "kind": "propagation",
+        "file": "src/modules/classrooms/classroom.controller.ts",
+        "line": 14,
+        "scope": "createClassroom mount (regenerate mount at line 35)",
+        "description": "Both routes go straight to the service with no quota or count check."
+      },
+      {
+        "kind": "propagation",
+        "file": "src/modules/classrooms/classroom.service.ts",
+        "line": 42,
+        "scope": "ClassroomService.create",
+        "description": "Each new classroom calls issueCode and claims one live number for 24h. regenerateJoinCode (line 99) revokes the old number and claims a new one in the same transaction."
+      },
+      {
+        "kind": "propagation",
+        "file": "src/modules/classrooms/join-code.repository.ts",
+        "line": 35,
+        "scope": "JoinCodeRepository.insertIfFree",
+        "description": "ON CONFLICT DO NOTHING against the global live-code unique index returns undefined whenever any tenant holds the drawn number."
+      },
+      {
+        "kind": "sink",
+        "file": "src/modules/classrooms/classroom.service.ts",
+        "line": 143,
+        "scope": "ClassroomService.issueCode",
+        "description": "After 5 collisions (loop at line 134) it throws a plain Error. The error handler (error-handler.ts:67) turns it into 500 INTERNAL for the victim teacher's create or regenerate."
+      }
+    ],
+    "evidence": [
+      {
+        "file": "src/modules/classrooms/join-code.ts",
+        "line": 12,
+        "description": "MAX_CODE_ATTEMPTS = 5. The comment on line 11 assumes about 1,000 live codes, and nothing enforces that."
+      },
+      {
+        "file": "src/modules/classrooms/join-code.ts",
+        "line": 8,
+        "description": "Codes are drawn uniformly from 10^6 numbers, so collision probability per attempt equals live-code density."
+      },
+      {
+        "file": "migrations/1763838000000_initial-schema.sql",
+        "line": 63,
+        "description": "join_codes_live_code_key makes live numbers unique across all teachers. Line 65 limits each classroom to one live code, so occupancy scales with the number of classrooms."
+      },
+      {
+        "file": "src/app.ts",
+        "line": 47,
+        "description": "Only joinFailures, joinIp and authIp limiters exist, and none is applied to classroom routes."
+      },
+      {
+        "file": "src/modules/classrooms/classroom.service.ts",
+        "line": 134,
+        "description": "Five-attempt allocation loop. Failure probability is about density^5."
+      },
+      {
+        "file": "src/http/middleware/error-handler.ts",
+        "line": 67,
+        "description": "A non-AppError becomes a generic 500 INTERNAL, with no Retry-After."
+      },
+      {
+        "file": "src/modules/enrollments/enrollment.service.ts",
+        "line": 117,
+        "description": "The failure budget is charged only when a number is unknown or regenerated (line 116), so the attacker's own known codes shrink the effective guess space."
+      },
+      {
+        "file": "docs/decisions.md",
+        "line": 14,
+        "description": "D7's 2%/hour figure assumes 1,000 live codes in 1,000,000. Nothing in source keeps occupancy near that."
+      }
+    ],
+    "conditions": [
+      {
+        "kind": "authentication_level",
+        "description": "One authenticated teacher session. Any Google account can self-select the teacher role at first sign-in (D2)."
+      },
+      {
+        "kind": "data_state",
+        "description": "Impact scales with attacker occupancy A. Reaching d=0.9 needs roughly 10^6 create calls within the 24h TTL, about 12 req/s, and the cost grows as the attacker's own allocations fail at d^5. Holding d needs a comparable volume every 24h. Full saturation is not practically reachable through the API."
+      },
+      {
+        "kind": "system_configuration",
+        "description": "Assumes no upstream (Railway edge or other) request-rate limit on authenticated /v1/classrooms traffic, and enough DB capacity for about 10^6 classroom and join_code rows. Neither is configured in this repository, and Railway account configuration is out of scope."
+      }
+    ],
+    "execution": {
+      "attacker_perspective": "A self-registered teacher with one bearer token. Optionally, a self-registered student account for the guessing effect.",
+      "payloads": [
+        "POST /v1/classrooms {\"name\":\"c<i>\"} x60 and POST /v1/classrooms/<id>/join-code x20 with one teacher bearer token",
+        "Fixture in place of ~900k attacker creates: attacker-owned classrooms with live codes for numbers 000000-899999 (except the victim's code), expires_at = now+24h",
+        "POST /v1/classrooms {\"name\":\"o<i>\"} x200 as a third teacher, using the real CSPRNG generator",
+        "POST /v1/classrooms/<victimRoomId>/join-code as the victim, with the generator pinned to an attacker-held number"
+      ],
+      "instructions": [
+        "Copy the repository into scratch, with node_modules symlinked, and add test/v4-code-quota.test.ts.",
+        "Run: env -i PATH=$PATH HOME=$HOME TEST_DATABASE_URL=postgres://joinly:joinly@localhost:5432/joinly_test timeout 120 npx vitest run test/v4-code-quota.test.ts against the disposable loopback Postgres.",
+        "Test 1 counts the statuses of the creates and regenerates and the teacher's live codes. Test 2 builds the 90%-density fixture, measures the third teacher's create success rate, and forces a regenerate collision to check rollback.",
+        "Truncate the test database afterwards."
+      ],
+      "observed_result": "V4_QUOTA createStatuses [201] regenStatuses [201] liveCodes 60. V4_DENSITY live 900000 otherCreates {\"201\":83,\"500\":117} expectedFailRate 0.590 errCode INTERNAL. V4_REGEN forcedCollisionStatus 500 oldCodeStillLive true. 2/2 passed. The hunter's run independently showed that full saturation gives 500 for all other teachers, and that the single remaining unknown number is the victim's code."
+    },
+    "remediation": {
+      "strategy": "Bound each principal's share of the shared namespace. (1) Cap classrooms or live codes per teacher, enforced in the create transaction by locking the teacher's user row and counting. (2) Add a per-user limiter on POST /v1/classrooms and POST /v1/classrooms/:id/join-code. (3) Turn allocation exhaustion into a typed 503 AppError with Retry-After, and log or alert on live-code density. (4) Size the code space for the worst reachable occupancy (cap x expected teachers), or revisit D7's numbers. Regression tests: the (N+1)th create by one teacher returns 4xx, and allocation exhaustion returns 503, not 500.",
+      "code_changes": [
+        {
+          "file_name": "src/modules/classrooms/classroom.service.ts",
+          "fixed_code": "const MAX_CLASSROOMS_PER_TEACHER = 50;\n\nasync create(teacherId: string, body: CreateClassroomBody): Promise<Classroom> {\n  const id = await this.db.transaction().execute(async (trx) => {\n    await sql`SELECT 1 FROM users WHERE id = ${teacherId} FOR UPDATE`.execute(trx);\n    const { n } = await trx.selectFrom('classrooms').select((eb) => eb.fn.countAll<string>().as('n'))\n      .where('teacher_id', '=', teacherId).executeTakeFirstOrThrow();\n    if (Number(n) >= MAX_CLASSROOMS_PER_TEACHER)\n      throw new AppError('RATE_LIMITED', 'Classroom limit reached.'); // or a dedicated QUOTA_EXCEEDED code\n    const { id } = await new ClassroomRepository(trx).insert({ teacherId, name: body.name, description: emptyToNull(body.description) });\n    await this.issueCode(trx, id);\n    return id;\n  });\n  return this.get(teacherId, id);\n}\n// issueCode: replace `throw new Error(...)` with a typed retryable AppError (new 503 code in ErrorCode/errorStatus, with retryAfterSeconds) and log the density."
+        }
+      ]
+    },
+    "severity": {
+      "likelihood": {
+        "score": "low",
+        "reason": "It needs only a free teacher account, but meaningful density needs about 10^6 authenticated requests per day, sustained, from one attributable account. The attacker's own cost rises as d^5, and the volume shows up as 500s logged at error level. Nothing in the repository limits it."
+      },
+      "impact": {
+        "score": "medium",
+        "reason": "Cross-tenant: at d=0.9 about 59% of other teachers' creates and regenerates fail with 500 (measured 58.5%). Retries succeed, and a failed regenerate keeps the old code, so this is degradation, not full denial, at reachable densities. Per-account guess success rises about 10x at A=900k (more at higher A), letting attacker students preview or join victims' classes sooner. Recovery needs an operator to remove the attacker's classrooms."
+      },
+      "overall_severity": "low"
+    },
+    "confidence": {
+      "score": "medium",
+      "reason": "Source lineage is complete. The missing quota, the d^5 failure rate at a 90% fixture density with the real generator, the 500 mapping, and the rollback were all reproduced locally. Density was built with a DB fixture rather than 10^6 API calls, and deployed upstream rate limits and DB capacity are not visible in the repository."
+    }
+  }
+]
