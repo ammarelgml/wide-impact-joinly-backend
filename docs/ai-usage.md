@@ -1,31 +1,31 @@
-# AI tool usage disclosure
+# AI tool usage
 
-This covers both repositories: the mobile app
-([wide-impact-joinly-mobile](https://github.com/ammarelgml/wide-impact-joinly-mobile)) and this API.
+I used AI tools on both parts of the project, the mobile app and the API.
 
-**Tools:** Claude (Anthropic), through Claude Code, for the spec, code, tests and documentation;
-Claude Design for the app's visual design (design tokens, components and screens).
+**Tools I used**
 
-**How I used it**
+- Claude (Anthropic), through Claude Code, for planning, code, tests and documentation.
+- Claude Design for the app's visual design.
 
-- **Planning.** I used Claude to turn the brief into a written spec: the open questions and my
-  decisions on them ([decisions.md](decisions.md)), the data model, the auth design, the API
-  contract, the app's screens and flows, and the test plan. I reviewed and approved each decision
-  before any code was written, and changed several (for example the 24-hour code expiry and keeping
-  backend and mobile as two separate projects, as the brief lists them).
-- **Design.** I gave Claude Design a design brief written from the spec and used its handoff
-  (tokens, type, components and screen layouts) as the reference for the app's UI.
-- **Implementation.** Claude wrote most of the first draft of the backend and the mobile app (code,
-  migrations and tests) from that spec, in small steps that I reviewed. I directed the structure
-  (layering, endpoint declarations, database-enforced rules, feature folders and state management in
-  the app) and the trade-offs.
-- **Verification.** Every API behaviour in the spec has an integration test against a real
-  PostgreSQL, and the app has unit and component tests. I ran the flows manually on the deployed
-  API, on an Android emulator and on a phone. Where AI output was wrong or weaker than it should be,
-  it was caught by those tests or in review and fixed. I also used Claude to run a security review
-  of the backend ([security-audit/REPORT.md](security-audit/REPORT.md)).
-- **Documentation.** Drafted with Claude; the API reference is generated from code.
+**How I used them**
 
-**What I can explain and defend:** every file in both repositories, including why each constraint,
-index and error code exists, how the app manages state and sessions, and what I would change at
-larger scale (see [approach.md](approach.md)).
+- **Planning.** I went through the brief with Claude and wrote down the open questions and my
+  answers ([decisions.md](decisions.md)), plus the data model, sign-in design, API and screens. I
+  reviewed every decision before any code was written and changed several of them, for example
+  the 24-hour code expiry and keeping the app and backend as two separate projects, as the brief
+  lists them.
+- **Design.** I gave Claude Design a short brief based on the spec and used its output (colours,
+  type, components and screen layouts) as the reference for the app's UI.
+- **Code.** Claude wrote most of the first draft of the backend and the app, including migrations
+  and tests, in small steps that I reviewed. I decided the structure and the trade-offs: the
+  layers in the API, rules enforced by the database, the feature folders and how state is handled
+  in the app.
+- **Testing.** The API has integration tests against a real PostgreSQL, and the app has unit and
+  component tests. I also went through the flows by hand on the live API, on an Android emulator
+  and on a phone. When the AI got something wrong, the tests or my review caught it and it was
+  fixed. I also had Claude do a security review of the backend
+  ([security-audit/REPORT.md](security-audit/REPORT.md)).
+- **Docs.** Written with Claude's help. The API reference is generated from the code.
+
+I understand every file in both repositories and can explain why it is built the way it is and what
+I would change for a bigger product (see [approach.md](approach.md)).
